@@ -43,9 +43,16 @@ tail -n 36 data | awk '
         for (symbol in price_now){
 
             # Show last and current price
-            printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST: %10.4f (%7.3f %)",
+            # Set color, depending on negative-positive
+            if (price_now[symbol] > price_lst[symbol]){
+                color = 92 # green
+            }else{
+                color = 33 # orange
+            }
+            printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST:\033[%sm %10.4f (%7.3f %)\033[0m",
                     symbol,
                     price_now[symbol],
+                    color,
                     price_now[symbol]-price_lst[symbol],
                     100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol]
 
