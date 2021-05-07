@@ -3,23 +3,37 @@
 # Selection (default: everything)
 sel="${1:-$}"
 
-# Get data
-date >> data
-curl \
-    -s \
-    -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
-    -H "Accept: application/json" \
-    -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
-    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
-    egrep -o '"symbol[^,]*|"price[^,]*' >> data
-
-echo >> data
+## Get data
+#date >> data
+#curl \
+#    -s \
+#    -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
+#    -H "Accept: application/json" \
+#    -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
+#    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
+#    egrep -o '"symbol[^,]*|"price[^,]*' >> data
+#
+#echo >> data
 
 # Parse last two datasets
-tail -n 36 data | awk -v sel="${sel}" '
-    BEGIN{
+tail -n 36 data | \
+    awk \
+        -v sel="${sel}" \
+        -v color=yes \
+    'BEGIN{
+
         # Set file delimiter
         FS = ":"
+
+        # Color control characters
+        color == "no" ? colorend = "" : colorend = "\033[0m"
+
+        # Colors
+        green = "\033[92m"
+        orange = "\033[33m"
+        yellow = "\033[93m"
+        red = "\033[91m"
+
         # Set reference prices
         price_ref["ETH"] = 1595.88
         price_ref["XMR"] = 163.59
@@ -28,8 +42,8 @@ tail -n 36 data | awk -v sel="${sel}" '
         price_ref["VET"] = 0.2407
         price_ref["ICX"] = 2.6118
         price_ref["ONE"] = 0.1436
-        price_fut["DOGE"] = 0.64297
-        price_liq["DOGE"] = 0.618231
+        price_fut["DOGE"] = 0.733103
+        price_liq["DOGE"] = 0.693220
     }
     # Find symbol
     /"symbol"/ {
@@ -54,17 +68,22 @@ tail -n 36 data | awk -v sel="${sel}" '
 
             # Show last and current price
             # Set color, depending on negative-positive
-            if (price_now[symbol] > price_lst[symbol]){
-                color = 92 # green
+            if (color == "no"){
+                colorbegin = ""
             }else{
-                color = 33 # orange
+                if (price_now[symbol] >= price_lst[symbol]){
+                    colorbegin = green
+                }else{
+                    colorbegin = orange
+                }
             }
-            printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST:\033[%sm %10.4f (%7.3f %)\033[0m",
+            printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST:%s %10.4f (%7.3f %)%s",
                     symbol,
                     price_now[symbol],
-                    color,
+                    colorbegin,
                     price_now[symbol]-price_lst[symbol],
-                    100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol]
+                    100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
+                    colorend
 
             # If available, show difference to reference price
             if (symbol in price_ref){
@@ -77,15 +96,20 @@ tail -n 36 data | awk -v sel="${sel}" '
             if (symbol in price_fut){
 
                 # Set color, depending on negative-positive
-                if (price_now[symbol] > price_fut[symbol]){
-                    color = 92 # green
+                if (color == "no"){
+                    colorbegin = ""
                 }else{
-                    color = 33 # orange
+                    if (price_now[symbol] > price_fut[symbol]){
+                        colorbegin = green
+                    }else{
+                        colorbegin = orange
+                    }
                 }
-                printf " ; DIFFtoFUT:\033[%sm %10.4f (%9.3f %)\033[0m",
-                        color,
+                printf " ; DIFFtoFUT:%s %10.4f (%9.3f %)%s",
+                        colorbegin,
                         price_now[symbol]-price_fut[symbol],
-                        100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol]
+                        100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol],
+                        colorend
             }
 
             # If available, show difference to liquidation price
@@ -93,20 +117,25 @@ tail -n 36 data | awk -v sel="${sel}" '
                 liqdiffp = 100*(price_now[symbol]-price_liq[symbol])/price_liq[symbol]
 
                 # Set color, if getting close to liquidation price
-                color = 0
-                if (liqdiffp < 3){
-                    color = 93 # yellow
+                if (color == "no"){
+                    colorbegin = ""
+                }else{
+                    colorbegin = "\033[0m" # neutral
+                    if (liqdiffp < 3){
+                        colorbegin = yellow
+                    }
+                    if (liqdiffp < 2){
+                        colorbegin = orange
+                    }
+                    if (liqdiffp < 1){
+                        colorbegin = red
+                    }
                 }
-                if (liqdiffp < 2){
-                    color = 33 # orange
-                }
-                if (liqdiffp < 1){
-                    color = 91 # red
-                }
-                printf " ; DIFFtoLIQ:\033[%sm %10.4f (%9.3f %)\033[0m",
-                        color,
+                printf " ; DIFFtoLIQ:%s %10.4f (%9.3f %)%s",
+                        colorbegin,
                         price_now[symbol]-price_liq[symbol],
-                        liqdiffp
+                        liqdiffp,
+                        colorend
             }
 
             # In any case, end with a new line

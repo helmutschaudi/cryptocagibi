@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
 ./getcrypto "$@"
+#date >> longtimedata; ./getcrypto >> longtimedata; echo >> longtimedata
