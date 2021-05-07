@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+date >> data
+curl \
+    -s \
+    -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
+    -H "Accept: application/json" \
+    -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
+    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
+    egrep -o '"symbol[^,]*|"price[^,]*' >> data
+
+echo >> data
+
+tail -n 36 data | awk '
+    BEGIN{
+        # Set file delimiter
+        FS = ":"
+        # Set reference prices
+        price_ref["ETH"] = 1595.88
+        price_ref["XMR"] = 163.59
+        price_ref["XRP"] = 0.5819
+        price_ref["DOGE"] = 0.35711
+        price_ref["VET"] = 0.2407
+        price_ref["ICX"] = 2.6118
+        price_ref["ONE"] = 0.1436
+        price_fut["DOGE"] = 0.64297
+        price_liq["DOGE"] = 0.618231
+    }
+    # Find symbol
+    /"symbol"/ {
+        gsub("\"", "", $2)
+        symbol = $2
+    }
+    # Find last and current price
+    /"price"/ {
+        if (symbol in price_lst){
+            price_now[symbol] = $2
+        }else{
+            price_lst[symbol] = $2
+        }
+    }
+    END{
+        for (symbol in price_now){
+
+            # Show last and current price
+            printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST: %10.4f (%7.3f %)",
+                    symbol,
+                    price_now[symbol],
+                    price_now[symbol]-price_lst[symbol],
+                    100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol]
+
+            # If available, show difference to reference price
+            if (symbol in price_ref){
+                printf " ; DIFFtoREF: %10.4f (%9.3f %)",
+                        price_now[symbol]-price_ref[symbol],
+                        100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
+            }
+
+            # If available, show difference to future buy price
+            if (symbol in price_fut){
+
+                # Set color, depending on negative-positive
+                if (price_now[symbol] > price_fut[symbol]){
+                    color = 92 # green
+                }else{
+                    color = 33 # orange
+                }
+                printf " ;\033[%sm DIFFtoFUT: %10.4f (%9.3f %)\033[0m",
+                        color,
+                        price_now[symbol]-price_fut[symbol],
+                        100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol]
+            }
+
+            # If available, show difference to liquidation price
+            if (symbol in price_liq){
+                liqdiffp = 100*(price_now[symbol]-price_liq[symbol])/price_liq[symbol]
+
+                # Set color, if getting close to liquidation price
+                color = 0
+                if (liqdiffp < 7){
+                    color = 93 # yellow
+                }
+                if (liqdiffp < 4){
+                    color = 33 # orange
+                }
+                if (liqdiffp < 2){
+                    color = 91 # red
+                }
+                printf " ;\033[%sm DIFFtoLIQ: %10.4f (%9.3f %)\033[0m",
+                        color,
+                        price_now[symbol]-price_liq[symbol],
+                        liqdiffp
+            }
+
+            # In any case, end with a new line
+            printf "\n"
+        }
+    }
+'
