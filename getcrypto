@@ -1,145 +1,187 @@
 #!/usr/bin/env bash
 
 # Selection (default: everything)
-sel="${1:-$}"
+filter=$
+colors=yes
 
-## Get data
-#date >> data
-#curl \
-#    -s \
-#    -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
-#    -H "Accept: application/json" \
-#    -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
-#    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
-#    egrep -o '"symbol[^,]*|"price[^,]*' >> data
-#
-#echo >> data
+usage(){
+    echo "Get selected crypto prices."
+    echo
+    echo "Usage: $(basename $0) [option]"
+    echo "where [option] can be"
+    echo "  -h               Show this help"
+    echo "  -c               Toggle colors (default: ${colors})"
+    echo "  -f               Regex to filter results"
+}
 
-# Parse last two datasets
-tail -n 36 data | \
-    awk \
-        -v sel="${sel}" \
-        -v color=yes \
-    'BEGIN{
+run(){
+    ## Get data
+    #date >> data
+    #curl \
+    #    -s \
+    #    -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
+    #    -H "Accept: application/json" \
+    #    -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
+    #    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
+    #    egrep -o '"symbol[^,]*|"price[^,]*' >> data
+    #
+    #echo >> data
 
-        # Set file delimiter
-        FS = ":"
+    # Parse last two datasets
+    tail -n 36 data | \
+        awk \
+            -v filter="${filter}" \
+            -v colors="${colors}" \
+        'BEGIN{
 
-        # Color control characters
-        color == "no" ? colorend = "" : colorend = "\033[0m"
+            # Set file delimiter
+            FS = ":"
 
-        # Colors
-        green = "\033[92m"
-        orange = "\033[33m"
-        yellow = "\033[93m"
-        red = "\033[91m"
+            # Color control characters
+            colors == "no" ? colorend = "" : colorend = "\033[0m"
 
-        # Set reference prices
-        price_ref["ETH"] = 1595.88
-        price_ref["XMR"] = 163.59
-        price_ref["XRP"] = 0.5819
-        price_ref["DOGE"] = 0.35711
-        price_ref["VET"] = 0.2407
-        price_ref["ICX"] = 2.6118
-        price_ref["ONE"] = 0.1436
-        price_fut["DOGE"] = 0.733103
-        price_liq["DOGE"] = 0.693220
-    }
-    # Find symbol
-    /"symbol"/ {
-        gsub("\"", "", $2)
-        symbol = $2
-    }
-    # Find last and current price
-    /"price"/ {
+            # Colors
+            green = "\033[92m"
+            orange = "\033[33m"
+            yellow = "\033[93m"
+            red = "\033[91m"
 
-        # If symbol is not in sel, skip
-        if (symbol !~ sel){
-            next
+            # Set reference prices
+            price_ref["ETH"] = 1595.88
+            price_ref["XMR"] = 163.59
+            price_ref["XRP"] = 0.5819
+            price_ref["DOGE"] = 0.35711
+            price_ref["VET"] = 0.2407
+            price_ref["ICX"] = 2.6118
+            price_ref["ONE"] = 0.1436
+            price_fut["DOGE"] = 0.733103
+            price_liq["DOGE"] = 0.693220
         }
-        if (symbol in price_lst){
-            price_now[symbol] = $2
-        }else{
-            price_lst[symbol] = $2
+        # Find symbol
+        /"symbol"/ {
+            gsub("\"", "", $2)
+            symbol = $2
         }
-    }
-    END{
-        for (symbol in price_now){
+        # Find last and current price
+        /"price"/ {
 
-            # Show last and current price
-            # Set color, depending on negative-positive
-            if (color == "no"){
-                colorbegin = ""
+            # If symbol is not in filter, skip
+            if (symbol !~ filter){
+                next
+            }
+            if (symbol in price_lst){
+                price_now[symbol] = $2
             }else{
-                if (price_now[symbol] >= price_lst[symbol]){
-                    colorbegin = green
-                }else{
-                    colorbegin = orange
-                }
+                price_lst[symbol] = $2
             }
-            printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST:%s %10.4f (%7.3f %)%s",
-                    symbol,
-                    price_now[symbol],
-                    colorbegin,
-                    price_now[symbol]-price_lst[symbol],
-                    100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
-                    colorend
+        }
+        END{
+            for (symbol in price_now){
 
-            # If available, show difference to reference price
-            if (symbol in price_ref){
-                printf " ; DIFFtoREF: %10.4f (%9.3f %)",
-                        price_now[symbol]-price_ref[symbol],
-                        100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
-            }
-
-            # If available, show difference to future buy price
-            if (symbol in price_fut){
-
+                # Show last and current price
                 # Set color, depending on negative-positive
-                if (color == "no"){
+                if (colors == "no"){
                     colorbegin = ""
                 }else{
-                    if (price_now[symbol] > price_fut[symbol]){
+                    if (price_now[symbol] >= price_lst[symbol]){
                         colorbegin = green
                     }else{
                         colorbegin = orange
                     }
                 }
-                printf " ; DIFFtoFUT:%s %10.4f (%9.3f %)%s",
+                printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST:%s %10.4f (%7.3f %)%s",
+                        symbol,
+                        price_now[symbol],
                         colorbegin,
-                        price_now[symbol]-price_fut[symbol],
-                        100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol],
+                        price_now[symbol]-price_lst[symbol],
+                        100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
                         colorend
-            }
 
-            # If available, show difference to liquidation price
-            if (symbol in price_liq){
-                liqdiffp = 100*(price_now[symbol]-price_liq[symbol])/price_liq[symbol]
-
-                # Set color, if getting close to liquidation price
-                if (color == "no"){
-                    colorbegin = ""
-                }else{
-                    colorbegin = "\033[0m" # neutral
-                    if (liqdiffp < 3){
-                        colorbegin = yellow
-                    }
-                    if (liqdiffp < 2){
-                        colorbegin = orange
-                    }
-                    if (liqdiffp < 1){
-                        colorbegin = red
-                    }
+                # If available, show difference to reference price
+                if (symbol in price_ref){
+                    printf " ; DIFFtoREF: %10.4f (%9.3f %)",
+                            price_now[symbol]-price_ref[symbol],
+                            100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
                 }
-                printf " ; DIFFtoLIQ:%s %10.4f (%9.3f %)%s",
-                        colorbegin,
-                        price_now[symbol]-price_liq[symbol],
-                        liqdiffp,
-                        colorend
-            }
 
-            # In any case, end with a new line
-            printf "\n"
+                # If available, show difference to future buy price
+                if (symbol in price_fut){
+
+                    # Set color, depending on negative-positive
+                    if (colors == "no"){
+                        colorbegin = ""
+                    }else{
+                        if (price_now[symbol] > price_fut[symbol]){
+                            colorbegin = green
+                        }else{
+                            colorbegin = orange
+                        }
+                    }
+                    printf " ; DIFFtoFUT:%s %10.4f (%9.3f %)%s",
+                            colorbegin,
+                            price_now[symbol]-price_fut[symbol],
+                            100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol],
+                            colorend
+                }
+
+                # If available, show difference to liquidation price
+                if (symbol in price_liq){
+                    liqdiffp = 100*(price_now[symbol]-price_liq[symbol])/price_liq[symbol]
+
+                    # Set color, if getting close to liquidation price
+                    if (colors == "no"){
+                        colorbegin = ""
+                    }else{
+                        colorbegin = "\033[0m" # neutral
+                        if (liqdiffp < 3){
+                            colorbegin = yellow
+                        }
+                        if (liqdiffp < 2){
+                            colorbegin = orange
+                        }
+                        if (liqdiffp < 1){
+                            colorbegin = red
+                        }
+                    }
+                    printf " ; DIFFtoLIQ:%s %10.4f (%9.3f %)%s",
+                            colorbegin,
+                            price_now[symbol]-price_liq[symbol],
+                            liqdiffp,
+                            colorend
+                }
+
+                # In any case, end with a new line
+                printf "\n"
+            }
         }
-    }
-'
+    '
+}
+
+parseOptions(){
+
+    OPT=$(getopt \
+        --options hcf: \
+        --name "$0" \
+        -- "$@"
+    )
+
+    if [ $? -ne 0 ]; then
+        usage
+        exit 1
+    fi
+
+    eval set -- "${OPT}"
+
+    while true; do
+        case "${1}" in
+            -h) usage; exit 0;;
+            -c) colors=no; shift 1;;
+            -f) filter="${2}"; shift 2;;
+            --) shift; break;;
+        esac
+    done
+
+    run "$@"
+}
+
+parseOptions "$@"
