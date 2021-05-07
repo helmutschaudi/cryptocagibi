@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Selection (default: everything)
+sel="${1:-$}"
+
+# Get data
 date >> data
 curl \
     -s \
@@ -11,7 +15,8 @@ curl \
 
 echo >> data
 
-tail -n 36 data | awk '
+# Parse last two datasets
+tail -n 36 data | awk -v sel="${sel}" '
     BEGIN{
         # Set file delimiter
         FS = ":"
@@ -33,6 +38,11 @@ tail -n 36 data | awk '
     }
     # Find last and current price
     /"price"/ {
+
+        # If symbol is not in sel, skip
+        if (symbol !~ sel){
+            next
+        }
         if (symbol in price_lst){
             price_now[symbol] = $2
         }else{
