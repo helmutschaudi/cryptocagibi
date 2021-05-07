@@ -65,7 +65,7 @@ tail -n 36 data | awk '
                 }else{
                     color = 33 # orange
                 }
-                printf " ;\033[%sm DIFFtoFUT: %10.4f (%9.3f %)\033[0m",
+                printf " ; DIFFtoFUT:\033[%sm %10.4f (%9.3f %)\033[0m",
                         color,
                         price_now[symbol]-price_fut[symbol],
                         100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol]
@@ -86,7 +86,7 @@ tail -n 36 data | awk '
                 if (liqdiffp < 2){
                     color = 91 # red
                 }
-                printf " ;\033[%sm DIFFtoLIQ: %10.4f (%9.3f %)\033[0m",
+                printf " ; DIFFtoLIQ:\033[%sm %10.4f (%9.3f %)\033[0m",
                         color,
                         price_now[symbol]-price_liq[symbol],
                         liqdiffp
