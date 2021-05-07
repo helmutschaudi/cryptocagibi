@@ -84,13 +84,13 @@ tail -n 36 data | awk '
 
                 # Set color, if getting close to liquidation price
                 color = 0
-                if (liqdiffp < 7){
+                if (liqdiffp < 3){
                     color = 93 # yellow
                 }
-                if (liqdiffp < 4){
+                if (liqdiffp < 2){
                     color = 33 # orange
                 }
-                if (liqdiffp < 2){
+                if (liqdiffp < 1){
                     color = 91 # red
                 }
                 printf " ; DIFFtoLIQ:\033[%sm %10.4f (%9.3f %)\033[0m",
