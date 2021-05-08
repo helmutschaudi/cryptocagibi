@@ -4,6 +4,7 @@
 filter=$
 colors=yes
 newdata=yes
+datafile="$(dirname $0)/data"
 
 usage(){
     echo "Get selected crypto prices."
@@ -20,20 +21,20 @@ run(){
 
     if [ "${newdata}" == yes ]; then
         # Get data
-        date >> data
+        date >> "${datafile}"
         curl \
             -s \
             -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
             -H "Accept: application/json" \
             -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
             -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
-            egrep -o '"symbol[^,]*|"price[^,]*' >> data
+            egrep -o '"symbol[^,]*|"price[^,]*' >> "${datafile}"
 
-        echo >> data
+        echo >> "${datafile}"
     fi
 
     # Parse last two datasets
-    tail -n 36 data | \
+    tail -n 36 "${datafile}" | \
         awk \
             -v filter="${filter}" \
             -v colors="${colors}" \
