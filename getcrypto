@@ -7,6 +7,12 @@ newdata=yes
 show=111111
 datafile="$(dirname $0)/data"
 
+# Strings holding information such as futures buy price
+# This option can be called multiple times; a string is concatenated, rather
+# than an array, since passing the string to awk is simpler
+futs=""
+liqs=""
+
 usage(){
     echo "Get selected crypto prices."
     echo
@@ -18,6 +24,8 @@ usage(){
     echo "  -d               Get new data (default: ${newdata})"
     echo "  -s               Show Name/Price/DIFFtoLAST/DIFFtoREF/DIFFtoFUT/DIFFtoLIQ"
     echo "                   (default: ${show})"
+    echo " --fut             Pass (multiple) (name,value) pairs for DIFFtoFUT"
+    echo " --liq             Pass (multiple) (name,value) pairs for DIFFtoLIQ"
 }
 
 run(){
@@ -42,6 +50,8 @@ run(){
             -v filter="${filter}" \
             -v colors="${colors}" \
             -v show="${show}" \
+            -v futs="${futs:1}" \
+            -v liqs="${liqs:1}" \
         'BEGIN{
 
             # Set file delimiter
@@ -64,14 +74,30 @@ run(){
             price_ref["VET"] = 0.2407
             price_ref["ICX"] = 2.6118
             price_ref["ONE"] = 0.1436
-            price_fut["DOGE"] = 0.733103
-            price_liq["DOGE"] = 0.693220
+
+            # Set future prices
+            # First split into (name,val) pairs
+            split(futs, futa, "|")
+            for (item in futa){
+                split(futa[item], futa2, ",")
+                price_fut[futa2[1]] = futa2[2]
+            }
+
+            # Set liquidation prices
+            # First split into (name,val) pairs
+            split(liqs, liqa, "|")
+            for (item in liqa){
+                split(liqa[item], liqa2, ",")
+                price_liq[liqa2[1]] = liqa2[2]
+            }
         }
+
         # Find symbol
         /"symbol"/ {
             gsub("\"", "", $2)
             symbol = $2
         }
+
         # Find last and current price
         /"price"/ {
 
@@ -179,6 +205,8 @@ parseOptions(){
 
     OPT=$(getopt \
         --options hcf:ds: \
+        --longoptions fut: \
+        --longoptions liq: \
         --name "$0" \
         -- "$@"
     )
@@ -197,6 +225,8 @@ parseOptions(){
             -f) filter="${2}"; shift 2;;
             -d) newdata=no; shift 1;;
             -s) show="${2}"; shift 2;;
+            --fut) futs+="|${2^^}"; shift 2;;
+            --liq) liqs+="|${2^^}"; shift 2;;
             --) shift; break;;
         esac
     done
