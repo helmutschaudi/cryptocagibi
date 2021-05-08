@@ -3,6 +3,7 @@
 # Selection (default: everything)
 filter=$
 colors=yes
+newdata=yes
 
 usage(){
     echo "Get selected crypto prices."
@@ -12,20 +13,24 @@ usage(){
     echo "  -h               Show this help"
     echo "  -c               Toggle colors (default: ${colors})"
     echo "  -f               Regex to filter results"
+    echo "  -d               Get new data (default: ${newdata})"
 }
 
 run(){
-    ## Get data
-    #date >> data
-    #curl \
-    #    -s \
-    #    -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
-    #    -H "Accept: application/json" \
-    #    -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
-    #    -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
-    #    egrep -o '"symbol[^,]*|"price[^,]*' >> data
-    #
-    #echo >> data
+
+    if [ "${newdata}" == yes ]; then
+        # Get data
+        date >> data
+        curl \
+            -s \
+            -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
+            -H "Accept: application/json" \
+            -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
+            -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
+            egrep -o '"symbol[^,]*|"price[^,]*' >> data
+
+        echo >> data
+    fi
 
     # Parse last two datasets
     tail -n 36 data | \
@@ -160,7 +165,7 @@ run(){
 parseOptions(){
 
     OPT=$(getopt \
-        --options hcf: \
+        --options hcf:d \
         --name "$0" \
         -- "$@"
     )
@@ -177,6 +182,7 @@ parseOptions(){
             -h) usage; exit 0;;
             -c) colors=no; shift 1;;
             -f) filter="${2}"; shift 2;;
+            -d) newdata=no; shift 1;;
             --) shift; break;;
         esac
     done
