@@ -4,6 +4,7 @@
 filter=$
 colors=yes
 newdata=yes
+show=111111
 datafile="$(dirname $0)/data"
 
 usage(){
@@ -15,6 +16,8 @@ usage(){
     echo "  -c               Toggle colors (default: ${colors})"
     echo "  -f               Regex to filter results"
     echo "  -d               Get new data (default: ${newdata})"
+    echo "  -s               Show Name/Price/DIFFtoLAST/DIFFtoREF/DIFFtoFUT/DIFFtoLIQ"
+    echo "                   (default: ${show})"
 }
 
 run(){
@@ -38,6 +41,7 @@ run(){
         awk \
             -v filter="${filter}" \
             -v colors="${colors}" \
+            -v show="${show}" \
         'BEGIN{
 
             # Set file delimiter
@@ -95,23 +99,31 @@ run(){
                         colorbegin = orange
                     }
                 }
-                printf "%6-s ; PRICE: %10.4f ; DIFFtoLAST:%s %10.4f (%7.3f %)%s",
-                        symbol,
-                        price_now[symbol],
-                        colorbegin,
-                        price_now[symbol]-price_lst[symbol],
-                        100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
-                        colorend
+                if (substr(show, 1, 1) == "1"){
+                    printf "%4-s ; ",
+                            symbol
+                }
+                if (substr(show, 2, 1) == "1"){
+                    printf "PRICE: %10.4f ; ",
+                            price_now[symbol]
+                }
+                if (substr(show, 3, 1) == "1"){
+                    printf "DIFFtoLAST:%s %10.4f (%7.3f %)%s ; ",
+                            colorbegin,
+                            price_now[symbol]-price_lst[symbol],
+                            100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
+                            colorend
+                }
 
                 # If available, show difference to reference price
-                if (symbol in price_ref){
-                    printf " ; DIFFtoREF: %10.4f (%9.3f %)",
+                if (substr(show, 4, 1) == "1" && symbol in price_ref){
+                    printf "DIFFtoREF: %10.4f (%9.3f %) ; ",
                             price_now[symbol]-price_ref[symbol],
                             100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
                 }
 
                 # If available, show difference to future buy price
-                if (symbol in price_fut){
+                if (substr(show, 5, 1) == "1" && symbol in price_fut){
 
                     # Set color, depending on negative-positive
                     if (colors == "no"){
@@ -123,7 +135,7 @@ run(){
                             colorbegin = orange
                         }
                     }
-                    printf " ; DIFFtoFUT:%s %10.4f (%9.3f %)%s",
+                    printf "DIFFtoFUT:%s %10.4f (%9.3f %)%s ; ",
                             colorbegin,
                             price_now[symbol]-price_fut[symbol],
                             100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol],
@@ -131,7 +143,7 @@ run(){
                 }
 
                 # If available, show difference to liquidation price
-                if (symbol in price_liq){
+                if (substr(show, 6, 1) == "1" && symbol in price_liq){
                     liqdiffp = 100*(price_now[symbol]-price_liq[symbol])/price_liq[symbol]
 
                     # Set color, if getting close to liquidation price
@@ -149,7 +161,7 @@ run(){
                             colorbegin = red
                         }
                     }
-                    printf " ; DIFFtoLIQ:%s %10.4f (%9.3f %)%s",
+                    printf "DIFFtoLIQ:%s %10.4f (%9.3f %)%s ; ",
                             colorbegin,
                             price_now[symbol]-price_liq[symbol],
                             liqdiffp,
@@ -166,7 +178,7 @@ run(){
 parseOptions(){
 
     OPT=$(getopt \
-        --options hcf:d \
+        --options hcf:ds: \
         --name "$0" \
         -- "$@"
     )
@@ -184,6 +196,7 @@ parseOptions(){
             -c) colors=no; shift 1;;
             -f) filter="${2}"; shift 2;;
             -d) newdata=no; shift 1;;
+            -s) show="${2}"; shift 2;;
             --) shift; break;;
         esac
     done
