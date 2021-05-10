@@ -37,7 +37,8 @@ run(){
             -s \
             -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
             -H "Accept: application/json" \
-            -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE" \
+            -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE,BEPRO" \
+            -d "aux=date_added" \
             -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
             egrep -o '"symbol[^,]*|"price[^,]*' >> "${datafile}"
 
@@ -45,7 +46,7 @@ run(){
     fi
 
     # Parse last two datasets
-    tail -n 36 "${datafile}" | \
+    tail -n 40 "${datafile}" | \
         awk \
             -v filter="${filter}" \
             -v colors="${colors}" \
@@ -74,6 +75,7 @@ run(){
             price_ref["VET"] = 0.2407
             price_ref["ICX"] = 2.6118
             price_ref["ONE"] = 0.1436
+            price_ref["BEPRO"] = 0.01733111
 
             # Set future prices
             # First split into (name,val) pairs
@@ -126,7 +128,7 @@ run(){
                     }
                 }
                 if (substr(show, 1, 1) == "1"){
-                    printf "%4-s ; ",
+                    printf "%5-s ; ",
                             symbol
                 }
                 if (substr(show, 2, 1) == "1"){
