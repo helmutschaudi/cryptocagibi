@@ -64,10 +64,11 @@ run(){
             colors == "no" ? colorend = "" : colorend = "\033[0m"
 
             # Colors
-            green = "\033[92m"
-            orange = "\033[33m"
-            yellow = "\033[93m"
-            red = "\033[91m"
+            green = "[38;5;34m"
+            orange = "[38;5;202m"
+            yellow = "[38;5;226m"
+            red = "[38;5;160m"
+            blue = "[38;5;27m"
 
             # Set reference prices
             price_ref["ETH"] = 1595.88
@@ -132,30 +133,41 @@ run(){
                     }
                 }
                 if (substr(show, 1, 1) == "1"){
-                    printf "%5-s - ",
-                            symbol
+                    printf "%5-s %s|%s ",
+                            symbol,
+                            blue,
+                            colorend
                 }
                 if (substr(show, 2, 1) == "1"){
-                    printf "$: %10.4g - ",
-                            price_now[symbol]
+                    printf "$: %9.4g %s|%s ",
+                            price_now[symbol],
+                            blue,
+                            colorend
                 }
                 if (substr(show, 3, 1) == "1"){
-                    printf "dLST:%s %10.4g (%7.3f %)%s - ",
+                    printf "dLST:%s %10.4g (%7.3f %)%s %s|%s ",
                             colorbegin,
                             price_now[symbol]-price_lst[symbol],
                             100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
+                            colorend,
+                            blue,
                             colorend
                 }
 
                 # If available, show difference to reference price
                 if (substr(show, 4, 1) == "1"){
                     if (symbol in price_ref){
-                        printf "dREF: %10.4g (%8.3f %) - ",
+                        printf "dREF: %10.4g (%8.3f %) %s|%s ",
                                 price_now[symbol]-price_ref[symbol],
-                                100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
+                                100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol],
+                                blue,
+                                colorend
                     }else{
                         # Print empty space, in order to align data below
-                        printf "%31s ", "-"
+                        printf "%29s %s|%s ",
+                                " ",
+                                blue,
+                                colorend
                     }
                 }
 
