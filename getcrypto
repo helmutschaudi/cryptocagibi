@@ -60,15 +60,22 @@ run(){
             # Set file delimiter
             FS = ":"
 
-            # Color control characters
-            colors == "no" ? colorend = "" : colorend = "\033[0m"
-
             # Colors
-            green = "[38;5;34m"
-            orange = "[38;5;202m"
-            yellow = "[38;5;226m"
-            red = "[38;5;160m"
-            blue = "[38;5;27m"
+            if (colors == "no"){
+                green = ""
+                orange = ""
+                yellow = ""
+                red = ""
+                blue = ""
+                colorend = ""
+            }else{
+                green = "[38;5;34m"
+                orange = "[38;5;202m"
+                yellow = "[38;5;226m"
+                red = "[38;5;160m"
+                blue = "[38;5;27m"
+                colorend = "\033[0m"
+            }
 
             # Set reference prices
             price_ref["ETH"] = 1595.88
@@ -123,14 +130,10 @@ run(){
 
                 # Show last and current price
                 # Set color, depending on negative-positive
-                if (colors == "no"){
-                    colorbegin = ""
+                if (price_now[symbol] >= price_lst[symbol]){
+                    colorbegin = green
                 }else{
-                    if (price_now[symbol] >= price_lst[symbol]){
-                        colorbegin = green
-                    }else{
-                        colorbegin = orange
-                    }
+                    colorbegin = orange
                 }
                 if (substr(show, 1, 1) == "1"){
                     printf "%5-s %s|%s ",
@@ -175,14 +178,10 @@ run(){
                 if (substr(show, 5, 1) == "1" && symbol in price_fut){
 
                     # Set color, depending on negative-positive
-                    if (colors == "no"){
-                        colorbegin = ""
+                    if (price_now[symbol] > price_fut[symbol]){
+                        colorbegin = green
                     }else{
-                        if (price_now[symbol] > price_fut[symbol]){
-                            colorbegin = green
-                        }else{
-                            colorbegin = orange
-                        }
+                        colorbegin = orange
                     }
                     printf "dFUT:%s %10.4g (%7.3f %)%s - ",
                             colorbegin,
@@ -196,19 +195,15 @@ run(){
                     liqdiffp = 100*(price_now[symbol]-price_liq[symbol])/price_liq[symbol]
 
                     # Set color, if getting close to liquidation price
-                    if (colors == "no"){
-                        colorbegin = ""
-                    }else{
-                        colorbegin = "\033[0m" # neutral
-                        if (liqdiffp < 3){
-                            colorbegin = yellow
-                        }
-                        if (liqdiffp < 2){
-                            colorbegin = orange
-                        }
-                        if (liqdiffp < 1){
-                            colorbegin = red
-                        }
+                    colorbegin = "\033[0m" # neutral
+                    if (liqdiffp < 3){
+                        colorbegin = yellow
+                    }
+                    if (liqdiffp < 2){
+                        colorbegin = orange
+                    }
+                    if (liqdiffp < 1){
+                        colorbegin = red
                     }
                     printf "dLIQ:%s %10.4g (%7.3f %)%s - ",
                             colorbegin,
