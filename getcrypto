@@ -22,10 +22,10 @@ usage(){
     echo "  -c               Toggle colors (default: ${colors})"
     echo "  -f               Regex to filter results"
     echo "  -d               Toggle to retrieve new data (default: ${newdata})"
-    echo "  -s               Show Name/Price/DIFFtoLAST/DIFFtoREF/DIFFtoFUT/DIFFtoLIQ"
+    echo "  -s               Show Name/Price/dLST/dREF/dFUT/dLIQ"
     echo "                   (default: ${show})"
-    echo " --fut             Pass (multiple) (name,value) pairs for DIFFtoFUT"
-    echo " --liq             Pass (multiple) (name,value) pairs for DIFFtoLIQ"
+    echo " --fut             Pass (multiple) (name,value) pairs for dFUT"
+    echo " --liq             Pass (multiple) (name,value) pairs for dLIQ"
 }
 
 run(){
@@ -132,15 +132,15 @@ run(){
                     }
                 }
                 if (substr(show, 1, 1) == "1"){
-                    printf "%5-s ; ",
+                    printf "%5-s - ",
                             symbol
                 }
                 if (substr(show, 2, 1) == "1"){
-                    printf "PRICE: %10.4f ; ",
+                    printf "$: %10.4f - ",
                             price_now[symbol]
                 }
                 if (substr(show, 3, 1) == "1"){
-                    printf "DIFFtoLAST:%s %10.4f (%7.3f %)%s ; ",
+                    printf "dLST:%s %10.4f (%7.3f %)%s - ",
                             colorbegin,
                             price_now[symbol]-price_lst[symbol],
                             100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
@@ -150,12 +150,12 @@ run(){
                 # If available, show difference to reference price
                 if (substr(show, 4, 1) == "1"){
                     if (symbol in price_ref){
-                        printf "DIFFtoREF: %10.4f (%9.3f %) ; ",
+                        printf "dREF: %10.4f (%9.3f %) - ",
                                 price_now[symbol]-price_ref[symbol],
                                 100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
                     }else{
                         # Print empty space, in order to align data below
-                        printf "%37s ", ";"
+                        printf "%32s ", "-"
                     }
                 }
 
@@ -172,7 +172,7 @@ run(){
                             colorbegin = orange
                         }
                     }
-                    printf "DIFFtoFUT:%s %10.4f (%9.3f %)%s ; ",
+                    printf "dFUT:%s %10.4f (%9.3f %)%s - ",
                             colorbegin,
                             price_now[symbol]-price_fut[symbol],
                             100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol],
@@ -198,7 +198,7 @@ run(){
                             colorbegin = red
                         }
                     }
-                    printf "DIFFtoLIQ:%s %10.4f (%9.3f %)%s ; ",
+                    printf "dLIQ:%s %10.4f (%9.3f %)%s - ",
                             colorbegin,
                             price_now[symbol]-price_liq[symbol],
                             liqdiffp,
