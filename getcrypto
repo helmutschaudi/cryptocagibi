@@ -146,10 +146,15 @@ run(){
                 }
 
                 # If available, show difference to reference price
-                if (substr(show, 4, 1) == "1" && symbol in price_ref){
-                    printf "DIFFtoREF: %10.4f (%9.3f %) ; ",
-                            price_now[symbol]-price_ref[symbol],
-                            100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
+                if (substr(show, 4, 1) == "1"){
+                    if (symbol in price_ref){
+                        printf "DIFFtoREF: %10.4f (%9.3f %) ; ",
+                                price_now[symbol]-price_ref[symbol],
+                                100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
+                    }else{
+                        # Print empty space, in order to align data below
+                        printf "%37s ", ";"
+                    }
                 }
 
                 # If available, show difference to future buy price
