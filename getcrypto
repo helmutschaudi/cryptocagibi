@@ -21,7 +21,7 @@ usage(){
     echo "  -h               Show this help"
     echo "  -c               Toggle colors (default: ${colors})"
     echo "  -f               Regex to filter results"
-    echo "  -d               Get new data (default: ${newdata})"
+    echo "  -d               Toggle to retrieve new data (default: ${newdata})"
     echo "  -s               Show Name/Price/DIFFtoLAST/DIFFtoREF/DIFFtoFUT/DIFFtoLIQ"
     echo "                   (default: ${show})"
     echo " --fut             Pass (multiple) (name,value) pairs for DIFFtoFUT"
@@ -43,6 +43,8 @@ run(){
             egrep -o '"symbol[^,]*|"price[^,]*' >> "${datafile}"
 
         echo >> "${datafile}"
+    else
+        echo "No new data retrieved."
     fi
 
     # Parse last two datasets
