@@ -136,11 +136,11 @@ run(){
                             symbol
                 }
                 if (substr(show, 2, 1) == "1"){
-                    printf "$: %10.4f - ",
+                    printf "$: %10.4g - ",
                             price_now[symbol]
                 }
                 if (substr(show, 3, 1) == "1"){
-                    printf "dLST:%s %10.4f (%7.3f %)%s - ",
+                    printf "dLST:%s %10.4g (%7.3f %)%s - ",
                             colorbegin,
                             price_now[symbol]-price_lst[symbol],
                             100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
@@ -150,12 +150,12 @@ run(){
                 # If available, show difference to reference price
                 if (substr(show, 4, 1) == "1"){
                     if (symbol in price_ref){
-                        printf "dREF: %10.4f (%9.3f %) - ",
+                        printf "dREF: %10.4g (%8.3f %) - ",
                                 price_now[symbol]-price_ref[symbol],
                                 100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol]
                     }else{
                         # Print empty space, in order to align data below
-                        printf "%32s ", "-"
+                        printf "%31s ", "-"
                     }
                 }
 
@@ -172,7 +172,7 @@ run(){
                             colorbegin = orange
                         }
                     }
-                    printf "dFUT:%s %10.4f (%9.3f %)%s - ",
+                    printf "dFUT:%s %10.4g (%7.3f %)%s - ",
                             colorbegin,
                             price_now[symbol]-price_fut[symbol],
                             100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol],
@@ -198,7 +198,7 @@ run(){
                             colorbegin = red
                         }
                     }
-                    printf "dLIQ:%s %10.4f (%9.3f %)%s - ",
+                    printf "dLIQ:%s %10.4g (%7.3f %)%s - ",
                             colorbegin,
                             price_now[symbol]-price_liq[symbol],
                             liqdiffp,
