@@ -183,10 +183,12 @@ run(){
                     }else{
                         colorbegin = orange
                     }
-                    printf "dFUT:%s %10.4g (%7.3f %)%s - ",
+                    printf "dFUT:%s %10.4g (%7.3f %)%s %s|%s ",
                             colorbegin,
                             price_now[symbol]-price_fut[symbol],
                             100*(price_now[symbol]-price_fut[symbol])/price_fut[symbol],
+                            colorend,
+                            blue,
                             colorend
                 }
 
@@ -205,10 +207,12 @@ run(){
                     if (liqdiffp < 1){
                         colorbegin = red
                     }
-                    printf "dLIQ:%s %10.4g (%7.3f %)%s - ",
+                    printf "dLIQ:%s %10.4g (%7.3f %)%s %s|%s ",
                             colorbegin,
                             price_now[symbol]-price_liq[symbol],
                             liqdiffp,
+                            colorend,
+                            blue,
                             colorend
                 }
 
