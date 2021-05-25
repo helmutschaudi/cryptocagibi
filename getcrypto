@@ -79,6 +79,7 @@ run(){
 
             # Set reference prices
             price_ref["ETH"] = 1595.88
+            price_ref["BTC"] = 36820.21
             price_ref["XMR"] = 163.59
             price_ref["XRP"] = 0.5819
             price_ref["DOGE"] = 0.35711
