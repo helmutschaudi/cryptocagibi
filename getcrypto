@@ -37,7 +37,7 @@ run(){
             -s \
             -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
             -H "Accept: application/json" \
-            -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE,BEPRO,SHIB,POLX,ADA" \
+            -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE,BEPRO,SHIB,POLX,ADA,FTT,SOL,NRV" \
             -d "aux=date_added" \
             -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
             egrep -o '"symbol[^,]*|"price[^,]*' >> "${datafile}"
@@ -48,7 +48,7 @@ run(){
     fi
 
     # Parse last two datasets
-    tail -n 52 "${datafile}" | \
+    tail -n 64 "${datafile}" | \
         awk \
             -v filter="${filter}" \
             -v colors="${colors}" \
@@ -89,6 +89,9 @@ run(){
             price_ref["BEPRO"] = 0.01733111
             price_ref["SHIB"] = 0.00003300
             price_ref["POLX"] = 0.0027796
+            price_ref["FTT"] = 30.1
+            price_ref["SOL"] = 26.1
+            price_ref["NRV"] = 1.778
 
             # Set future prices
             # First split into (name,val) pairs
