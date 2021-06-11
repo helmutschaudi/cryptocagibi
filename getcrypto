@@ -37,7 +37,7 @@ run(){
             -s \
             -H "X-CMC_PRO_API_KEY: 048a5c0b-b2e9-42dd-8166-c12b9fe3f72e" \
             -H "Accept: application/json" \
-            -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE,BEPRO,SHIB,POLX,ADA,FTT,SOL,NRV,RUNE" \
+            -d "symbol=BTC,ETH,XMR,XRP,DOGE,VET,ICX,ONE,BEPRO,SHIB,POLX,ADA,FTT,SOL,NRV,RUNE,ERN,MATIC" \
             -d "aux=date_added" \
             -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest |
             egrep -o '"symbol[^,]*|"price[^,]*' >> "${datafile}"
@@ -48,7 +48,7 @@ run(){
     fi
 
     # Parse last two datasets
-    tail -n 68 "${datafile}" | \
+    tail -n 76 "${datafile}" | \
         awk \
             -v filter="${filter}" \
             -v colors="${colors}" \
