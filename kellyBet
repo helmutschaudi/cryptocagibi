@@ -31,7 +31,7 @@ if __name__ == '__main__':
     price_new = price_old+gain/futures_buy
     futures_sell = futures_buy
     asset_new = (margin_add+asset_old)*b
-    price_liq = 999.
+    price_liq = price_old-asset_total/futures_buy
 
     print(f'Bet size: {f}')
     print(f'Gross odds: {b}')
