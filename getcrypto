@@ -77,7 +77,7 @@ run(){
                 yellow = "[38;5;226m"
                 red = "[38;5;160m"
                 blue = "[38;5;27m"
-                pink = "[38;5;201m"
+                pink = "[48;5;201m"
                 colorend = "\033[0m"
             }
 
@@ -157,13 +157,17 @@ run(){
                             colorend
                 }
                 if (substr(show, 2, 1) == "1"){
-                    printf "$: %9.4g %s|%s ",
+                    printf "%s$: %9.4g%s %s|%s ",
+                            colorhighlight,
                             price_now[symbol],
+                            colorend,
                             blue,
                             colorend
                 }
                 if (substr(show, 3, 1) == "1"){
-                    printf "dLST:%s %10.4g (%7.3f %)%s %s|%s ",
+                    printf "%sdLST:%s%s %10.4g (%7.3f %)%s %s|%s ",
+                            colorhighlight,
+                            colorend,
                             colorbegin,
                             price_now[symbol]-price_lst[symbol],
                             100*(price_now[symbol]-price_lst[symbol])/price_lst[symbol],
@@ -175,7 +179,9 @@ run(){
                 # If available, show difference to reference price
                 if (substr(show, 4, 1) == "1"){
                     if (symbol in price_ref){
-                        printf "dREF: %10.4g (%8.3f %) %s|%s ",
+                        printf "%sdREF:%s %10.4g (%8.3f %) %s|%s ",
+                                colorhighlight,
+                                colorend,
                                 price_now[symbol]-price_ref[symbol],
                                 100*(price_now[symbol]-price_ref[symbol])/price_ref[symbol],
                                 blue,
@@ -203,7 +209,9 @@ run(){
                     }else{
                         colorbegin = red
                     }
-                    printf "dFUT:%s %10.4g (%7.3f %)%s %s|%s ",
+                    printf "%sdFUT:%s%s %10.4g (%7.3f %)%s %s|%s ",
+                            colorhighlight,
+                            colorend,
                             colorbegin,
                             price_now[symbol]-price_fut[symbol],
                             pdiff,
@@ -227,7 +235,9 @@ run(){
                     if (liqdiffp < 1){
                         colorbegin = red
                     }
-                    printf "dLIQ:%s %10.4g (%7.3f %)%s %s|%s ",
+                    printf "%sdLIQ:%s%s %10.4g (%7.3f %)%s %s|%s ",
+                            colorhighlight,
+                            colorend,
                             colorbegin,
                             price_now[symbol]-price_liq[symbol],
                             liqdiffp,
