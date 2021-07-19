@@ -37,5 +37,5 @@ if __name__ == '__main__':
     print(f'Gross odds: {b}')
     print(f'Buy {round(futures_buy, 3)} futures at {round(price_old, 5)}, pay {round(asset_old, 2)}.')
     print(f'Add margin {round(margin_add, 2)}, pay total {round(asset_total, 2)}.')
-    print(f'Sell {round(futures_sell, 3)} futures at {round(price_new, 5)}, get {round(asset_new, 2)}, gain {round(gain, 2)}.')
-    print(f'Or {round(futures_sell, 3)} futures are liquidated at {round(price_liq, 5)}, lose {round(asset_total, 2)}.')
+    print(f'Sell {round(futures_sell, 3)} futures at {round(price_new, 5)} (+{100*price_new/price_old-100} %), get {round(asset_new, 2)}, gain {round(gain, 2)} (+{100*gain/asset_total} %).')
+    print(f'Or {round(futures_sell, 3)} futures are liquidated at {round(price_liq, 5)} ({100*price_liq/price_old-100} %), lose {round(asset_total, 2)} (-100.0 %).')
