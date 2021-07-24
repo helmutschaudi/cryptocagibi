@@ -16,11 +16,33 @@ class get_rich_quick_scheme():
         self.client = Client(self.api_key, self.api_secret)
         self.dry_run = True
 
+        # The system can keep track of exactly one buy and exactly one sell
+        # order
+        # An order ID of -1  means there is no current order registered in the
+        # system
+        self.order_id_buy = -1
+        self.order_id_sell = -1
+
     def config_logger(self):
         logging.basicConfig(level=logging.INFO,
                             #format='%(name)s - %(levelname)7s - %(asctime)s - %(message)s',
                             format='%(levelname)-7s - %(asctime)s - %(message)s',
                             datefmt='%Y-%m-%d %H:%M:%S')
+
+    def check_open_order(self):
+        if self.order_id_buy < 0 and self.order_id_sell < 0:
+            logging.info('No current orders found.')
+            return False
+        logging.info('Current BUY order ID: %s', self.order_id_buy)
+        logging.info('Current SELL order ID: %s', self.order_id_sell)
+        return True
+
+    def reset_open_order(self):
+        logging.info('Reset BUY order ID %s.' % self.order_id_buy)
+        logging.info('Reset SELL order ID %s.' % self.order_id_sell)
+        self.order_id_buy = -1
+        self.order_id_sell = -1
+
 
     def turn_off_dry_run(self):
         self.dry_run = False
@@ -111,7 +133,7 @@ class get_rich_quick_scheme():
 
     def place_new_kelly_bet(self, symbol, leverage):
 
-        logging.info('No open positions nor orders found. Placing Kelly bet for %s.', symbol)
+        logging.info('Placing Kelly bet for %s.', symbol)
         logging.info('Kelly options:')
         wallet_total, wallet_free = self.get_balance('USDT')
         price_market = float(self.client.futures_position_information(symbol=symbol)[0]['markPrice'])
@@ -121,7 +143,7 @@ class get_rich_quick_scheme():
         logging.info('    Leverage: %d', leverage)
 
         myBet = kellyBet(wallet_free, price_market, leverage)
-        myBet.kellyBet(1.4, 5.)
+        myBet.kellyBet(1.05, 5.)
         #myBet.kellyBet(3.5, 2.)
         logging.info('    Bet size: %s', myBet.f)
         logging.info('    Gross odds: %s', myBet.b)
@@ -138,6 +160,9 @@ class get_rich_quick_scheme():
                                                         quantity=myBet.futures_buy
                                                        )
             self.order_id_buy = response['orderId']
+            logging.info('    BUY order ID: %s' % self.order_id_buy)
+        else:
+            logging.warning('Dry run, do not actually buy anything.')
 
         # Add margin
         logging.info('    Add margin %s, pay total %s.',
@@ -164,6 +189,7 @@ class get_rich_quick_scheme():
                                                         price=myBet.price_new
                                                        )
             self.order_id_sell = response['orderId']
+            logging.info('    SELL order ID: %s' % self.order_id_sell)
 
         # Info about liquidation
         logging.info('    Or %s futures are liquidated at ~%s (%.1f %%), lose %s (-100.0 %% / ROE: -%.2f %%).',
@@ -171,6 +197,21 @@ class get_rich_quick_scheme():
                      100*myBet.price_liq/myBet.price_old-100,
                      myBet.asset_total,
                      100*myBet.asset_total/myBet.asset_old)
+
+    def check_sell_order_status(self):
+
+        all_orders = looseitall.client.futures_get_all_orders()
+        for order in all_orders:
+            if order['orderId'] == self.order_id_sell:
+                if order['status'] == 'NEW':
+                    logging.info('Sell order with ID %s still open.' %
+                                 self.order_id_sell)
+                elif order['status'] == 'FILLED':
+                    logging.info('Sell order filled.')
+                    self.reset_open_order()
+                elif order['status'] == 'CANCELED':
+                    logging.info('Sell order canceled.')
+                    self.reset_open_order()
 
 
 if __name__ == '__main__':
@@ -183,9 +224,18 @@ if __name__ == '__main__':
         nOpenPositions = looseitall.show_open_positions()
         nOpenOrders = looseitall.show_open_orders()
 
-        # If we don't have open positions nor orders, we want to place a new bet
-        if nOpenPositions+nOpenOrders == 0:
+        # Check status of current orders and reset them if necessary
+        looseitall.check_sell_order_status()
+
+        # Check if we have current orders
+        if not looseitall.check_open_order():
+            # If we don't have current orders, place a new one
             looseitall.place_new_kelly_bet('ETHUSDT', 100)
+
+        ## If we don't have open positions nor orders, we want to place a new bet
+        #if nOpenPositions+nOpenOrders == 0:
+        ##if True:
+        #    looseitall.place_new_kelly_bet('ETHUSDT', 100)
 
         sleep(60)
 
@@ -200,3 +250,4 @@ if __name__ == '__main__':
     #print(client.futures_get_open_orders())
     #print(client.futures_get_all_orders())
     #print(client.futures_get_open_orders()[0]['price'])
+    #print(client.futures_get_all_orders())
