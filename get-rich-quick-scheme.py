@@ -143,7 +143,7 @@ class get_rich_quick_scheme():
         logging.info('    Leverage: %d', leverage)
 
         myBet = kellyBet(wallet_free, price_market, leverage)
-        myBet.kellyBet(1.05, 5.)
+        myBet.kellyBet(1.4, 5.)
         #myBet.kellyBet(3.5, 2.)
         logging.info('    Bet size: %s', myBet.f)
         logging.info('    Gross odds: %s', myBet.b)
