@@ -132,20 +132,21 @@ class get_rich_quick_scheme():
         logging.info('    Buy %s futures at %s, pay initial margin %s.',
                      myBet.futures_buy, myBet.price_old, myBet.asset_old)
         if not self.dry_run:
-            self.client.futures_create_order(symbol=symbol,
-                                             side='BUY',
-                                             type='MARKET',
-                                             quantity=myBet.futures_buy
-                                            )
+            response = self.client.futures_create_order(symbol=symbol,
+                                                        side='BUY',
+                                                        type='MARKET',
+                                                        quantity=myBet.futures_buy
+                                                       )
+            self.order_id_buy = response['orderId']
 
         # Add margin
         logging.info('    Add margin %s, pay total %s.',
                      myBet.margin_add, myBet.asset_total)
         if not self.dry_run:
-            self.client.futures_change_position_margin(symbol=symbol,
-                                                       amount=myBet.margin_add,
-                                                       type=1
-                                                      )
+            response = self.client.futures_change_position_margin(symbol=symbol,
+                                                                  amount=myBet.margin_add,
+                                                                  type=1
+                                                                 )
 
         # Place sell order
         logging.info('    Sell %s futures at %s (+%.1f %%), get %s, gain %s (+%.1f %% / ROE: +%.1f %%).',
@@ -155,13 +156,14 @@ class get_rich_quick_scheme():
                      100*myBet.gain/myBet.asset_total,
                      100*myBet.gain/myBet.asset_old)
         if not self.dry_run:
-            self.client.futures_create_order(symbol=symbol,
-                                             side='SELL',
-                                             type='LIMIT',
-                                             quantity=myBet.futures_sell,
-                                             timeInForce='GTC', # Good til canceled
-                                             price=myBet.price_new
-                                            )
+            response = self.client.futures_create_order(symbol=symbol,
+                                                        side='SELL',
+                                                        type='LIMIT',
+                                                        quantity=myBet.futures_sell,
+                                                        timeInForce='GTC', # Good til canceled
+                                                        price=myBet.price_new
+                                                       )
+            self.order_id_sell = response['orderId']
 
         # Info about liquidation
         logging.info('    Or %s futures are liquidated at ~%s (%.1f %%), lose %s (-100.0 %% / ROE: -%.2f %%).',
