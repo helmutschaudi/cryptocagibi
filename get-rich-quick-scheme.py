@@ -28,7 +28,7 @@ class get_rich_quick_scheme():
     def get_balance(self, asset):
         for account in self.client.futures_account_balance():
             if account['asset'] == asset:
-                return account['balance']
+                return float(account['balance']), float(account['withdrawAvailable'])
 
     def get_max_leverage(self, symbol):
         return int(self.client.futures_leverage_bracket(symbol='ETHUSDT')[0]['brackets'][0]['initialLeverage'])
@@ -113,13 +113,14 @@ class get_rich_quick_scheme():
 
         logging.info('No open positions nor orders found. Placing Kelly bet for %s.', symbol)
         logging.info('Kelly options:')
-        wallet = float(self.get_balance('USDT'))
+        wallet_total, wallet_free = self.get_balance('USDT')
         price_market = float(self.client.futures_position_information(symbol=symbol)[0]['markPrice'])
-        logging.info('    Wallet: %.2f', wallet)
+        logging.info('    Wallet total: %.2f', wallet_total)
+        logging.info('    Wallet free: %.2f', wallet_free)
         logging.info('    Market price: %.2f', price_market)
         logging.info('    Leverage: %d', leverage)
 
-        myBet = kellyBet(wallet, price_market, leverage)
+        myBet = kellyBet(wallet_free, price_market, leverage)
         myBet.kellyBet(1.4, 5.)
         #myBet.kellyBet(3.5, 2.)
         logging.info('    Bet size: %s', myBet.f)
