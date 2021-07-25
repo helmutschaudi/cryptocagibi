@@ -26,7 +26,7 @@ class get_rich_quick_scheme():
                                                       info['quantityPrecision']
                                                      )
 
-        # Keep track of multiple buy and sell orders by lists
+        # Keep track of multiple buy and sell orders by dicts
         # self.order_ids is a dict of dicts, e.g.:
         # self.order_ids = {1: {'BUY': 1, 'SELL': 2}, 2: {'BUY': 98, 'SELL': 99}}
         # An order ID of -1  means there is no current order registered in the
@@ -54,13 +54,18 @@ class get_rich_quick_scheme():
         except KeyError:
             self.initialize_order_ids(idx, sell_id=sell_id)
 
+    def initialize_wallets(self, idxs, wallets):
+        assert len(idxs) == len(wallets), "When initializing wallets, you should define as many wallets as indexes."
+        for idx, _ in enumerate(idxs):
+            self.wallets[idxs[idx]] = wallets[idx]
+
     def check_open_order(self, idx):
         try:
             # If order IDs are -1, there are no current orders for a given
             # index
             if self.order_ids[idx]['BUY'] < 0 and \
                self.order_ids[idx]['SELL'] < 0:
-                logging.info('No current orders found. [index=%d]')
+                logging.info('No current orders found. [index=%d]', idx)
                 return False
         except KeyError:
             # If order IDs are unset, there are no current orders for a given
@@ -69,13 +74,17 @@ class get_rich_quick_scheme():
 
         # If we reach here, order IDs are both set and positive,
         # which means we have valid current orders
-        logging.info('Current BUY order ID: %s [index=%d]', self.order_ids[idx]['BUY'])
-        logging.info('Current SELL order ID: %s [index=%d]', self.order_ids[idx]['SELL'])
+        logging.info('Current BUY order ID: %s [index=%d]',
+                     self.order_ids[idx]['BUY'], idx)
+        logging.info('Current SELL order ID: %s [index=%d]',
+                     self.order_ids[idx]['SELL'], idx)
         return True
 
     def reset_open_order(self, idx):
-        logging.info('Reset BUY order ID %s [index=%d].' % self.order_ids[idx]['BUY'])
-        logging.info('Reset SELL order ID %s [index=%d].' % self.order_ids[idx]['SELL'])
+        logging.info('Reset BUY order ID %s [index=%d].',
+                     self.order_ids[idx]['BUY'], idx)
+        logging.info('Reset SELL order ID %s [index=%d].',
+                     self.order_ids[idx]['SELL'], idx)
         self.order_ids[idx]['BUY'] = self.order_ids[idx]['SELL'] = -1
 
     def turn_off_dry_run(self):
@@ -97,7 +106,7 @@ class get_rich_quick_scheme():
             if float(position['positionAmt']) != 0.:
                 open_positions.append(position)
 
-        logging.info('Number of open positions: %d' % len(open_positions))
+        logging.info('Number of open positions: %d', len(open_positions))
 
         # If there are open positions, output some info, otherwise do nothing
         for open_position in open_positions:
@@ -120,7 +129,7 @@ class get_rich_quick_scheme():
                     .strftime('%Y-%m-%d %H:%M:%S.%f')
                    )
 
-            logging.info('--  Symbol: %s', symbol)
+            logging.info('--> Symbol: %s', symbol)
             logging.info('    Leverage: %d/%d', leverage, leverage_max)
             logging.info('    Entry price: %.2f', price_entry)
             logging.info('    Market price: %.2f', price_market)
@@ -140,7 +149,7 @@ class get_rich_quick_scheme():
         # Get data
         open_orders = self.client.futures_get_open_orders()
 
-        logging.info('Number of open orders: %d' % len(open_orders))
+        logging.info('Number of open orders: %d', len(open_orders))
 
         # If there are open orders, output some info, otherwise do nothing
         for open_order in open_orders:
@@ -156,7 +165,7 @@ class get_rich_quick_scheme():
                             )
             client_order_id = open_order['clientOrderId']
 
-            logging.info('--  Symbol: %s', symbol)
+            logging.info('--> Symbol: %s', symbol)
             logging.info('    Market price: %.2f', price_market)
             logging.info('    Sell price: %.2f', price_sell)
             logging.info('    Quantity: %.3g', quantity)
@@ -208,7 +217,7 @@ class get_rich_quick_scheme():
                                                         quantity=futures_buy
                                                        )
             self.set_buy_order_id(idx, buy_id = response['orderId'])
-            logging.info('    BUY order ID: %s' % self.order_ids[idx]['BUY'])
+            logging.info('    BUY order ID: %s', self.order_ids[idx]['BUY'])
         else:
             logging.warning('Dry run, do not actually buy anything.')
 
@@ -237,7 +246,7 @@ class get_rich_quick_scheme():
                                                         price=price_new
                                                        )
             self.set_sell_order_id(idx, sell_id = response['orderId'])
-            logging.info('    SELL order ID: %s' % self.order_ids[idx]['SELL'])
+            logging.info('    SELL order ID: %s', self.order_ids[idx]['SELL'])
 
         # Info about liquidation
         logging.info('    Or %s futures are liquidated at ~%s (%.1f %%), lose %s (-100.0 %% / ROE: -%.2f %%).',
@@ -259,23 +268,23 @@ class get_rich_quick_scheme():
                     # We found the current order for a given index
                     # Now check status
                     if order['status'] == 'NEW':
-                        logging.info('Sell order with ID %s still open [index=%d].'
-                                     % (order_id['SELL'], idx))
+                        logging.info('Sell order with ID %s still open [index=%d].',
+                                     order_id['SELL'], idx)
                     elif order['status'] == 'FILLED':
-                        logging.info('Sell order withd ID %s filled [index=%d].'
-                                     % (order_id['SELL'], idx))
+                        logging.info('Sell order withd ID %s filled [index=%d].',
+                                     order_id['SELL'], idx)
                         self.reset_open_order(idx)
                     elif order['status'] == 'CANCELED':
-                        logging.info('Sell order withd ID %s canceled [index=%d].'
-                                     % (order_id['SELL'], idx))
+                        logging.info('Sell order withd ID %s canceled [index=%d].',
+                                     order_id['SELL'], idx)
                         self.reset_open_order(idx)
 
 
 if __name__ == '__main__':
 
     # Variables
-    idxs = [55, 77, 99]
     leverage = 100
+    idxs = [55, 77, 99]
     wallets = [100, 100, 200]
 
     # Create object
