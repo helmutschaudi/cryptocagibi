@@ -96,7 +96,7 @@ class get_rich_quick_scheme():
                 return float(account['balance']), float(account['withdrawAvailable'])
 
     def get_max_leverage(self, symbol):
-        return int(self.client.futures_leverage_bracket(symbol='ETHUSDT')[0]['brackets'][0]['initialLeverage'])
+        return int(self.client.futures_leverage_bracket(symbol=symbol)[0]['brackets'][0]['initialLeverage'])
 
     def show_open_positions(self):
 
