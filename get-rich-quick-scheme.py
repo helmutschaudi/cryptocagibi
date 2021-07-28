@@ -9,7 +9,7 @@ from kellyBet import kellyBet
 
 class get_rich_quick_scheme():
 
-    def __init__(self, leverage):
+    def __init__(self):
 
         self.api_key = os.environ.get('binance_api')
         self.api_secret = os.environ.get('binance_secret')
@@ -39,13 +39,22 @@ class get_rich_quick_scheme():
         self.wallets = {}
 
         # Keep track of different entry prices
-        # (needed when calculating profit)
+        # (needed when calculating profits)
         # self.entry_prices is a dict, e.g.:
         # self.entry_prices = {1: 1.10, 2: 7.70}
         self.entry_prices = {}
 
         # Keep track of different leverages
-        self.leverage = leverage
+        # (needed when calculating profits)
+        # self.leverages is a dict, e.g.:
+        # self.leverages = {1: 100, 2: 125}
+        self.leverages = {}
+
+        # Keep track of different added margins
+        # (needed when calculating profits)
+        # self.margins_added is a dict, e.g.:
+        # self.margins_added = {1: 0, 2: 6.66}
+        self.margins_added = {}
 
     def config_logger(self):
         logging.basicConfig(level=logging.INFO,
@@ -135,7 +144,7 @@ class get_rich_quick_scheme():
 
     def show_open_positions(self):
 
-        # Get data
+        # Get open positions
         open_positions = []
         for position in self.client.futures_position_information():
             if float(position['positionAmt']) != 0.:
@@ -152,8 +161,9 @@ class get_rich_quick_scheme():
             price_market = float(open_position['markPrice'])
             price_liq = float(open_position['liquidationPrice'])
             quantity = float(open_position['positionAmt'])
+            leverage = int(open_position['leverage'])
             leverage_max = self.get_max_leverage(symbol)
-            margin_initial = quantity*price_entry/self.leverage
+            margin_initial = quantity*price_entry/leverage
             margin_total = float(open_position['isolatedWallet'])
             margin_type = open_position['marginType']
             pnl = float(open_position['unRealizedProfit'])
@@ -164,7 +174,7 @@ class get_rich_quick_scheme():
                    )
 
             logging.info('--> Symbol: %s', symbol)
-            logging.info('    Leverage: %d/%d', self.leverage, leverage_max)
+            logging.info('    Leverage: %d/%d', leverage, leverage_max)
             logging.info('    Entry price: %.2f', price_entry)
             logging.info('    Market price: %.2f', price_market)
             logging.info('    PNL: %.2f', pnl)
@@ -208,11 +218,14 @@ class get_rich_quick_scheme():
 
         return len(open_orders)
 
-    def place_kelly_bet(self, symbol, idx):
+    def place_kelly_bet(self, symbol, leverage, idx):
+
+        # Store leverage
+        self.leverages[idx] = leverage
 
         # Set margin type and leverage
         #self.client.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
-        self.client.futures_change_leverage(symbol=symbol, leverage=self.leverage)
+        self.client.futures_change_leverage(symbol=symbol, leverage=leverage)
 
         logging.info('Placing Kelly bet for %s [index=%d].', symbol, idx)
         logging.info('Kelly options:')
@@ -222,11 +235,11 @@ class get_rich_quick_scheme():
         logging.info('    Wallet free: %.2f', wallet_free)
         logging.info('    Wallet index: %.2f', self.wallets[idx])
         logging.info('    Market price: %.2f', price_market)
-        logging.info('    Leverage: %d', self.leverage)
+        logging.info('    Leverage: %d', leverage)
 
-        myBet = kellyBet(self.wallets[idx], price_market, self.leverage)
-        myBet.kellyBet(1.20, 1.)
-        #myBet.kellyBet(1.4, 5.)
+        myBet = kellyBet(self.wallets[idx], price_market, leverage)
+        #myBet.kellyBet(1.2, 1.)
+        myBet.kellyBet(1.4, 5.)
         #myBet.kellyBet(3.5, 2.)
         logging.info('    Bet size: %s', myBet.f)
         logging.info('    Gross odds: %s', myBet.b)
@@ -258,6 +271,7 @@ class get_rich_quick_scheme():
             logging.warning('Dry run, do not actually buy anything.')
 
         # Add margin
+        self.margins_added[idx] = myBet.margin_add
         if myBet.margin_add > 0.:
             logging.info('    Add margin %s, pay total %s.',
                          myBet.margin_add, myBet.asset_total)
@@ -326,7 +340,10 @@ class get_rich_quick_scheme():
                         self.reset_open_buy_order(idx)
                         # Update wallet
                         logging.info('    Index wallet before: %.2f', self.wallets[idx])
-                        self.wallets[idx] -= float(order['avgPrice'])*float(order['executedQty'])/self.leverage
+                        # Subtract cost of futures
+                        self.wallets[idx] -= float(order['avgPrice'])*float(order['executedQty'])/self.leverages[idx]
+                        # Subtract added margin
+                        self.wallets[idx] -= self.margins_added[idx]
                         logging.info('    Index wallet after (ignoring fees): %.2f', self.wallets[idx])
                         # Store entry price for later usage
                         self.entry_prices[idx] = float(order['avgPrice'])
@@ -365,7 +382,7 @@ class get_rich_quick_scheme():
                         # Update wallet
                         logging.info('    Index wallet before: %.2f', self.wallets[idx])
                         # See https://dev.binance.vision/t/pnl-manual-calculation/1723
-                        self.wallets[idx] += float(order['executedQty'])*self.entry_prices[idx]*(1/self.leverage-1.)+float(order['avgPrice'])*float(order['executedQty'])
+                        self.wallets[idx] += float(order['executedQty'])*self.entry_prices[idx]*(1/self.leverages[idx]-1.)+float(order['avgPrice'])*float(order['executedQty'])
                         logging.info('    Index wallet after (ignoring fees): %.2f', self.wallets[idx])
                     elif order['status'] == 'CANCELED':
                         # Canceled, no money
@@ -382,7 +399,7 @@ class get_rich_quick_scheme():
                         # Update wallet
                         logging.info('Index wallet before: %.2f', self.wallets[idx])
                         # See https://dev.binance.vision/t/pnl-manual-calculation/1723
-                        self.wallets[idx] -= float(order['executedQty'])*self.entry_prices[idx]*(1/self.leverage-1.)+float(order['avgPrice'])*float(order['executedQty'])
+                        self.wallets[idx] -= float(order['executedQty'])*self.entry_prices[idx]*(1/self.leverages[idx]-1.)+float(order['avgPrice'])*float(order['executedQty'])
                         logging.info('Index wallet after (ignoring fees): %.2f', self.wallets[idx])
                     else:
                         # Update sell order
@@ -394,11 +411,17 @@ class get_rich_quick_scheme():
 if __name__ == '__main__':
 
     # Variables
-    idxs = [99]
-    wallets = [191.45]
+    #idxs = [55, 77, 99]
+    #symbols = ['ETHUSDT', 'BTCUSDT', 'SOLUSDT']
+    #wallets = [50, 50, 50]
+    #leverages = [100, 125, 50]
+    idxs = [55, 77]
+    symbols = ['ETHUSDT', 'BTCUSDT']
+    wallets = [300, 300]
+    leverages = [100, 125]
 
     # Create object
-    looseitall = get_rich_quick_scheme(leverage=100)
+    looseitall = get_rich_quick_scheme()
 
     # Configure logger
     looseitall.config_logger()
@@ -422,13 +445,19 @@ if __name__ == '__main__':
         looseitall.check_sell_order_status()
 
         # Place several bets
-        for idx in idxs:
+        for i in range(len(idxs)):
+
+            # Get variables
+            idx = idxs[i]
+            symbol = symbols[i]
+            wallet = wallets[i]
+            leverage = leverages[i]
 
             # Check if we have current orders
             if not looseitall.check_open_order(idx):
 
                 # If we don't have current orders, place a new one
-                looseitall.place_kelly_bet('ETHUSDT', idx)
+                looseitall.place_kelly_bet(symbol, leverage, idx)
 
         ## If we don't have open positions nor orders, we want to place a new bet
         #if nOpenPositions+nOpenOrders == 0:
