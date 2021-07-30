@@ -383,6 +383,7 @@ class get_rich_quick_scheme():
                         logging.info('    Index wallet before: %.2f', self.wallets[idx])
                         # See https://dev.binance.vision/t/pnl-manual-calculation/1723
                         self.wallets[idx] += float(order['executedQty'])*self.entry_prices[idx]*(1/self.leverages[idx]-1.)+float(order['avgPrice'])*float(order['executedQty'])
+                        self.wallets[idx] += self.margins_added[idx]
                         logging.info('    Index wallet after (ignoring fees): %.2f', self.wallets[idx])
                     elif order['status'] == 'CANCELED':
                         # Canceled, no money
