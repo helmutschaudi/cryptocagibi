@@ -422,28 +422,28 @@ if __name__ == '__main__':
     leverages = [100, 125]
 
     # Create object
-    looseitall = get_rich_quick_scheme()
+    loseitall = get_rich_quick_scheme()
 
     # Configure logger
-    looseitall.config_logger()
+    loseitall.config_logger()
 
     # Turn off dry run
-    looseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
 
     # Initialize wallets
-    looseitall.initialize_wallets(idxs, wallets)
+    loseitall.initialize_wallets(idxs, wallets)
 
     # Go into an endless loop
     while True:
 
         # Get number of open positions and open orders
-        nOpenPositions = looseitall.show_open_positions()
-        nOpenOrders = looseitall.show_open_orders()
+        nOpenPositions = loseitall.show_open_positions()
+        nOpenOrders = loseitall.show_open_orders()
 
         # Check status of all current orders, reset them if necessary, and
         # update wallet
-        looseitall.check_buy_order_status()
-        looseitall.check_sell_order_status()
+        loseitall.check_buy_order_status()
+        loseitall.check_sell_order_status()
 
         # Place several bets
         for i in range(len(idxs)):
@@ -455,15 +455,15 @@ if __name__ == '__main__':
             leverage = leverages[i]
 
             # Check if we have current orders
-            if not looseitall.check_open_order(idx):
+            if not loseitall.check_open_order(idx):
 
                 # If we don't have current orders, place a new one
-                looseitall.place_kelly_bet(symbol, leverage, idx)
+                loseitall.place_kelly_bet(symbol, leverage, idx)
 
         ## If we don't have open positions nor orders, we want to place a new bet
         #if nOpenPositions+nOpenOrders == 0:
         ##if True:
-        #    looseitall.place_kelly_bet('ETHUSDT', 100)
+        #    loseitall.place_kelly_bet('ETHUSDT', 100)
 
         sleep(60)
 
