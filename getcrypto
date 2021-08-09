@@ -157,7 +157,7 @@ run(){
                             colorend
                 }
                 if (substr(show, 2, 1) == "1"){
-                    printf "%s$: %9.4g%s %s|%s ",
+                    printf "%s$: %10.5g%s %s|%s ",
                             colorhighlight,
                             price_now[symbol],
                             colorend,
