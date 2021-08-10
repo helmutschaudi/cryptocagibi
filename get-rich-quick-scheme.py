@@ -2,6 +2,7 @@
 
 import os
 import logging
+from math import log
 from datetime import datetime
 from time import sleep
 from binance.client import Client
@@ -23,7 +24,9 @@ def setup_logger(name, log_file, level=logging.INFO):
     return logger
 
 # Configure logger
-logger = setup_logger('default_logger', 'log.out')
+logger = setup_logger('default_logger',
+                      'log.out',
+                      level=logging.DEBUG)
 
 class get_rich_quick_scheme():
 
@@ -34,16 +37,6 @@ class get_rich_quick_scheme():
 
         self.client = Client(self.api_key, self.api_secret)
         self.dry_run = True
-
-        # Create a dict of 2-tuples (key = symbol;
-        #                            value = (price_precision,
-        #                                     quantity_precision))
-        self.symbol_precisions = {}
-        futures_exchange_info = self.client.futures_exchange_info()
-        for info in futures_exchange_info['symbols']:
-            self.symbol_precisions[info['symbol']] = (info['pricePrecision'],
-                                                      info['quantityPrecision']
-                                                      )
 
         # Keep track of multiple buy and sell orders by dicts
         # self.order_ids is a dict of dicts, e.g.:
@@ -148,6 +141,69 @@ class get_rich_quick_scheme():
 
     def turn_off_dry_run(self):
         self.dry_run = False
+
+    def convert_size_to_precision(self, size):
+        return int(round(-log(size, 10), 0))
+
+    def get_filter_element(self, filter_list, filter_type):
+        for filter_element in filter_list:
+            if filter_element['filterType'] == filter_type:
+                return filter_element
+
+    def get_step_size_precision(self, symbol, filter_type='MARKET_LOT_SIZE'):
+        # Filters are defined by different filter types
+        # For the step size, possible filter types are
+        # LOT_SIZE and MARKET_LOT_SIZE
+        futures_exchange_info = self.client.futures_exchange_info()
+        for info in futures_exchange_info['symbols']:
+            if info['symbol'] == symbol:
+                step_size = float(self.get_filter_element
+                                  (info['filters'], filter_type)['stepSize']
+                                  )
+                return self.convert_size_to_precision(step_size)
+
+
+    def get_tick_size_precision(self, symbol):
+        # Filters are defined by different filter types
+        # For the tick size, the filter type is always the same
+        filter_type = 'PRICE_FILTER'
+        futures_exchange_info = self.client.futures_exchange_info()
+        for info in futures_exchange_info['symbols']:
+            if info['symbol'] == symbol:
+                tick_size = float(self.get_filter_element
+                                  (info['filters'], filter_type)['tickSize']
+                                  )
+                return self.convert_size_to_precision(tick_size)
+
+    def set_quantities(self, symbol, futures_buy, futures_sell):
+
+        # Get quantities right for Binance API
+        # See also https://binance-docs.github.io/apidocs/futures/en/#filters
+
+        step_size = self.get_step_size_precision(symbol)
+        step_size2 = self.get_step_size_precision(symbol, 'LOT_SIZE')
+
+        logger.debug('Step size precision for %s: %s', symbol, step_size)
+        logger.debug('Step size2 precision for %s: %s', symbol, step_size2)
+        return (round(futures_buy, step_size),
+                round(futures_sell, step_size))
+
+    def set_prices(self, symbol, price_old, price_new):
+        # Get prices right for Binance API
+        # See also https://binance-docs.github.io/apidocs/futures/en/#filters
+
+        tick_size = self.get_tick_size_precision(symbol)
+        logger.debug('Tick size precision for %s: %s', symbol, tick_size)
+
+        # If tick size is 0, the filter is disabled
+        # I.e. we can buy whatever quantities we want
+        # (assuming we are between min and max buy amounts)
+        if tick_size == 0:
+            return (price_old, price_new)
+
+        # Otherwise we may have to round
+        return (round(price_old, tick_size),
+                round(price_new, tick_size))
 
     def get_balance(self, asset):
         for account in self.client.futures_account_balance():
@@ -266,18 +322,20 @@ class get_rich_quick_scheme():
         logger.info('Kelly plan:')
 
         # Get significant figures right for Binance API
-        futures_buy = float('%s' %
-                            float(f'%.{self.symbol_precisions[symbol][1]}g' %
-                                  myBet.futures_buy))
-        futures_sell = float('%s' %
-                             float(f'%.{self.symbol_precisions[symbol][1]}g' %
-                                   myBet.futures_sell))
-        price_old = float('%s' %
-                          float(f'%.{self.symbol_precisions[symbol][0]}g' %
-                                myBet.price_old))
-        price_new = float('%s' %
-                          float(f'%.{self.symbol_precisions[symbol][0]}g' %
-                                myBet.price_new))
+        # See also https://binance-docs.github.io/apidocs/futures/en/#filters
+        futures_buy, futures_sell = self.set_quantities(symbol,
+                                                        myBet.futures_buy,
+                                                        myBet.futures_sell)
+        logger.debug('Quantities may have changed due to API filters:')
+        logger.debug('    BUY : %s --> %s', myBet.futures_buy, futures_buy)
+        logger.debug('    SELL: %s --> %s', myBet.futures_sell, futures_sell)
+
+        price_old, price_new = self.set_prices(symbol,
+                                               myBet.price_old,
+                                               myBet.price_new)
+        logger.debug('Prices may have changed due to API filters:')
+        logger.debug('    BUY : %s --> %s', myBet.price_old, price_old)
+        logger.debug('    SELL: %s --> %s', myBet.price_new, price_new)
 
         # Buy futures
         logger.info('    Buy %s futures at %s, pay initial margin %s.',
