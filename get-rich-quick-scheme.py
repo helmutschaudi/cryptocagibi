@@ -23,10 +23,12 @@ def setup_logger(name, log_file, level=logging.INFO):
 
     return logger
 
-# Configure logger
+
+# Configure logger (for info and debugging)
 logger = setup_logger('default_logger',
                       'log.out',
                       level=logging.DEBUG)
+
 
 class get_rich_quick_scheme():
 
@@ -100,13 +102,13 @@ class get_rich_quick_scheme():
         _, wallet_free = self.get_balance('USDT')
         if self.get_total_index_wallets() > wallet_free:
             logger.error('The total of requested index wallets is higher '
-                          'than your free wallet: %.2f > %.2f',
-                          self.get_total_index_wallets(), wallet_free)
+                         'than your free wallet: %.2f > %.2f',
+                         self.get_total_index_wallets(), wallet_free)
             raise ValueError('Not enough money.')
         logger.info('Total index wallets balance: %.2f',
-                     self.get_total_index_wallets())
+                    self.get_total_index_wallets())
         logger.info('Total free wallet balance: %.2f',
-                     wallet_free)
+                    wallet_free)
 
     def check_open_order(self, idx):
         try:
@@ -124,19 +126,19 @@ class get_rich_quick_scheme():
         # If we reach here, order IDs are both set and positive,
         # which means we have valid current orders
         logger.info('Current BUY order ID: %s [index=%d]',
-                     self.order_ids[idx]['BUY'], idx)
+                    self.order_ids[idx]['BUY'], idx)
         logger.info('Current SELL order ID: %s [index=%d]',
-                     self.order_ids[idx]['SELL'], idx)
+                    self.order_ids[idx]['SELL'], idx)
         return True
 
     def reset_open_buy_order(self, idx):
         logger.info('    Reset BUY order ID %s [index=%d].',
-                     self.order_ids[idx]['BUY'], idx)
+                    self.order_ids[idx]['BUY'], idx)
         self.order_ids[idx]['BUY'] = -1
 
     def reset_open_sell_order(self, idx):
         logger.info('    Reset SELL order ID %s [index=%d].',
-                     self.order_ids[idx]['SELL'], idx)
+                    self.order_ids[idx]['SELL'], idx)
         self.order_ids[idx]['SELL'] = -1
 
     def turn_off_dry_run(self):
@@ -161,7 +163,6 @@ class get_rich_quick_scheme():
                                   (info['filters'], filter_type)['stepSize']
                                   )
                 return self.convert_size_to_precision(step_size)
-
 
     def get_tick_size_precision(self, symbol):
         # Filters are defined by different filter types
@@ -339,7 +340,7 @@ class get_rich_quick_scheme():
 
         # Buy futures
         logger.info('    Buy %s futures at %s, pay initial margin %s.',
-                     futures_buy, price_old, myBet.asset_old)
+                    futures_buy, price_old, myBet.asset_old)
         if not self.dry_run:
             response = self.client.futures_create_order(symbol=symbol,
                                                         side='BUY',
@@ -348,7 +349,7 @@ class get_rich_quick_scheme():
                                                         )
             self.set_buy_order_id(idx, buy_id=response['orderId'])
             logger.info('        BUY order ID: %s',
-                         self.order_ids[idx]['BUY'])
+                        self.order_ids[idx]['BUY'])
         else:
             logger.warning('Dry run, do not actually buy anything.')
 
@@ -356,7 +357,7 @@ class get_rich_quick_scheme():
         self.margins_added[idx] = myBet.margin_add
         if myBet.margin_add > 0.:
             logger.info('    Add margin %s, pay total %s.',
-                         myBet.margin_add, myBet.asset_total)
+                        myBet.margin_add, myBet.asset_total)
             if not self.dry_run:
                 response = (self.client.
                             futures_change_position_margin(symbol=symbol,
@@ -370,12 +371,12 @@ class get_rich_quick_scheme():
 
         # Place sell order
         logger.info('    Sell %s futures at %s (+%.1f %%), get %s, '
-                     'gain %s (+%.1f %% / ROE: +%.1f %%).',
-                     futures_sell, price_new,
-                     100*price_new/price_old-100,
-                     myBet.asset_new, myBet.gain,
-                     100*myBet.gain/myBet.asset_total,
-                     100*myBet.gain/myBet.asset_old)
+                    'gain %s (+%.1f %% / ROE: +%.1f %%).',
+                    futures_sell, price_new,
+                    100*price_new/price_old-100,
+                    myBet.asset_new, myBet.gain,
+                    100*myBet.gain/myBet.asset_total,
+                    100*myBet.gain/myBet.asset_old)
         if not self.dry_run:
             response = (self.client.
                         futures_create_order(symbol=symbol,
@@ -388,15 +389,15 @@ class get_rich_quick_scheme():
                         )
             self.set_sell_order_id(idx, sell_id=response['orderId'])
             logger.info('        SELL order ID: %s',
-                         self.order_ids[idx]['SELL'])
+                        self.order_ids[idx]['SELL'])
 
         # Info about liquidation
         logger.info('    Or %s futures are liquidated at ~%s (%.1f %%), '
-                     'lose %s (-100.0 %% / ROE: -%.2f %%).',
-                     futures_sell, myBet.price_liq,
-                     100*myBet.price_liq/price_old-100,
-                     myBet.asset_total,
-                     100*myBet.asset_total/myBet.asset_old)
+                    'lose %s (-100.0 %% / ROE: -%.2f %%).',
+                    futures_sell, myBet.price_liq,
+                    100*myBet.price_liq/price_old-100,
+                    myBet.asset_total,
+                    100*myBet.asset_total/myBet.asset_old)
 
     def check_buy_order_status(self):
 
@@ -421,20 +422,20 @@ class get_rich_quick_scheme():
                     # Now check status
                     if order['status'] == 'NEW':
                         logger.info('Buy order with ID %s still open '
-                                     '[index=%d].',
-                                     order_id['BUY'], idx)
+                                    '[index=%d].',
+                                    order_id['BUY'], idx)
                     elif order['status'] == 'FILLED':
                         # Bought, we have to pay money
                         # Update buy order
                         logger.info('Buy order withd ID %s filled at %.2f '
-                                     '[index=%d].',
-                                     order_id['BUY'],
-                                     float(order['avgPrice']),
-                                     idx)
+                                    '[index=%d].',
+                                    order_id['BUY'],
+                                    float(order['avgPrice']),
+                                    idx)
                         self.reset_open_buy_order(idx)
                         # Update wallet
                         logger.info('    Index wallet before: %.2f',
-                                     self.wallets[idx])
+                                    self.wallets[idx])
                         # Subtract cost of futures
                         self.wallets[idx] -= (float(order['avgPrice']) *
                                               float(order['executedQty']) /
@@ -443,7 +444,7 @@ class get_rich_quick_scheme():
                         # Subtract added margin
                         self.wallets[idx] -= self.margins_added[idx]
                         logger.info('    Index wallet after (ignoring fees): '
-                                     '%.2f', self.wallets[idx])
+                                    '%.2f', self.wallets[idx])
                         # Store entry price for later usage
                         self.entry_prices[idx] = float(order['avgPrice'])
 
@@ -470,19 +471,19 @@ class get_rich_quick_scheme():
                     # Now check status
                     if order['status'] == 'NEW':
                         logger.info('Sell order with ID %s still open '
-                                     '[index=%d].',
-                                     order_id['SELL'], idx)
+                                    '[index=%d].',
+                                    order_id['SELL'], idx)
                     elif order['status'] == 'FILLED':
                         # Sold, we get money
                         # Update sell order
                         logger.info('Sell order withd ID %s filled '
-                                     '[index=%d].',
-                                     order_id['SELL'], idx)
+                                    '[index=%d].',
+                                    order_id['SELL'], idx)
                         self.reset_open_sell_order(idx)
 
                         # Update wallet
                         logger.info('    Index wallet before: %.2f',
-                                     self.wallets[idx])
+                                    self.wallets[idx])
                         # See dev.binance.vision/t/pnl-manual-calculation/1723
                         self.wallets[idx] += (float(order['executedQty']) *
                                               self.entry_prices[idx] *
@@ -492,24 +493,24 @@ class get_rich_quick_scheme():
                                               )
                         self.wallets[idx] += self.margins_added[idx]
                         logger.info('    Index wallet after (ignoring fees): '
-                                     '%.2f', self.wallets[idx])
+                                    '%.2f', self.wallets[idx])
                     elif order['status'] == 'CANCELED':
                         # Canceled, no money
                         # Update sell order
                         logger.info('Sell order withd ID %s canceled '
-                                     '[index=%d].',
-                                     order_id['SELL'], idx)
+                                    '[index=%d].',
+                                    order_id['SELL'], idx)
                         self.reset_open_sell_order(idx)
                     elif order['status'] == 'EXPIRED':
                         # Liquidated, we lose money
                         # Update sell order
                         logger.info('Sell order with ID %s expired '
-                                     '[index=%d].',
-                                     order_id['SELL'], idx)
+                                    '[index=%d].',
+                                    order_id['SELL'], idx)
                         self.reset_open_sell_order(idx)
                         # Update wallet
                         logger.info('Index wallet before: %.2f',
-                                     self.wallets[idx])
+                                    self.wallets[idx])
                         # See dev.binance.vision/t/pnl-manual-calculation/1723
                         self.wallets[idx] -= (float(order['executedQty']) *
                                               self.entry_prices[idx] *
@@ -518,12 +519,12 @@ class get_rich_quick_scheme():
                                               float(order['executedQty'])
                                               )
                         logger.info('Index wallet after (ignoring fees): '
-                                     '%.2f', self.wallets[idx])
+                                    '%.2f', self.wallets[idx])
                     else:
                         # Update sell order
                         logger.warning('Sell order with ID %s has unknown '
-                                        'state %s [index=%d].',
-                                        order_id['SELL'], order['status'], idx)
+                                       'state %s [index=%d].',
+                                       order_id['SELL'], order['status'], idx)
                         logger.warning('Should I reset the open order?')
 
 
