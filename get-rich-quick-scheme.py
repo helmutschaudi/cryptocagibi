@@ -27,6 +27,7 @@ class get_rich_quick_scheme():
             self.symbol_precisions[info['symbol']] = (info['pricePrecision'],
                                                       info['quantityPrecision']
                                                       )
+
         # Keep track of multiple buy and sell orders by dicts
         # self.order_ids is a dict of dicts, e.g.:
         # self.order_ids = {1: {'BUY': 1, 'SELL': 2}, 2: {'BUY': 9, 'SELL': 8}}
@@ -255,15 +256,19 @@ class get_rich_quick_scheme():
 
         logging.info('Kelly plan:')
 
-        # Get precisions right for Binance API
-        futures_buy = round(myBet.futures_buy,
-                            self.symbol_precisions[symbol][1])
-        futures_sell = round(myBet.futures_sell,
-                             self.symbol_precisions[symbol][1])
-        price_old = round(myBet.price_old,
-                          self.symbol_precisions[symbol][0])
-        price_new = round(myBet.price_new,
-                          self.symbol_precisions[symbol][0])
+        # Get significant figures right for Binance API
+        futures_buy = float('%s' %
+                            float(f'%.{self.symbol_precisions[symbol][1]}g' %
+                                  myBet.futures_buy))
+        futures_sell = float('%s' %
+                             float(f'%.{self.symbol_precisions[symbol][1]}g' %
+                                   myBet.futures_sell))
+        price_old = float('%s' %
+                          float(f'%.{self.symbol_precisions[symbol][0]}g' %
+                                myBet.price_old))
+        price_new = float('%s' %
+                          float(f'%.{self.symbol_precisions[symbol][0]}g' %
+                                myBet.price_new))
 
         # Buy futures
         logging.info('    Buy %s futures at %s, pay initial margin %s.',
@@ -474,7 +479,7 @@ if __name__ == '__main__':
     loseitall.config_logger()
 
     # Turn off dry run
-    #loseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
 
     # Initialize wallets
     loseitall.initialize_wallets(idxs, wallets)
