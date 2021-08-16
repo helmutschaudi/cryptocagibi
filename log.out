@@ -1,0 +1,156 @@
+INFO     - 2021-08-16 22:52:14,748 - Total index wallets balance: 100.00
+INFO     - 2021-08-16 22:52:14,748 - Total free wallet balance: 207.04
+INFO     - 2021-08-16 22:52:15,014 - Number of open positions: 0
+INFO     - 2021-08-16 22:52:15,248 - Number of open orders: 0
+INFO     - 2021-08-16 22:52:16,004 - Placing Kelly bet for VETUSDT [index=55].
+INFO     - 2021-08-16 22:52:16,004 - Kelly options:
+INFO     - 2021-08-16 22:52:16,500 -     Wallet total: 207.04
+INFO     - 2021-08-16 22:52:16,500 -     Wallet free: 207.04
+INFO     - 2021-08-16 22:52:16,500 -     Wallet index: 50.00
+INFO     - 2021-08-16 22:52:16,500 -     Market price: 0.13
+INFO     - 2021-08-16 22:52:16,500 -     Leverage: 20
+INFO     - 2021-08-16 22:52:16,500 -     Bet size: 0.125
+INFO     - 2021-08-16 22:52:16,500 -     Gross odds: 1.4
+INFO     - 2021-08-16 22:52:16,500 - Kelly plan:
+DEBUG    - 2021-08-16 22:52:17,037 - Step size precision for VETUSDT: 0
+DEBUG    - 2021-08-16 22:52:17,037 - Step size2 precision for VETUSDT: 0
+DEBUG    - 2021-08-16 22:52:17,037 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-16 22:52:17,037 -     BUY : 193.0 --> 193.0
+DEBUG    - 2021-08-16 22:52:17,037 -     SELL: 193.0 --> 193.0
+DEBUG    - 2021-08-16 22:52:17,314 - Tick size precision for VETUSDT: 5
+DEBUG    - 2021-08-16 22:52:17,314 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-16 22:52:17,314 -     BUY : 0.12925 --> 0.12925
+DEBUG    - 2021-08-16 22:52:17,314 -     SELL: 0.142175 --> 0.14217
+INFO     - 2021-08-16 22:52:17,314 -     Buy 193.0 futures at 0.12925, pay initial margin 1.25.
+INFO     - 2021-08-16 22:52:17,578 -         BUY order ID: 12615007402
+INFO     - 2021-08-16 22:52:17,579 -     Add margin 5.0, pay total 6.25.
+INFO     - 2021-08-16 22:54:16,477 - Total index wallets balance: 100.00
+INFO     - 2021-08-16 22:54:16,477 - Total free wallet balance: 205.83
+INFO     - 2021-08-16 22:54:16,750 - Number of open positions: 1
+INFO     - 2021-08-16 22:54:17,009 - --> Symbol: VETUSDT
+INFO     - 2021-08-16 22:54:17,009 -     Leverage: 20/50
+INFO     - 2021-08-16 22:54:17,009 -     Entry price: 0.13
+INFO     - 2021-08-16 22:54:17,009 -     Market price: 0.13
+INFO     - 2021-08-16 22:54:17,009 -     PNL: 0.05
+INFO     - 2021-08-16 22:54:17,009 -     ROE: 4.39 %
+INFO     - 2021-08-16 22:54:17,009 -     Initial margin: 1.25
+INFO     - 2021-08-16 22:54:17,009 -     Total margin: 0.00
+INFO     - 2021-08-16 22:54:17,009 -     Margin type: cross
+INFO     - 2021-08-16 22:54:17,009 -     Liquidation price: 0.00
+INFO     - 2021-08-16 22:54:17,009 -     Quantity: 193
+INFO     - 2021-08-16 22:54:17,009 -     Time of request: 2021-08-16 22:52:17.602000
+INFO     - 2021-08-16 22:54:17,929 - Number of open orders: 0
+INFO     - 2021-08-16 22:54:19,386 - Placing Kelly bet for VETUSDT [index=55].
+INFO     - 2021-08-16 22:54:19,386 - Kelly options:
+INFO     - 2021-08-16 22:54:20,562 -     Wallet total: 207.03
+INFO     - 2021-08-16 22:54:20,562 -     Wallet free: 205.84
+INFO     - 2021-08-16 22:54:20,562 -     Wallet index: 50.00
+INFO     - 2021-08-16 22:54:20,562 -     Market price: 0.13
+INFO     - 2021-08-16 22:54:20,562 -     Leverage: 20
+INFO     - 2021-08-16 22:54:20,562 -     Bet size: 0.125
+INFO     - 2021-08-16 22:54:20,562 -     Gross odds: 1.4
+INFO     - 2021-08-16 22:54:20,562 - Kelly plan:
+DEBUG    - 2021-08-16 22:54:21,352 - Step size precision for VETUSDT: 0
+DEBUG    - 2021-08-16 22:54:21,352 - Step size2 precision for VETUSDT: 0
+DEBUG    - 2021-08-16 22:54:21,352 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-16 22:54:21,352 -     BUY : 193.0 --> 193.0
+DEBUG    - 2021-08-16 22:54:21,352 -     SELL: 193.0 --> 193.0
+DEBUG    - 2021-08-16 22:54:21,612 - Tick size precision for VETUSDT: 5
+DEBUG    - 2021-08-16 22:54:21,612 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-16 22:54:21,612 -     BUY : 0.12964 --> 0.12964
+DEBUG    - 2021-08-16 22:54:21,612 -     SELL: 0.142604 --> 0.1426
+INFO     - 2021-08-16 22:54:21,612 -     Buy 193.0 futures at 0.12964, pay initial margin 1.25.
+INFO     - 2021-08-16 22:54:21,872 -         BUY order ID: 12615028846
+INFO     - 2021-08-16 22:54:21,873 -     Add margin 5.0, pay total 6.25.
+INFO     - 2021-08-16 22:58:35,347 - Total index wallets balance: 100.00
+INFO     - 2021-08-16 22:58:35,347 - Total free wallet balance: 204.74
+INFO     - 2021-08-16 22:58:35,612 - Number of open positions: 1
+INFO     - 2021-08-16 22:58:35,868 - --> Symbol: VETUSDT
+INFO     - 2021-08-16 22:58:35,868 -     Leverage: 20/50
+INFO     - 2021-08-16 22:58:35,868 -     Entry price: 0.13
+INFO     - 2021-08-16 22:58:35,868 -     Market price: 0.13
+INFO     - 2021-08-16 22:58:35,868 -     PNL: 0.23
+INFO     - 2021-08-16 22:58:35,868 -     ROE: 9.33 %
+INFO     - 2021-08-16 22:58:35,868 -     Initial margin: 2.50
+INFO     - 2021-08-16 22:58:35,868 -     Total margin: 0.00
+INFO     - 2021-08-16 22:58:35,868 -     Margin type: cross
+INFO     - 2021-08-16 22:58:35,868 -     Liquidation price: 0.00
+INFO     - 2021-08-16 22:58:35,868 -     Quantity: 386
+INFO     - 2021-08-16 22:58:35,868 -     Time of request: 2021-08-16 22:54:21.901000
+INFO     - 2021-08-16 22:58:36,158 - Number of open orders: 0
+INFO     - 2021-08-16 22:58:38,274 - Placing Kelly bet for VETUSDT [index=55].
+INFO     - 2021-08-16 22:58:38,274 - Kelly options:
+INFO     - 2021-08-16 22:58:39,890 -     Wallet total: 207.02
+INFO     - 2021-08-16 22:58:39,890 -     Wallet free: 204.72
+INFO     - 2021-08-16 22:58:39,890 -     Wallet index: 50.00
+INFO     - 2021-08-16 22:58:39,890 -     Market price: 0.13
+INFO     - 2021-08-16 22:58:39,890 -     Leverage: 20
+INFO     - 2021-08-16 22:58:39,890 -     Bet size: 0.125
+INFO     - 2021-08-16 22:58:39,890 -     Gross odds: 1.4
+INFO     - 2021-08-16 22:58:39,890 - Kelly plan:
+DEBUG    - 2021-08-16 22:58:41,066 - Step size precision for VETUSDT: 0
+DEBUG    - 2021-08-16 22:58:41,066 - Step size2 precision for VETUSDT: 0
+DEBUG    - 2021-08-16 22:58:41,066 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-16 22:58:41,066 -     BUY : 192.0 --> 192.0
+DEBUG    - 2021-08-16 22:58:41,066 -     SELL: 192.0 --> 192.0
+DEBUG    - 2021-08-16 22:58:42,006 - Tick size precision for VETUSDT: 5
+DEBUG    - 2021-08-16 22:58:42,006 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-16 22:58:42,006 -     BUY : 0.13001 --> 0.13001
+DEBUG    - 2021-08-16 22:58:42,006 -     SELL: 0.143011 --> 0.14301
+INFO     - 2021-08-16 22:58:42,006 -     Buy 192.0 futures at 0.13001, pay initial margin 1.25.
+INFO     - 2021-08-16 22:58:42,269 -         BUY order ID: 12615086713
+INFO     - 2021-08-16 22:58:42,269 -     Add margin 5.0, pay total 6.25.
+INFO     - 2021-08-16 22:59:19,887 - Total index wallets balance: 100.00
+INFO     - 2021-08-16 22:59:19,887 - Total free wallet balance: 203.40
+INFO     - 2021-08-16 22:59:20,137 - Number of open positions: 1
+INFO     - 2021-08-16 22:59:20,405 - --> Symbol: VETUSDT
+INFO     - 2021-08-16 22:59:20,405 -     Leverage: 20/50
+INFO     - 2021-08-16 22:59:20,420 -     Entry price: 0.13
+INFO     - 2021-08-16 22:59:20,420 -     Market price: 0.13
+INFO     - 2021-08-16 22:59:20,420 -     PNL: 0.14
+INFO     - 2021-08-16 22:59:20,420 -     ROE: 3.64 %
+INFO     - 2021-08-16 22:59:20,420 -     Initial margin: 3.75
+INFO     - 2021-08-16 22:59:20,420 -     Total margin: 0.00
+INFO     - 2021-08-16 22:59:20,420 -     Margin type: cross
+INFO     - 2021-08-16 22:59:20,420 -     Liquidation price: 0.00
+INFO     - 2021-08-16 22:59:20,420 -     Quantity: 578
+INFO     - 2021-08-16 22:59:20,420 -     Time of request: 2021-08-16 22:58:42.285000
+INFO     - 2021-08-16 22:59:20,667 - Number of open orders: 0
+INFO     - 2021-08-16 23:00:44,531 - Total index wallets balance: 100.00
+INFO     - 2021-08-16 23:00:44,531 - Total free wallet balance: 203.42
+INFO     - 2021-08-16 23:00:44,800 - Number of open positions: 1
+INFO     - 2021-08-16 23:00:45,723 - --> Symbol: VETUSDT
+INFO     - 2021-08-16 23:00:45,723 -     Leverage: 20/50
+INFO     - 2021-08-16 23:00:45,723 -     Entry price: 0.13
+INFO     - 2021-08-16 23:00:45,723 -     Market price: 0.13
+INFO     - 2021-08-16 23:00:45,723 -     PNL: 0.17
+INFO     - 2021-08-16 23:00:45,723 -     ROE: 4.54 %
+INFO     - 2021-08-16 23:00:45,723 -     Initial margin: 3.75
+INFO     - 2021-08-16 23:00:45,723 -     Total margin: 0.00
+INFO     - 2021-08-16 23:00:45,723 -     Margin type: cross
+INFO     - 2021-08-16 23:00:45,723 -     Liquidation price: 0.00
+INFO     - 2021-08-16 23:00:45,723 -     Quantity: 578
+INFO     - 2021-08-16 23:00:45,723 -     Time of request: 2021-08-16 22:58:42.285000
+INFO     - 2021-08-16 23:00:46,645 - Number of open orders: 0
+INFO     - 2021-08-16 23:00:48,092 - Placing Kelly bet for VETUSDT [index=55].
+INFO     - 2021-08-16 23:00:48,092 - Kelly options:
+INFO     - 2021-08-16 23:00:48,594 -     Wallet total: 207.01
+INFO     - 2021-08-16 23:00:48,595 -     Wallet free: 203.51
+INFO     - 2021-08-16 23:00:48,595 -     Wallet index: 50.00
+INFO     - 2021-08-16 23:00:48,595 -     Market price: 0.13
+INFO     - 2021-08-16 23:00:48,596 -     Leverage: 20
+INFO     - 2021-08-16 23:00:48,596 -     Bet size: 0.125
+INFO     - 2021-08-16 23:00:48,596 -     Gross odds: 1.4
+INFO     - 2021-08-16 23:00:48,596 - Kelly plan:
+DEBUG    - 2021-08-16 23:00:49,570 - Step size precision for VETUSDT: 0
+DEBUG    - 2021-08-16 23:00:49,571 - Step size2 precision for VETUSDT: 0
+DEBUG    - 2021-08-16 23:00:49,571 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-16 23:00:49,571 -     BUY : 192.0 --> 192.0
+DEBUG    - 2021-08-16 23:00:49,571 -     SELL: 192.0 --> 192.0
+DEBUG    - 2021-08-16 23:00:49,831 - Tick size precision for VETUSDT: 5
+DEBUG    - 2021-08-16 23:00:49,831 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-16 23:00:49,831 -     BUY : 0.13017 --> 0.13017
+DEBUG    - 2021-08-16 23:00:49,831 -     SELL: 0.143187 --> 0.14319
+INFO     - 2021-08-16 23:00:49,831 -     Buy 192.0 futures at 0.13017, pay initial margin 1.25.
+INFO     - 2021-08-16 23:00:50,773 -         BUY order ID: 12615110200
+INFO     - 2021-08-16 23:00:50,773 -     Add margin 5.0, pay total 6.25.

@@ -304,8 +304,9 @@ class get_rich_quick_scheme():
 
         logger.info('Placing Kelly bet for %s [index=%d].', symbol, idx)
         logger.info('Kelly options:')
-        price_market = float(self.client.futures_position_information
-                             (symbol=symbol)[0]['markPrice'])
+        # price_market = float(self.client.futures_position_information
+                             #(symbol=symbol)[0]['markPrice'])
+        price_market = float(self.client.get_ticker(symbol=symbol)['askPrice'])
         wallet_total, wallet_free = self.get_balance('USDT')
         logger.info('    Wallet total: %.2f', wallet_total)
         logger.info('    Wallet free: %.2f', wallet_free)
@@ -537,8 +538,8 @@ if __name__ == '__main__':
     # leverages = [100, 125, 50]
     idxs = [55, 77]
     symbols = ['VETUSDT', 'ADAUSDT']
-    wallets = [100, 100]
-    leverages = [50, 50]
+    wallets = [50, 50]
+    leverages = [20, 20]
 
     # Create object
     loseitall = get_rich_quick_scheme()
