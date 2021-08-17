@@ -304,9 +304,9 @@ class get_rich_quick_scheme():
 
         logger.info('Placing Kelly bet for %s [index=%d].', symbol, idx)
         logger.info('Kelly options:')
-        # price_market = float(self.client.futures_position_information
-                             #(symbol=symbol)[0]['markPrice'])
-        price_market = float(self.client.get_ticker(symbol=symbol)['askPrice'])
+        price_market = float(self.client.futures_position_information
+                             (symbol=symbol)[0]['markPrice'])
+        #price_market = float(self.client.get_ticker(symbol=symbol)['askPrice'])
         wallet_total, wallet_free = self.get_balance('USDT')
         logger.info('    Wallet total: %.2f', wallet_total)
         logger.info('    Wallet free: %.2f', wallet_free)
@@ -318,8 +318,8 @@ class get_rich_quick_scheme():
         # myBet.kellyBet(1.2, 1.)
         myBet.kellyBet(1.4, 5.)
         # myBet.kellyBet(3.5, 2.)
-        logger.info('    Bet size: %s', myBet.f)
-        logger.info('    Gross odds: %s', myBet.b)
+        logger.info('    Bet size: %s', myBet._bet_size_factor)
+        logger.info('    Gross odds: %s', myBet.gross_odds)
 
         logger.info('Kelly plan:')
 
@@ -551,7 +551,7 @@ if __name__ == '__main__':
     loseitall.initialize_wallets(idxs, wallets)
 
     # Go into an endless loop
-    while True:
+    while True: 
 
         # Get number of open positions and open orders
         nOpenPositions = loseitall.show_open_positions()
