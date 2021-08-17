@@ -316,7 +316,7 @@ class get_rich_quick_scheme():
 
         myBet = kellyBet(self.wallets[idx], price_market, leverage)
         # myBet.kellyBet(1.2, 1.)
-        myBet.kellyBet(1.4, 5.)
+        myBet.kellyBet(1.2, 3.)
         # myBet.kellyBet(3.5, 2.)
         logger.info('    Bet size: %s', myBet._bet_size_factor)
         logger.info('    Gross odds: %s', myBet.gross_odds)
@@ -536,10 +536,10 @@ if __name__ == '__main__':
     # symbols = ['ETHUSDT', 'BTCUSDT', 'SOLUSDT']
     # wallets = [50, 50, 50]
     # leverages = [100, 125, 50]
-    idxs = [55, 77]
-    symbols = ['VETUSDT', 'ADAUSDT']
-    wallets = [70, 70]
-    leverages = [20, 20]
+    idxs = [11,22,33,44]
+    symbols = ['VETUSDT','ADAUSDT','XRPUSDT','ETHUSDT']
+    wallets = [30,30,30,30]
+    leverages = [20,20,20,20]
 
     # Create object
     loseitall = get_rich_quick_scheme()

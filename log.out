@@ -154,3 +154,726 @@ DEBUG    - 2021-08-16 23:00:49,831 -     SELL: 0.143187 --> 0.14319
 INFO     - 2021-08-16 23:00:49,831 -     Buy 192.0 futures at 0.13017, pay initial margin 1.25.
 INFO     - 2021-08-16 23:00:50,773 -         BUY order ID: 12615110200
 INFO     - 2021-08-16 23:00:50,773 -     Add margin 5.0, pay total 6.25.
+ERROR    - 2021-08-17 23:37:10,890 - The total of requested index wallets is higher than your free wallet: 280.00 > 198.50
+INFO     - 2021-08-17 23:37:53,873 - Total index wallets balance: 160.00
+INFO     - 2021-08-17 23:37:53,873 - Total free wallet balance: 198.50
+INFO     - 2021-08-17 23:37:54,142 - Number of open positions: 0
+INFO     - 2021-08-17 23:37:54,389 - Number of open orders: 0
+INFO     - 2021-08-17 23:37:55,833 - Placing Kelly bet for VETUSDT [index=11].
+INFO     - 2021-08-17 23:37:55,833 - Kelly options:
+INFO     - 2021-08-17 23:37:56,352 -     Wallet total: 198.50
+INFO     - 2021-08-17 23:37:56,352 -     Wallet free: 198.50
+INFO     - 2021-08-17 23:37:56,352 -     Wallet index: 40.00
+INFO     - 2021-08-17 23:37:56,352 -     Market price: 0.12
+INFO     - 2021-08-17 23:37:56,352 -     Leverage: 20
+INFO     - 2021-08-17 23:37:56,352 -     Bet size: 0.125
+INFO     - 2021-08-17 23:37:56,352 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:37:56,352 - Kelly plan:
+DEBUG    - 2021-08-17 23:37:58,254 - Step size precision for VETUSDT: 0
+DEBUG    - 2021-08-17 23:37:58,254 - Step size2 precision for VETUSDT: 0
+DEBUG    - 2021-08-17 23:37:58,254 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:37:58,254 -     BUY : 281.0 --> 281.0
+DEBUG    - 2021-08-17 23:37:58,254 -     SELL: 281.0 --> 281.0
+DEBUG    - 2021-08-17 23:37:58,739 - Tick size precision for VETUSDT: 5
+DEBUG    - 2021-08-17 23:37:58,739 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:37:58,739 -     BUY : 0.118754 --> 0.11875
+DEBUG    - 2021-08-17 23:37:58,739 -     SELL: 0.125879 --> 0.12588
+INFO     - 2021-08-17 23:37:58,739 -     Buy 281.0 futures at 0.11875, pay initial margin 1.667.
+INFO     - 2021-08-17 23:37:59,008 -         BUY order ID: 12630112732
+INFO     - 2021-08-17 23:37:59,008 -     Add margin 3.333, pay total 5.0.
+INFO     - 2021-08-17 23:37:59,272 -     Sell 281.0 futures at 0.12588 (+6.0 %), get 7.0, gain 2.0 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:37:59,536 -         SELL order ID: 12630112791
+INFO     - 2021-08-17 23:37:59,536 -     Or 281.0 futures are liquidated at ~0.100941 (-15.0 %), lose 5.0 (-100.0 % / ROE: -299.94 %).
+INFO     - 2021-08-17 23:37:59,787 - Placing Kelly bet for ADAUSDT [index=22].
+INFO     - 2021-08-17 23:37:59,787 - Kelly options:
+INFO     - 2021-08-17 23:38:00,332 -     Wallet total: 198.49
+INFO     - 2021-08-17 23:38:00,332 -     Wallet free: 193.47
+INFO     - 2021-08-17 23:38:00,332 -     Wallet index: 40.00
+INFO     - 2021-08-17 23:38:00,332 -     Market price: 1.97
+INFO     - 2021-08-17 23:38:00,332 -     Leverage: 20
+INFO     - 2021-08-17 23:38:00,332 -     Bet size: 0.125
+INFO     - 2021-08-17 23:38:00,332 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:38:00,332 - Kelly plan:
+DEBUG    - 2021-08-17 23:38:01,950 - Step size precision for ADAUSDT: 0
+DEBUG    - 2021-08-17 23:38:01,950 - Step size2 precision for ADAUSDT: 0
+DEBUG    - 2021-08-17 23:38:01,950 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:38:01,950 -     BUY : 16.9 --> 17.0
+DEBUG    - 2021-08-17 23:38:01,950 -     SELL: 16.9 --> 17.0
+DEBUG    - 2021-08-17 23:38:03,067 - Tick size precision for ADAUSDT: 4
+DEBUG    - 2021-08-17 23:38:03,067 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:38:03,067 -     BUY : 1.96679 --> 1.9668
+DEBUG    - 2021-08-17 23:38:03,067 -     SELL: 2.08479 --> 2.0848
+INFO     - 2021-08-17 23:38:03,067 -     Buy 17.0 futures at 1.9668, pay initial margin 1.667.
+INFO     - 2021-08-17 23:38:03,317 -         BUY order ID: 15697531762
+INFO     - 2021-08-17 23:38:03,317 -     Add margin 3.333, pay total 5.0.
+INFO     - 2021-08-17 23:38:03,591 -     Sell 17.0 futures at 2.0848 (+6.0 %), get 7.0, gain 2.0 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:38:03,849 -         SELL order ID: 15697531906
+INFO     - 2021-08-17 23:38:03,849 -     Or 17.0 futures are liquidated at ~1.67177 (-15.0 %), lose 5.0 (-100.0 % / ROE: -299.94 %).
+INFO     - 2021-08-17 23:38:04,127 - Placing Kelly bet for XRPUSDT [index=33].
+INFO     - 2021-08-17 23:38:04,127 - Kelly options:
+INFO     - 2021-08-17 23:38:04,643 -     Wallet total: 198.47
+INFO     - 2021-08-17 23:38:04,643 -     Wallet free: 188.43
+INFO     - 2021-08-17 23:38:04,643 -     Wallet index: 40.00
+INFO     - 2021-08-17 23:38:04,643 -     Market price: 0.00
+INFO     - 2021-08-17 23:38:04,643 -     Leverage: 20
+INFO     - 2021-08-17 23:42:14,627 - Total index wallets balance: 160.00
+INFO     - 2021-08-17 23:42:14,643 - Total free wallet balance: 188.43
+INFO     - 2021-08-17 23:42:15,568 - Number of open positions: 2
+INFO     - 2021-08-17 23:42:15,833 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:42:15,833 -     Leverage: 20/75
+INFO     - 2021-08-17 23:42:15,833 -     Entry price: 1.97
+INFO     - 2021-08-17 23:42:15,833 -     Market price: 1.98
+INFO     - 2021-08-17 23:42:15,833 -     PNL: 0.18
+INFO     - 2021-08-17 23:42:15,833 -     ROE: 10.47 %
+INFO     - 2021-08-17 23:42:15,833 -     Initial margin: 1.67
+INFO     - 2021-08-17 23:42:15,833 -     Total margin: 5.02
+INFO     - 2021-08-17 23:42:15,833 -     Margin type: isolated
+INFO     - 2021-08-17 23:42:15,833 -     Liquidation price: 1.68
+INFO     - 2021-08-17 23:42:15,833 -     Quantity: 17
+INFO     - 2021-08-17 23:42:15,833 -     Time of request: 2021-08-17 23:38:03.138000
+INFO     - 2021-08-17 23:42:16,761 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:42:16,761 -     Leverage: 20/50
+INFO     - 2021-08-17 23:42:16,761 -     Entry price: 0.12
+INFO     - 2021-08-17 23:42:16,761 -     Market price: 0.12
+INFO     - 2021-08-17 23:42:16,761 -     PNL: 0.21
+INFO     - 2021-08-17 23:42:16,761 -     ROE: 12.66 %
+INFO     - 2021-08-17 23:42:16,761 -     Initial margin: 1.67
+INFO     - 2021-08-17 23:42:16,761 -     Total margin: 5.02
+INFO     - 2021-08-17 23:42:16,761 -     Margin type: isolated
+INFO     - 2021-08-17 23:42:16,761 -     Liquidation price: 0.10
+INFO     - 2021-08-17 23:42:16,761 -     Quantity: 281
+INFO     - 2021-08-17 23:42:16,761 -     Time of request: 2021-08-17 23:37:58.817000
+INFO     - 2021-08-17 23:42:17,010 - Number of open orders: 2
+INFO     - 2021-08-17 23:42:17,268 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:42:17,268 -     Market price: 1.98
+INFO     - 2021-08-17 23:42:17,268 -     Sell price: 2.08
+INFO     - 2021-08-17 23:42:17,268 -     Quantity: 17
+INFO     - 2021-08-17 23:42:17,268 -     Time of placement: 2021-08-17 23:38:03.400000
+INFO     - 2021-08-17 23:42:17,268 -     Client Order ID: juyb64rnXGFnjWSVMiR7os
+INFO     - 2021-08-17 23:42:18,203 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:42:18,203 -     Market price: 0.12
+INFO     - 2021-08-17 23:42:18,203 -     Sell price: 0.13
+INFO     - 2021-08-17 23:42:18,203 -     Quantity: 17
+INFO     - 2021-08-17 23:42:18,204 -     Time of placement: 2021-08-17 23:37:59.084000
+INFO     - 2021-08-17 23:42:18,204 -     Client Order ID: GZ7ElKfqTmXHdHho44AJz3
+INFO     - 2021-08-17 23:42:18,955 - Placing Kelly bet for VETUSDT [index=11].
+INFO     - 2021-08-17 23:42:18,955 - Kelly options:
+INFO     - 2021-08-17 23:42:19,462 -     Wallet total: 198.47
+INFO     - 2021-08-17 23:42:19,462 -     Wallet free: 188.43
+INFO     - 2021-08-17 23:42:19,462 -     Wallet index: 40.00
+INFO     - 2021-08-17 23:42:19,462 -     Market price: 0.12
+INFO     - 2021-08-17 23:42:19,462 -     Leverage: 20
+INFO     - 2021-08-17 23:42:19,462 -     Bet size: 0.125
+INFO     - 2021-08-17 23:42:19,462 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:42:19,462 - Kelly plan:
+DEBUG    - 2021-08-17 23:42:21,042 - Step size precision for VETUSDT: 0
+DEBUG    - 2021-08-17 23:42:21,042 - Step size2 precision for VETUSDT: 0
+DEBUG    - 2021-08-17 23:42:21,042 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:21,042 -     BUY : 279.0 --> 279.0
+DEBUG    - 2021-08-17 23:42:21,042 -     SELL: 279.0 --> 279.0
+DEBUG    - 2021-08-17 23:42:22,012 - Tick size precision for VETUSDT: 5
+DEBUG    - 2021-08-17 23:42:22,012 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:22,012 -     BUY : 0.11954 --> 0.11954
+DEBUG    - 2021-08-17 23:42:22,012 -     SELL: 0.126712 --> 0.12671
+INFO     - 2021-08-17 23:42:22,012 -     Buy 279.0 futures at 0.11954, pay initial margin 1.667.
+INFO     - 2021-08-17 23:42:22,278 -         BUY order ID: 12630156076
+INFO     - 2021-08-17 23:42:22,278 -     Add margin 3.333, pay total 5.0.
+INFO     - 2021-08-17 23:42:22,527 -     Sell 279.0 futures at 0.12671 (+6.0 %), get 7.0, gain 2.0 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:42:22,793 -         SELL order ID: 12630156316
+INFO     - 2021-08-17 23:42:22,793 -     Or 279.0 futures are liquidated at ~0.101609 (-15.0 %), lose 5.0 (-100.0 % / ROE: -299.94 %).
+INFO     - 2021-08-17 23:42:23,047 - Placing Kelly bet for ADAUSDT [index=22].
+INFO     - 2021-08-17 23:42:23,047 - Kelly options:
+INFO     - 2021-08-17 23:42:23,566 -     Wallet total: 198.46
+INFO     - 2021-08-17 23:42:23,566 -     Wallet free: 183.42
+INFO     - 2021-08-17 23:42:23,566 -     Wallet index: 40.00
+INFO     - 2021-08-17 23:42:23,566 -     Market price: 1.98
+INFO     - 2021-08-17 23:42:23,566 -     Leverage: 20
+INFO     - 2021-08-17 23:42:23,566 -     Bet size: 0.125
+INFO     - 2021-08-17 23:42:23,566 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:42:23,566 - Kelly plan:
+DEBUG    - 2021-08-17 23:42:24,401 - Step size precision for ADAUSDT: 0
+DEBUG    - 2021-08-17 23:42:24,401 - Step size2 precision for ADAUSDT: 0
+DEBUG    - 2021-08-17 23:42:24,401 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:24,401 -     BUY : 16.9 --> 17.0
+DEBUG    - 2021-08-17 23:42:24,401 -     SELL: 16.9 --> 17.0
+DEBUG    - 2021-08-17 23:42:24,664 - Tick size precision for ADAUSDT: 4
+DEBUG    - 2021-08-17 23:42:24,664 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:24,664 -     BUY : 1.978 --> 1.978
+DEBUG    - 2021-08-17 23:42:24,664 -     SELL: 2.09668 --> 2.0967
+INFO     - 2021-08-17 23:42:24,664 -     Buy 17.0 futures at 1.978, pay initial margin 1.667.
+INFO     - 2021-08-17 23:42:24,930 -         BUY order ID: 15697655173
+INFO     - 2021-08-17 23:42:24,930 -     Add margin 3.333, pay total 5.0.
+INFO     - 2021-08-17 23:42:25,196 -     Sell 17.0 futures at 2.0967 (+6.0 %), get 7.0, gain 2.0 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:42:25,446 -         SELL order ID: 15697655244
+INFO     - 2021-08-17 23:42:25,446 -     Or 17.0 futures are liquidated at ~1.6813 (-15.0 %), lose 5.0 (-100.0 % / ROE: -299.94 %).
+INFO     - 2021-08-17 23:42:25,683 - Placing Kelly bet for XRPUSDT [index=33].
+INFO     - 2021-08-17 23:42:25,683 - Kelly options:
+INFO     - 2021-08-17 23:42:26,199 -     Wallet total: 198.45
+INFO     - 2021-08-17 23:42:26,199 -     Wallet free: 178.39
+INFO     - 2021-08-17 23:42:26,199 -     Wallet index: 40.00
+INFO     - 2021-08-17 23:42:26,199 -     Market price: 1.12
+INFO     - 2021-08-17 23:42:26,199 -     Leverage: 20
+INFO     - 2021-08-17 23:42:26,199 -     Bet size: 0.125
+INFO     - 2021-08-17 23:42:26,199 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:42:26,199 - Kelly plan:
+DEBUG    - 2021-08-17 23:42:27,391 - Step size precision for XRPUSDT: 1
+DEBUG    - 2021-08-17 23:42:27,391 - Step size2 precision for XRPUSDT: 1
+DEBUG    - 2021-08-17 23:42:27,391 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:27,391 -     BUY : 29.7 --> 29.7
+DEBUG    - 2021-08-17 23:42:27,391 -     SELL: 29.7 --> 29.7
+DEBUG    - 2021-08-17 23:42:27,644 - Tick size precision for XRPUSDT: 4
+DEBUG    - 2021-08-17 23:42:27,644 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:27,644 -     BUY : 1.1239 --> 1.1239
+DEBUG    - 2021-08-17 23:42:27,644 -     SELL: 1.19133 --> 1.1913
+INFO     - 2021-08-17 23:42:27,644 -     Buy 29.7 futures at 1.1239, pay initial margin 1.667.
+INFO     - 2021-08-17 23:42:27,909 -         BUY order ID: 16334171279
+INFO     - 2021-08-17 23:42:27,909 -     Add margin 3.333, pay total 5.0.
+INFO     - 2021-08-17 23:42:28,168 -     Sell 29.7 futures at 1.1913 (+6.0 %), get 7.0, gain 2.0 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:42:28,426 -         SELL order ID: 16334171584
+INFO     - 2021-08-17 23:42:28,426 -     Or 29.7 futures are liquidated at ~0.955315 (-15.0 %), lose 5.0 (-100.0 % / ROE: -299.94 %).
+INFO     - 2021-08-17 23:42:28,676 - Placing Kelly bet for ETHUSDT [index=44].
+INFO     - 2021-08-17 23:42:28,676 - Kelly options:
+INFO     - 2021-08-17 23:42:29,194 -     Wallet total: 198.43
+INFO     - 2021-08-17 23:42:29,194 -     Wallet free: 173.37
+INFO     - 2021-08-17 23:42:29,194 -     Wallet index: 40.00
+INFO     - 2021-08-17 23:42:29,194 -     Market price: 3040.36
+INFO     - 2021-08-17 23:42:29,194 -     Leverage: 20
+INFO     - 2021-08-17 23:42:29,194 -     Bet size: 0.125
+INFO     - 2021-08-17 23:42:29,194 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:42:29,194 - Kelly plan:
+DEBUG    - 2021-08-17 23:42:31,531 - Step size precision for ETHUSDT: 3
+DEBUG    - 2021-08-17 23:42:31,531 - Step size2 precision for ETHUSDT: 3
+DEBUG    - 2021-08-17 23:42:31,531 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:31,531 -     BUY : 0.011 --> 0.011
+DEBUG    - 2021-08-17 23:42:31,531 -     SELL: 0.011 --> 0.011
+DEBUG    - 2021-08-17 23:42:31,796 - Tick size precision for ETHUSDT: 2
+DEBUG    - 2021-08-17 23:42:31,796 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:42:31,796 -     BUY : 3040.36 --> 3040.36
+DEBUG    - 2021-08-17 23:42:31,796 -     SELL: 3222.78 --> 3222.78
+INFO     - 2021-08-17 23:42:31,796 -     Buy 0.011 futures at 3040.36, pay initial margin 1.667.
+INFO     - 2021-08-17 23:42:32,049 -         BUY order ID: 8389765504979424285
+INFO     - 2021-08-17 23:42:32,049 -     Add margin 3.333, pay total 5.0.
+INFO     - 2021-08-17 23:42:32,314 -     Sell 0.011 futures at 3222.78 (+6.0 %), get 7.0, gain 2.0 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:42:32,565 -         SELL order ID: 8389765504979424639
+INFO     - 2021-08-17 23:42:32,565 -     Or 0.011 futures are liquidated at ~2584.31 (-15.0 %), lose 5.0 (-100.0 % / ROE: -299.94 %).
+INFO     - 2021-08-17 23:43:32,831 - Number of open positions: 0
+INFO     - 2021-08-17 23:43:33,076 - Number of open orders: 0
+DEBUG    - 2021-08-17 23:43:33,386 - {'orderId': 12630156076, 'symbol': 'VETUSDT', 'status': 'FILLED', 'clientOrderId': 'fpyeIHjpCHNqw5qi77cKca', 'price': '0', 'avgPrice': '0.119520', 'origQty': '279', 'executedQty': '279', 'cumQuote': '33.346080', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236541815, 'updateTime': 1629236541815}
+INFO     - 2021-08-17 23:43:33,386 - Buy order withd ID 12630156076 filled at 0.12 [index=11].
+INFO     - 2021-08-17 23:43:33,386 -     Reset BUY order ID 12630156076 [index=11].
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet before: 40.00
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet after (ignoring fees): 35.00
+DEBUG    - 2021-08-17 23:43:33,386 - {'orderId': 15697655173, 'symbol': 'ADAUSDT', 'status': 'FILLED', 'clientOrderId': '5rs4UlYOOn5jinG9VCq3Jb', 'price': '0', 'avgPrice': '1.97830', 'origQty': '17', 'executedQty': '17', 'cumQuote': '33.63110', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236544493, 'updateTime': 1629236544493}
+INFO     - 2021-08-17 23:43:33,386 - Buy order withd ID 15697655173 filled at 1.98 [index=22].
+INFO     - 2021-08-17 23:43:33,386 -     Reset BUY order ID 15697655173 [index=22].
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet before: 40.00
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet after (ignoring fees): 34.99
+DEBUG    - 2021-08-17 23:43:33,386 - {'orderId': 16334171279, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': '98AHkN9rPyUtJzUEsTsCxe', 'price': '0', 'avgPrice': '1.12360', 'origQty': '29.7', 'executedQty': '29.7', 'cumQuote': '33.37092', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236547457, 'updateTime': 1629236547457}
+INFO     - 2021-08-17 23:43:33,386 - Buy order withd ID 16334171279 filled at 1.12 [index=33].
+INFO     - 2021-08-17 23:43:33,386 -     Reset BUY order ID 16334171279 [index=33].
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet before: 40.00
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet after (ignoring fees): 35.00
+DEBUG    - 2021-08-17 23:43:33,386 - {'orderId': 8389765504979424285, 'symbol': 'ETHUSDT', 'status': 'FILLED', 'clientOrderId': 'bNnMLTpllKepNko76lvOo4', 'price': '0', 'avgPrice': '3040.01000', 'origQty': '0.011', 'executedQty': '0.011', 'cumQuote': '33.44011', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236551604, 'updateTime': 1629236551604}
+INFO     - 2021-08-17 23:43:33,386 - Buy order withd ID 8389765504979424285 filled at 3040.01 [index=44].
+INFO     - 2021-08-17 23:43:33,386 -     Reset BUY order ID 8389765504979424285 [index=44].
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet before: 40.00
+INFO     - 2021-08-17 23:43:33,386 -     Index wallet after (ignoring fees): 34.99
+DEBUG    - 2021-08-17 23:43:33,640 - {'orderId': 12630156316, 'symbol': 'VETUSDT', 'status': 'CANCELED', 'clientOrderId': 'FLeY5DGNcmO5Pd6wXFCOoA', 'price': '0.126710', 'avgPrice': '0.000000', 'origQty': '279', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236542340, 'updateTime': 1629236574134}
+INFO     - 2021-08-17 23:43:33,656 - Sell order withd ID 12630156316 canceled [index=11].
+INFO     - 2021-08-17 23:43:33,656 -     Reset SELL order ID 12630156316 [index=11].
+DEBUG    - 2021-08-17 23:43:33,656 - {'orderId': 15697655244, 'symbol': 'ADAUSDT', 'status': 'CANCELED', 'clientOrderId': 'zs8cNJ45PlbhHhafYqhWeQ', 'price': '2.09670', 'avgPrice': '0.00000', 'origQty': '17', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236544997, 'updateTime': 1629236574137}
+INFO     - 2021-08-17 23:43:33,656 - Sell order withd ID 15697655244 canceled [index=22].
+INFO     - 2021-08-17 23:43:33,656 -     Reset SELL order ID 15697655244 [index=22].
+DEBUG    - 2021-08-17 23:43:33,656 - {'orderId': 16334171584, 'symbol': 'XRPUSDT', 'status': 'CANCELED', 'clientOrderId': 'LSOlf6BwjHpuQCcUPgOpYO', 'price': '1.1913', 'avgPrice': '0.00000', 'origQty': '29.7', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236547968, 'updateTime': 1629236574137}
+INFO     - 2021-08-17 23:43:33,656 - Sell order withd ID 16334171584 canceled [index=33].
+INFO     - 2021-08-17 23:43:33,656 -     Reset SELL order ID 16334171584 [index=33].
+DEBUG    - 2021-08-17 23:43:33,656 - {'orderId': 8389765504979424639, 'symbol': 'ETHUSDT', 'status': 'CANCELED', 'clientOrderId': 'de5GaLqE4Da1Lh6yxdL7kz', 'price': '3222.78', 'avgPrice': '0.00000', 'origQty': '0.011', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236552115, 'updateTime': 1629236574137}
+INFO     - 2021-08-17 23:43:33,656 - Sell order withd ID 8389765504979424639 canceled [index=44].
+INFO     - 2021-08-17 23:43:33,656 -     Reset SELL order ID 8389765504979424639 [index=44].
+INFO     - 2021-08-17 23:43:33,656 - No current orders found. [index=11]
+INFO     - 2021-08-17 23:43:33,914 - Placing Kelly bet for VETUSDT [index=11].
+INFO     - 2021-08-17 23:43:33,914 - Kelly options:
+INFO     - 2021-08-17 23:43:35,084 -     Wallet total: 198.39
+INFO     - 2021-08-17 23:43:35,084 -     Wallet free: 198.39
+INFO     - 2021-08-17 23:43:35,084 -     Wallet index: 35.00
+INFO     - 2021-08-17 23:43:35,084 -     Market price: 0.12
+INFO     - 2021-08-17 23:43:35,084 -     Leverage: 20
+INFO     - 2021-08-17 23:43:35,084 -     Bet size: 0.125
+INFO     - 2021-08-17 23:43:35,084 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:43:35,084 - Kelly plan:
+DEBUG    - 2021-08-17 23:43:35,867 - Step size precision for VETUSDT: 0
+DEBUG    - 2021-08-17 23:43:35,867 - Step size2 precision for VETUSDT: 0
+DEBUG    - 2021-08-17 23:43:35,867 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:35,867 -     BUY : 244.0 --> 244.0
+DEBUG    - 2021-08-17 23:43:35,867 -     SELL: 244.0 --> 244.0
+DEBUG    - 2021-08-17 23:43:36,322 - Tick size precision for VETUSDT: 5
+DEBUG    - 2021-08-17 23:43:36,322 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:36,322 -     BUY : 0.11972 --> 0.11972
+DEBUG    - 2021-08-17 23:43:36,322 -     SELL: 0.126903 --> 0.1269
+INFO     - 2021-08-17 23:43:36,322 -     Buy 244.0 futures at 0.11972, pay initial margin 1.458.
+INFO     - 2021-08-17 23:43:36,603 -         BUY order ID: 12630171490
+INFO     - 2021-08-17 23:43:36,603 -     Add margin 2.917, pay total 4.375.
+INFO     - 2021-08-17 23:43:36,886 -     Sell 244.0 futures at 0.1269 (+6.0 %), get 6.125, gain 1.75 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:43:37,812 -         SELL order ID: 12630172017
+INFO     - 2021-08-17 23:43:37,812 -     Or 244.0 futures are liquidated at ~0.101762 (-15.0 %), lose 4.375 (-100.0 % / ROE: -300.07 %).
+INFO     - 2021-08-17 23:43:37,812 - No current orders found. [index=22]
+INFO     - 2021-08-17 23:43:38,077 - Placing Kelly bet for ADAUSDT [index=22].
+INFO     - 2021-08-17 23:43:38,077 - Kelly options:
+INFO     - 2021-08-17 23:43:38,579 -     Wallet total: 198.38
+INFO     - 2021-08-17 23:43:38,579 -     Wallet free: 194.00
+INFO     - 2021-08-17 23:43:38,579 -     Wallet index: 34.99
+INFO     - 2021-08-17 23:43:38,579 -     Market price: 1.97
+INFO     - 2021-08-17 23:43:38,579 -     Leverage: 20
+INFO     - 2021-08-17 23:43:38,579 -     Bet size: 0.125
+INFO     - 2021-08-17 23:43:38,579 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:43:38,579 - Kelly plan:
+DEBUG    - 2021-08-17 23:43:40,618 - Step size precision for ADAUSDT: 0
+DEBUG    - 2021-08-17 23:43:40,618 - Step size2 precision for ADAUSDT: 0
+DEBUG    - 2021-08-17 23:43:40,618 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:40,618 -     BUY : 14.8 --> 15.0
+DEBUG    - 2021-08-17 23:43:40,618 -     SELL: 14.8 --> 15.0
+DEBUG    - 2021-08-17 23:43:40,891 - Tick size precision for ADAUSDT: 4
+DEBUG    - 2021-08-17 23:43:40,892 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:40,892 -     BUY : 1.9747 --> 1.9747
+DEBUG    - 2021-08-17 23:43:40,892 -     SELL: 2.09318 --> 2.0932
+INFO     - 2021-08-17 23:43:40,892 -     Buy 15.0 futures at 1.9747, pay initial margin 1.458.
+INFO     - 2021-08-17 23:43:41,139 -         BUY order ID: 15697688717
+INFO     - 2021-08-17 23:43:41,139 -     Add margin 2.915, pay total 4.373.
+INFO     - 2021-08-17 23:43:41,410 -     Sell 15.0 futures at 2.0932 (+6.0 %), get 6.122, gain 1.749 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:43:41,669 -         SELL order ID: 15697689230
+INFO     - 2021-08-17 23:43:41,670 -     Or 15.0 futures are liquidated at ~1.67849 (-15.0 %), lose 4.373 (-100.0 % / ROE: -299.93 %).
+INFO     - 2021-08-17 23:43:41,670 - No current orders found. [index=33]
+INFO     - 2021-08-17 23:43:41,903 - Placing Kelly bet for XRPUSDT [index=33].
+INFO     - 2021-08-17 23:43:41,903 - Kelly options:
+INFO     - 2021-08-17 23:43:42,416 -     Wallet total: 198.36
+INFO     - 2021-08-17 23:43:42,416 -     Wallet free: 189.57
+INFO     - 2021-08-17 23:43:42,416 -     Wallet index: 35.00
+INFO     - 2021-08-17 23:43:42,416 -     Market price: 1.12
+INFO     - 2021-08-17 23:43:42,416 -     Leverage: 20
+INFO     - 2021-08-17 23:43:42,431 -     Bet size: 0.125
+INFO     - 2021-08-17 23:43:42,431 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:43:42,431 - Kelly plan:
+DEBUG    - 2021-08-17 23:43:43,817 - Step size precision for XRPUSDT: 1
+DEBUG    - 2021-08-17 23:43:43,817 - Step size2 precision for XRPUSDT: 1
+DEBUG    - 2021-08-17 23:43:43,817 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:43,817 -     BUY : 25.9 --> 25.9
+DEBUG    - 2021-08-17 23:43:43,817 -     SELL: 25.9 --> 25.9
+DEBUG    - 2021-08-17 23:43:44,225 - Tick size precision for XRPUSDT: 4
+DEBUG    - 2021-08-17 23:43:44,225 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:44,225 -     BUY : 1.1246 --> 1.1246
+DEBUG    - 2021-08-17 23:43:44,225 -     SELL: 1.19208 --> 1.1921
+INFO     - 2021-08-17 23:43:44,225 -     Buy 25.9 futures at 1.1246, pay initial margin 1.458.
+INFO     - 2021-08-17 23:43:44,473 -         BUY order ID: 16334203436
+INFO     - 2021-08-17 23:43:44,473 -     Add margin 2.917, pay total 4.375.
+INFO     - 2021-08-17 23:43:44,744 -     Sell 25.9 futures at 1.1921 (+6.0 %), get 6.125, gain 1.75 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:43:45,009 -         SELL order ID: 16334203770
+INFO     - 2021-08-17 23:43:45,009 -     Or 25.9 futures are liquidated at ~0.95591 (-15.0 %), lose 4.375 (-100.0 % / ROE: -300.07 %).
+INFO     - 2021-08-17 23:43:45,009 - No current orders found. [index=44]
+INFO     - 2021-08-17 23:43:45,265 - Placing Kelly bet for ETHUSDT [index=44].
+INFO     - 2021-08-17 23:43:45,266 - Kelly options:
+INFO     - 2021-08-17 23:43:45,762 -     Wallet total: 198.35
+INFO     - 2021-08-17 23:43:45,762 -     Wallet free: 185.18
+INFO     - 2021-08-17 23:43:45,762 -     Wallet index: 34.99
+INFO     - 2021-08-17 23:43:45,762 -     Market price: 3036.92
+INFO     - 2021-08-17 23:43:45,762 -     Leverage: 20
+INFO     - 2021-08-17 23:43:45,762 -     Bet size: 0.125
+INFO     - 2021-08-17 23:43:45,762 -     Gross odds: 1.4
+INFO     - 2021-08-17 23:43:45,762 - Kelly plan:
+DEBUG    - 2021-08-17 23:43:46,387 - Step size precision for ETHUSDT: 3
+DEBUG    - 2021-08-17 23:43:46,387 - Step size2 precision for ETHUSDT: 3
+DEBUG    - 2021-08-17 23:43:46,387 - Quantities may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:46,387 -     BUY : 0.0096 --> 0.01
+DEBUG    - 2021-08-17 23:43:46,387 -     SELL: 0.0096 --> 0.01
+DEBUG    - 2021-08-17 23:43:46,643 - Tick size precision for ETHUSDT: 2
+DEBUG    - 2021-08-17 23:43:46,643 - Prices may have changed due to API filters:
+DEBUG    - 2021-08-17 23:43:46,643 -     BUY : 3036.92 --> 3036.92
+DEBUG    - 2021-08-17 23:43:46,643 -     SELL: 3219.14 --> 3219.14
+INFO     - 2021-08-17 23:43:46,643 -     Buy 0.01 futures at 3036.92, pay initial margin 1.458.
+INFO     - 2021-08-17 23:43:47,579 -         BUY order ID: 8389765504979520687
+INFO     - 2021-08-17 23:43:47,579 -     Add margin 2.916, pay total 4.374.
+INFO     - 2021-08-17 23:43:48,505 -     Sell 0.01 futures at 3219.14 (+6.0 %), get 6.124, gain 1.75 (+40.0 % / ROE: +120.0 %).
+INFO     - 2021-08-17 23:43:49,433 -         SELL order ID: 8389765504979524296
+INFO     - 2021-08-17 23:43:49,433 -     Or 0.01 futures are liquidated at ~2581.38 (-15.0 %), lose 4.374 (-100.0 % / ROE: -300.00 %).
+INFO     - 2021-08-17 23:44:49,691 - Number of open positions: 4
+INFO     - 2021-08-17 23:44:49,945 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:44:49,945 -     Leverage: 20/75
+INFO     - 2021-08-17 23:44:49,945 -     Entry price: 1.97
+INFO     - 2021-08-17 23:44:49,945 -     Market price: 1.97
+INFO     - 2021-08-17 23:44:49,945 -     PNL: -0.01
+INFO     - 2021-08-17 23:44:49,945 -     ROE: -0.69 %
+INFO     - 2021-08-17 23:44:49,945 -     Initial margin: 1.48
+INFO     - 2021-08-17 23:44:49,945 -     Total margin: 4.42
+INFO     - 2021-08-17 23:44:49,945 -     Margin type: isolated
+INFO     - 2021-08-17 23:44:49,945 -     Liquidation price: 1.69
+INFO     - 2021-08-17 23:44:49,945 -     Quantity: 15
+INFO     - 2021-08-17 23:44:49,945 -     Time of request: 2021-08-17 23:43:40.948000
+INFO     - 2021-08-17 23:44:50,195 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:44:50,195 -     Leverage: 20/100
+INFO     - 2021-08-17 23:44:50,195 -     Entry price: 3039.12
+INFO     - 2021-08-17 23:44:50,195 -     Market price: 3027.79
+INFO     - 2021-08-17 23:44:50,195 -     PNL: -0.11
+INFO     - 2021-08-17 23:44:50,195 -     ROE: -7.46 %
+INFO     - 2021-08-17 23:44:50,195 -     Initial margin: 1.52
+INFO     - 2021-08-17 23:44:50,195 -     Total margin: 4.45
+INFO     - 2021-08-17 23:44:50,195 -     Margin type: isolated
+INFO     - 2021-08-17 23:44:50,195 -     Liquidation price: 2607.37
+INFO     - 2021-08-17 23:44:50,195 -     Quantity: 0.01
+INFO     - 2021-08-17 23:44:50,195 -     Time of request: 2021-08-17 23:43:48.050000
+INFO     - 2021-08-17 23:44:50,460 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:44:50,460 -     Leverage: 20/50
+INFO     - 2021-08-17 23:44:50,460 -     Entry price: 0.12
+INFO     - 2021-08-17 23:44:50,460 -     Market price: 0.12
+INFO     - 2021-08-17 23:44:50,460 -     PNL: -0.07
+INFO     - 2021-08-17 23:44:50,460 -     ROE: -4.66 %
+INFO     - 2021-08-17 23:44:50,460 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:44:50,460 -     Total margin: 4.38
+INFO     - 2021-08-17 23:44:50,460 -     Margin type: isolated
+INFO     - 2021-08-17 23:44:50,460 -     Liquidation price: 0.10
+INFO     - 2021-08-17 23:44:50,460 -     Quantity: 244
+INFO     - 2021-08-17 23:44:50,460 -     Time of request: 2021-08-17 23:43:36.426000
+INFO     - 2021-08-17 23:44:50,705 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:44:50,705 -     Leverage: 20/75
+INFO     - 2021-08-17 23:44:50,705 -     Entry price: 1.13
+INFO     - 2021-08-17 23:44:50,705 -     Market price: 1.12
+INFO     - 2021-08-17 23:44:50,705 -     PNL: -0.04
+INFO     - 2021-08-17 23:44:50,705 -     ROE: -2.66 %
+INFO     - 2021-08-17 23:44:50,705 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:44:50,705 -     Total margin: 4.38
+INFO     - 2021-08-17 23:44:50,705 -     Margin type: isolated
+INFO     - 2021-08-17 23:44:50,705 -     Liquidation price: 0.96
+INFO     - 2021-08-17 23:44:50,705 -     Quantity: 25.9
+INFO     - 2021-08-17 23:44:50,705 -     Time of request: 2021-08-17 23:43:44.281000
+INFO     - 2021-08-17 23:44:50,960 - Number of open orders: 4
+INFO     - 2021-08-17 23:44:51,210 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:44:51,210 -     Market price: 3026.20
+INFO     - 2021-08-17 23:44:51,210 -     Sell price: 3219.14
+INFO     - 2021-08-17 23:44:51,210 -     Quantity: 0.01
+INFO     - 2021-08-17 23:44:51,210 -     Time of placement: 2021-08-17 23:43:48.983000
+INFO     - 2021-08-17 23:44:51,210 -     Client Order ID: 5IV1Rjs4dQ6H5YPcoXUod7
+INFO     - 2021-08-17 23:44:51,463 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:44:51,463 -     Market price: 1.97
+INFO     - 2021-08-17 23:44:51,463 -     Sell price: 2.09
+INFO     - 2021-08-17 23:44:51,463 -     Quantity: 0.01
+INFO     - 2021-08-17 23:44:51,463 -     Time of placement: 2021-08-17 23:43:41.207000
+INFO     - 2021-08-17 23:44:51,463 -     Client Order ID: uwgKrXtGB8oQ2aqT8WmMAY
+INFO     - 2021-08-17 23:44:51,728 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:44:51,728 -     Market price: 1.12
+INFO     - 2021-08-17 23:44:51,728 -     Sell price: 1.19
+INFO     - 2021-08-17 23:44:51,728 -     Quantity: 0.01
+INFO     - 2021-08-17 23:44:51,728 -     Time of placement: 2021-08-17 23:43:44.541000
+INFO     - 2021-08-17 23:44:51,728 -     Client Order ID: xhcd3SsWWLqrBnxWV6TvXM
+INFO     - 2021-08-17 23:44:51,979 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:44:51,979 -     Market price: 0.12
+INFO     - 2021-08-17 23:44:51,979 -     Sell price: 0.13
+INFO     - 2021-08-17 23:44:51,979 -     Quantity: 0.01
+INFO     - 2021-08-17 23:44:51,979 -     Time of placement: 2021-08-17 23:43:37.360000
+INFO     - 2021-08-17 23:44:51,979 -     Client Order ID: S5afWTi1t93oGMeDxXGUVR
+DEBUG    - 2021-08-17 23:44:52,260 - {'orderId': 12630171490, 'symbol': 'VETUSDT', 'status': 'FILLED', 'clientOrderId': 'CuGIAGzs0GqBQbnx6A87oH', 'price': '0', 'avgPrice': '0.119590', 'origQty': '244', 'executedQty': '244', 'cumQuote': '29.179960', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236616149, 'updateTime': 1629236616150}
+INFO     - 2021-08-17 23:44:52,260 - Buy order withd ID 12630171490 filled at 0.12 [index=11].
+INFO     - 2021-08-17 23:44:52,260 -     Reset BUY order ID 12630171490 [index=11].
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet before: 35.00
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet after (ignoring fees): 30.62
+DEBUG    - 2021-08-17 23:44:52,260 - {'orderId': 15697688717, 'symbol': 'ADAUSDT', 'status': 'FILLED', 'clientOrderId': 'uZx7azUP4dQjq2XbrVPhgo', 'price': '0', 'avgPrice': '1.97420', 'origQty': '15', 'executedQty': '15', 'cumQuote': '29.61300', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236620687, 'updateTime': 1629236620687}
+INFO     - 2021-08-17 23:44:52,260 - Buy order withd ID 15697688717 filled at 1.97 [index=22].
+INFO     - 2021-08-17 23:44:52,260 -     Reset BUY order ID 15697688717 [index=22].
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet before: 34.99
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet after (ignoring fees): 30.59
+DEBUG    - 2021-08-17 23:44:52,260 - {'orderId': 16334203436, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'DtMk2oYsV1Um7Vw46PKlD3', 'price': '0', 'avgPrice': '1.12550', 'origQty': '25.9', 'executedQty': '25.9', 'cumQuote': '29.15045', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236624023, 'updateTime': 1629236624023}
+INFO     - 2021-08-17 23:44:52,260 - Buy order withd ID 16334203436 filled at 1.13 [index=33].
+INFO     - 2021-08-17 23:44:52,260 -     Reset BUY order ID 16334203436 [index=33].
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet before: 35.00
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet after (ignoring fees): 30.62
+DEBUG    - 2021-08-17 23:44:52,260 - {'orderId': 8389765504979520687, 'symbol': 'ETHUSDT', 'status': 'FILLED', 'clientOrderId': 'tqdZrAgDDBZu6lNIba92t1', 'price': '0', 'avgPrice': '3039.12000', 'origQty': '0.010', 'executedQty': '0.010', 'cumQuote': '30.39120', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629236627118, 'updateTime': 1629236627118}
+INFO     - 2021-08-17 23:44:52,260 - Buy order withd ID 8389765504979520687 filled at 3039.12 [index=44].
+INFO     - 2021-08-17 23:44:52,260 -     Reset BUY order ID 8389765504979520687 [index=44].
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet before: 34.99
+INFO     - 2021-08-17 23:44:52,260 -     Index wallet after (ignoring fees): 30.56
+DEBUG    - 2021-08-17 23:44:52,530 - {'orderId': 12630172017, 'symbol': 'VETUSDT', 'status': 'NEW', 'clientOrderId': 'S5afWTi1t93oGMeDxXGUVR', 'price': '0.126900', 'avgPrice': '0.000000', 'origQty': '244', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236617360, 'updateTime': 1629236617360}
+INFO     - 2021-08-17 23:44:52,530 - Sell order with ID 12630172017 still open [index=11].
+DEBUG    - 2021-08-17 23:44:52,530 - {'orderId': 15697689230, 'symbol': 'ADAUSDT', 'status': 'NEW', 'clientOrderId': 'uwgKrXtGB8oQ2aqT8WmMAY', 'price': '2.09320', 'avgPrice': '0.00000', 'origQty': '15', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236621207, 'updateTime': 1629236621207}
+INFO     - 2021-08-17 23:44:52,530 - Sell order with ID 15697689230 still open [index=22].
+DEBUG    - 2021-08-17 23:44:52,530 - {'orderId': 16334203770, 'symbol': 'XRPUSDT', 'status': 'NEW', 'clientOrderId': 'xhcd3SsWWLqrBnxWV6TvXM', 'price': '1.1921', 'avgPrice': '0.00000', 'origQty': '25.9', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236624541, 'updateTime': 1629236624541}
+INFO     - 2021-08-17 23:44:52,530 - Sell order with ID 16334203770 still open [index=33].
+DEBUG    - 2021-08-17 23:44:52,530 - {'orderId': 8389765504979524296, 'symbol': 'ETHUSDT', 'status': 'NEW', 'clientOrderId': '5IV1Rjs4dQ6H5YPcoXUod7', 'price': '3219.14', 'avgPrice': '0.00000', 'origQty': '0.010', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236628983, 'updateTime': 1629236628983}
+INFO     - 2021-08-17 23:44:52,530 - Sell order with ID 8389765504979524296 still open [index=44].
+INFO     - 2021-08-17 23:44:52,530 - Current BUY order ID: -1 [index=11]
+INFO     - 2021-08-17 23:44:52,530 - Current SELL order ID: 12630172017 [index=11]
+INFO     - 2021-08-17 23:44:52,530 - Current BUY order ID: -1 [index=22]
+INFO     - 2021-08-17 23:44:52,530 - Current SELL order ID: 15697689230 [index=22]
+INFO     - 2021-08-17 23:44:52,530 - Current BUY order ID: -1 [index=33]
+INFO     - 2021-08-17 23:44:52,530 - Current SELL order ID: 16334203770 [index=33]
+INFO     - 2021-08-17 23:44:52,530 - Current BUY order ID: -1 [index=44]
+INFO     - 2021-08-17 23:44:52,530 - Current SELL order ID: 8389765504979524296 [index=44]
+INFO     - 2021-08-17 23:45:52,805 - Number of open positions: 4
+INFO     - 2021-08-17 23:45:53,044 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:45:53,060 -     Leverage: 20/75
+INFO     - 2021-08-17 23:45:53,060 -     Entry price: 1.97
+INFO     - 2021-08-17 23:45:53,060 -     Market price: 1.97
+INFO     - 2021-08-17 23:45:53,060 -     PNL: -0.02
+INFO     - 2021-08-17 23:45:53,060 -     ROE: -1.62 %
+INFO     - 2021-08-17 23:45:53,060 -     Initial margin: 1.48
+INFO     - 2021-08-17 23:45:53,060 -     Total margin: 4.42
+INFO     - 2021-08-17 23:45:53,060 -     Margin type: isolated
+INFO     - 2021-08-17 23:45:53,060 -     Liquidation price: 1.69
+INFO     - 2021-08-17 23:45:53,060 -     Quantity: 15
+INFO     - 2021-08-17 23:45:53,060 -     Time of request: 2021-08-17 23:43:40.948000
+INFO     - 2021-08-17 23:45:53,320 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:45:53,320 -     Leverage: 20/100
+INFO     - 2021-08-17 23:45:53,320 -     Entry price: 3039.12
+INFO     - 2021-08-17 23:45:53,321 -     Market price: 3030.34
+INFO     - 2021-08-17 23:45:53,321 -     PNL: -0.09
+INFO     - 2021-08-17 23:45:53,321 -     ROE: -5.78 %
+INFO     - 2021-08-17 23:45:53,321 -     Initial margin: 1.52
+INFO     - 2021-08-17 23:45:53,321 -     Total margin: 4.45
+INFO     - 2021-08-17 23:45:53,321 -     Margin type: isolated
+INFO     - 2021-08-17 23:45:53,322 -     Liquidation price: 2607.37
+INFO     - 2021-08-17 23:45:53,322 -     Quantity: 0.01
+INFO     - 2021-08-17 23:45:53,322 -     Time of request: 2021-08-17 23:43:48.050000
+INFO     - 2021-08-17 23:45:53,576 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:45:53,576 -     Leverage: 20/50
+INFO     - 2021-08-17 23:45:53,576 -     Entry price: 0.12
+INFO     - 2021-08-17 23:45:53,576 -     Market price: 0.12
+INFO     - 2021-08-17 23:45:53,576 -     PNL: -0.09
+INFO     - 2021-08-17 23:45:53,576 -     ROE: -6.49 %
+INFO     - 2021-08-17 23:45:53,576 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:45:53,576 -     Total margin: 4.38
+INFO     - 2021-08-17 23:45:53,576 -     Margin type: isolated
+INFO     - 2021-08-17 23:45:53,576 -     Liquidation price: 0.10
+INFO     - 2021-08-17 23:45:53,576 -     Quantity: 244
+INFO     - 2021-08-17 23:45:53,576 -     Time of request: 2021-08-17 23:43:36.426000
+INFO     - 2021-08-17 23:45:53,833 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:45:53,833 -     Leverage: 20/75
+INFO     - 2021-08-17 23:45:53,833 -     Entry price: 1.13
+INFO     - 2021-08-17 23:45:53,833 -     Market price: 1.12
+INFO     - 2021-08-17 23:45:53,833 -     PNL: -0.05
+INFO     - 2021-08-17 23:45:53,833 -     ROE: -3.58 %
+INFO     - 2021-08-17 23:45:53,833 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:45:53,833 -     Total margin: 4.38
+INFO     - 2021-08-17 23:45:53,833 -     Margin type: isolated
+INFO     - 2021-08-17 23:45:53,833 -     Liquidation price: 0.96
+INFO     - 2021-08-17 23:45:53,833 -     Quantity: 25.9
+INFO     - 2021-08-17 23:45:53,833 -     Time of request: 2021-08-17 23:43:44.281000
+INFO     - 2021-08-17 23:45:54,094 - Number of open orders: 4
+INFO     - 2021-08-17 23:45:54,333 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:45:54,333 -     Market price: 3030.29
+INFO     - 2021-08-17 23:45:54,333 -     Sell price: 3219.14
+INFO     - 2021-08-17 23:45:54,333 -     Quantity: 0.01
+INFO     - 2021-08-17 23:45:54,333 -     Time of placement: 2021-08-17 23:43:48.983000
+INFO     - 2021-08-17 23:45:54,333 -     Client Order ID: 5IV1Rjs4dQ6H5YPcoXUod7
+INFO     - 2021-08-17 23:45:54,596 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:45:54,596 -     Market price: 1.97
+INFO     - 2021-08-17 23:45:54,596 -     Sell price: 2.09
+INFO     - 2021-08-17 23:45:54,596 -     Quantity: 0.01
+INFO     - 2021-08-17 23:45:54,596 -     Time of placement: 2021-08-17 23:43:41.207000
+INFO     - 2021-08-17 23:45:54,596 -     Client Order ID: uwgKrXtGB8oQ2aqT8WmMAY
+INFO     - 2021-08-17 23:45:54,849 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:45:54,849 -     Market price: 1.12
+INFO     - 2021-08-17 23:45:54,849 -     Sell price: 1.19
+INFO     - 2021-08-17 23:45:54,849 -     Quantity: 0.01
+INFO     - 2021-08-17 23:45:54,849 -     Time of placement: 2021-08-17 23:43:44.541000
+INFO     - 2021-08-17 23:45:54,849 -     Client Order ID: xhcd3SsWWLqrBnxWV6TvXM
+INFO     - 2021-08-17 23:45:55,098 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:45:55,098 -     Market price: 0.12
+INFO     - 2021-08-17 23:45:55,098 -     Sell price: 0.13
+INFO     - 2021-08-17 23:45:55,098 -     Quantity: 0.01
+INFO     - 2021-08-17 23:45:55,098 -     Time of placement: 2021-08-17 23:43:37.360000
+INFO     - 2021-08-17 23:45:55,098 -     Client Order ID: S5afWTi1t93oGMeDxXGUVR
+INFO     - 2021-08-17 23:45:55,365 - No current open buy order.
+DEBUG    - 2021-08-17 23:45:55,632 - {'orderId': 12630172017, 'symbol': 'VETUSDT', 'status': 'NEW', 'clientOrderId': 'S5afWTi1t93oGMeDxXGUVR', 'price': '0.126900', 'avgPrice': '0.000000', 'origQty': '244', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236617360, 'updateTime': 1629236617360}
+INFO     - 2021-08-17 23:45:55,632 - Sell order with ID 12630172017 still open [index=11].
+DEBUG    - 2021-08-17 23:45:55,632 - {'orderId': 15697689230, 'symbol': 'ADAUSDT', 'status': 'NEW', 'clientOrderId': 'uwgKrXtGB8oQ2aqT8WmMAY', 'price': '2.09320', 'avgPrice': '0.00000', 'origQty': '15', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236621207, 'updateTime': 1629236621207}
+INFO     - 2021-08-17 23:45:55,632 - Sell order with ID 15697689230 still open [index=22].
+DEBUG    - 2021-08-17 23:45:55,632 - {'orderId': 16334203770, 'symbol': 'XRPUSDT', 'status': 'NEW', 'clientOrderId': 'xhcd3SsWWLqrBnxWV6TvXM', 'price': '1.1921', 'avgPrice': '0.00000', 'origQty': '25.9', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236624541, 'updateTime': 1629236624541}
+INFO     - 2021-08-17 23:45:55,632 - Sell order with ID 16334203770 still open [index=33].
+DEBUG    - 2021-08-17 23:45:55,632 - {'orderId': 8389765504979524296, 'symbol': 'ETHUSDT', 'status': 'NEW', 'clientOrderId': '5IV1Rjs4dQ6H5YPcoXUod7', 'price': '3219.14', 'avgPrice': '0.00000', 'origQty': '0.010', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236628983, 'updateTime': 1629236628983}
+INFO     - 2021-08-17 23:45:55,632 - Sell order with ID 8389765504979524296 still open [index=44].
+INFO     - 2021-08-17 23:45:55,632 - Current BUY order ID: -1 [index=11]
+INFO     - 2021-08-17 23:45:55,632 - Current SELL order ID: 12630172017 [index=11]
+INFO     - 2021-08-17 23:45:55,632 - Current BUY order ID: -1 [index=22]
+INFO     - 2021-08-17 23:45:55,632 - Current SELL order ID: 15697689230 [index=22]
+INFO     - 2021-08-17 23:45:55,632 - Current BUY order ID: -1 [index=33]
+INFO     - 2021-08-17 23:45:55,632 - Current SELL order ID: 16334203770 [index=33]
+INFO     - 2021-08-17 23:45:55,632 - Current BUY order ID: -1 [index=44]
+INFO     - 2021-08-17 23:45:55,632 - Current SELL order ID: 8389765504979524296 [index=44]
+INFO     - 2021-08-17 23:46:56,564 - Number of open positions: 4
+INFO     - 2021-08-17 23:46:57,486 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:46:57,486 -     Leverage: 20/75
+INFO     - 2021-08-17 23:46:57,487 -     Entry price: 1.97
+INFO     - 2021-08-17 23:46:57,487 -     Market price: 1.97
+INFO     - 2021-08-17 23:46:57,487 -     PNL: -0.00
+INFO     - 2021-08-17 23:46:57,487 -     ROE: -0.10 %
+INFO     - 2021-08-17 23:46:57,487 -     Initial margin: 1.48
+INFO     - 2021-08-17 23:46:57,488 -     Total margin: 4.42
+INFO     - 2021-08-17 23:46:57,488 -     Margin type: isolated
+INFO     - 2021-08-17 23:46:57,488 -     Liquidation price: 1.69
+INFO     - 2021-08-17 23:46:57,488 -     Quantity: 15
+INFO     - 2021-08-17 23:46:57,488 -     Time of request: 2021-08-17 23:43:40.948000
+INFO     - 2021-08-17 23:46:57,741 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:46:57,742 -     Leverage: 20/100
+INFO     - 2021-08-17 23:46:57,742 -     Entry price: 3039.12
+INFO     - 2021-08-17 23:46:57,742 -     Market price: 3038.37
+INFO     - 2021-08-17 23:46:57,742 -     PNL: -0.01
+INFO     - 2021-08-17 23:46:57,743 -     ROE: -0.49 %
+INFO     - 2021-08-17 23:46:57,743 -     Initial margin: 1.52
+INFO     - 2021-08-17 23:46:57,743 -     Total margin: 4.45
+INFO     - 2021-08-17 23:46:57,743 -     Margin type: isolated
+INFO     - 2021-08-17 23:46:57,743 -     Liquidation price: 2607.37
+INFO     - 2021-08-17 23:46:57,744 -     Quantity: 0.01
+INFO     - 2021-08-17 23:46:57,744 -     Time of request: 2021-08-17 23:43:48.050000
+INFO     - 2021-08-17 23:46:58,001 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:46:58,001 -     Leverage: 20/50
+INFO     - 2021-08-17 23:46:58,001 -     Entry price: 0.12
+INFO     - 2021-08-17 23:46:58,002 -     Market price: 0.12
+INFO     - 2021-08-17 23:46:58,002 -     PNL: -0.06
+INFO     - 2021-08-17 23:46:58,002 -     ROE: -4.18 %
+INFO     - 2021-08-17 23:46:58,002 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:46:58,003 -     Total margin: 4.38
+INFO     - 2021-08-17 23:46:58,003 -     Margin type: isolated
+INFO     - 2021-08-17 23:46:58,003 -     Liquidation price: 0.10
+INFO     - 2021-08-17 23:46:58,003 -     Quantity: 244
+INFO     - 2021-08-17 23:46:58,004 -     Time of request: 2021-08-17 23:43:36.426000
+INFO     - 2021-08-17 23:46:58,252 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:46:58,253 -     Leverage: 20/75
+INFO     - 2021-08-17 23:46:58,253 -     Entry price: 1.13
+INFO     - 2021-08-17 23:46:58,253 -     Market price: 1.13
+INFO     - 2021-08-17 23:46:58,253 -     PNL: 0.02
+INFO     - 2021-08-17 23:46:58,254 -     ROE: 1.22 %
+INFO     - 2021-08-17 23:46:58,254 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:46:58,254 -     Total margin: 4.38
+INFO     - 2021-08-17 23:46:58,254 -     Margin type: isolated
+INFO     - 2021-08-17 23:46:58,255 -     Liquidation price: 0.96
+INFO     - 2021-08-17 23:46:58,255 -     Quantity: 25.9
+INFO     - 2021-08-17 23:46:58,255 -     Time of request: 2021-08-17 23:43:44.281000
+INFO     - 2021-08-17 23:46:58,509 - Number of open orders: 4
+INFO     - 2021-08-17 23:46:58,765 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:46:58,765 -     Market price: 3038.55
+INFO     - 2021-08-17 23:46:58,766 -     Sell price: 3219.14
+INFO     - 2021-08-17 23:46:58,766 -     Quantity: 0.01
+INFO     - 2021-08-17 23:46:58,766 -     Time of placement: 2021-08-17 23:43:48.983000
+INFO     - 2021-08-17 23:46:58,766 -     Client Order ID: 5IV1Rjs4dQ6H5YPcoXUod7
+INFO     - 2021-08-17 23:46:59,021 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:46:59,022 -     Market price: 1.97
+INFO     - 2021-08-17 23:46:59,022 -     Sell price: 2.09
+INFO     - 2021-08-17 23:46:59,022 -     Quantity: 0.01
+INFO     - 2021-08-17 23:46:59,022 -     Time of placement: 2021-08-17 23:43:41.207000
+INFO     - 2021-08-17 23:46:59,023 -     Client Order ID: uwgKrXtGB8oQ2aqT8WmMAY
+INFO     - 2021-08-17 23:46:59,278 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:46:59,278 -     Market price: 1.13
+INFO     - 2021-08-17 23:46:59,278 -     Sell price: 1.19
+INFO     - 2021-08-17 23:46:59,278 -     Quantity: 0.01
+INFO     - 2021-08-17 23:46:59,279 -     Time of placement: 2021-08-17 23:43:44.541000
+INFO     - 2021-08-17 23:46:59,279 -     Client Order ID: xhcd3SsWWLqrBnxWV6TvXM
+INFO     - 2021-08-17 23:46:59,540 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:46:59,540 -     Market price: 0.12
+INFO     - 2021-08-17 23:46:59,540 -     Sell price: 0.13
+INFO     - 2021-08-17 23:46:59,540 -     Quantity: 0.01
+INFO     - 2021-08-17 23:46:59,540 -     Time of placement: 2021-08-17 23:43:37.360000
+INFO     - 2021-08-17 23:46:59,540 -     Client Order ID: S5afWTi1t93oGMeDxXGUVR
+INFO     - 2021-08-17 23:46:59,807 - No current open buy order.
+DEBUG    - 2021-08-17 23:47:00,071 - {'orderId': 12630172017, 'symbol': 'VETUSDT', 'status': 'NEW', 'clientOrderId': 'S5afWTi1t93oGMeDxXGUVR', 'price': '0.126900', 'avgPrice': '0.000000', 'origQty': '244', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236617360, 'updateTime': 1629236617360}
+INFO     - 2021-08-17 23:47:00,071 - Sell order with ID 12630172017 still open [index=11].
+DEBUG    - 2021-08-17 23:47:00,071 - {'orderId': 15697689230, 'symbol': 'ADAUSDT', 'status': 'NEW', 'clientOrderId': 'uwgKrXtGB8oQ2aqT8WmMAY', 'price': '2.09320', 'avgPrice': '0.00000', 'origQty': '15', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236621207, 'updateTime': 1629236621207}
+INFO     - 2021-08-17 23:47:00,071 - Sell order with ID 15697689230 still open [index=22].
+DEBUG    - 2021-08-17 23:47:00,072 - {'orderId': 16334203770, 'symbol': 'XRPUSDT', 'status': 'NEW', 'clientOrderId': 'xhcd3SsWWLqrBnxWV6TvXM', 'price': '1.1921', 'avgPrice': '0.00000', 'origQty': '25.9', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236624541, 'updateTime': 1629236624541}
+INFO     - 2021-08-17 23:47:00,072 - Sell order with ID 16334203770 still open [index=33].
+DEBUG    - 2021-08-17 23:47:00,072 - {'orderId': 8389765504979524296, 'symbol': 'ETHUSDT', 'status': 'NEW', 'clientOrderId': '5IV1Rjs4dQ6H5YPcoXUod7', 'price': '3219.14', 'avgPrice': '0.00000', 'origQty': '0.010', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236628983, 'updateTime': 1629236628983}
+INFO     - 2021-08-17 23:47:00,072 - Sell order with ID 8389765504979524296 still open [index=44].
+INFO     - 2021-08-17 23:47:00,073 - Current BUY order ID: -1 [index=11]
+INFO     - 2021-08-17 23:47:00,073 - Current SELL order ID: 12630172017 [index=11]
+INFO     - 2021-08-17 23:47:00,073 - Current BUY order ID: -1 [index=22]
+INFO     - 2021-08-17 23:47:00,073 - Current SELL order ID: 15697689230 [index=22]
+INFO     - 2021-08-17 23:47:00,074 - Current BUY order ID: -1 [index=33]
+INFO     - 2021-08-17 23:47:00,074 - Current SELL order ID: 16334203770 [index=33]
+INFO     - 2021-08-17 23:47:00,074 - Current BUY order ID: -1 [index=44]
+INFO     - 2021-08-17 23:47:00,074 - Current SELL order ID: 8389765504979524296 [index=44]
+INFO     - 2021-08-17 23:48:00,337 - Number of open positions: 4
+INFO     - 2021-08-17 23:48:01,264 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:48:01,264 -     Leverage: 20/75
+INFO     - 2021-08-17 23:48:01,264 -     Entry price: 1.97
+INFO     - 2021-08-17 23:48:01,264 -     Market price: 1.98
+INFO     - 2021-08-17 23:48:01,264 -     PNL: 0.02
+INFO     - 2021-08-17 23:48:01,264 -     ROE: 1.06 %
+INFO     - 2021-08-17 23:48:01,264 -     Initial margin: 1.48
+INFO     - 2021-08-17 23:48:01,264 -     Total margin: 4.42
+INFO     - 2021-08-17 23:48:01,264 -     Margin type: isolated
+INFO     - 2021-08-17 23:48:01,264 -     Liquidation price: 1.69
+INFO     - 2021-08-17 23:48:01,264 -     Quantity: 15
+INFO     - 2021-08-17 23:48:01,264 -     Time of request: 2021-08-17 23:43:40.948000
+INFO     - 2021-08-17 23:48:01,525 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:48:01,525 -     Leverage: 20/100
+INFO     - 2021-08-17 23:48:01,525 -     Entry price: 3039.12
+INFO     - 2021-08-17 23:48:01,526 -     Market price: 3039.23
+INFO     - 2021-08-17 23:48:01,526 -     PNL: 0.00
+INFO     - 2021-08-17 23:48:01,526 -     ROE: 0.07 %
+INFO     - 2021-08-17 23:48:01,527 -     Initial margin: 1.52
+INFO     - 2021-08-17 23:48:01,527 -     Total margin: 4.45
+INFO     - 2021-08-17 23:48:01,527 -     Margin type: isolated
+INFO     - 2021-08-17 23:48:01,527 -     Liquidation price: 2607.37
+INFO     - 2021-08-17 23:48:01,528 -     Quantity: 0.01
+INFO     - 2021-08-17 23:48:01,528 -     Time of request: 2021-08-17 23:43:48.050000
+INFO     - 2021-08-17 23:48:02,448 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:48:02,448 -     Leverage: 20/50
+INFO     - 2021-08-17 23:48:02,448 -     Entry price: 0.12
+INFO     - 2021-08-17 23:48:02,448 -     Market price: 0.12
+INFO     - 2021-08-17 23:48:02,448 -     PNL: 0.00
+INFO     - 2021-08-17 23:48:02,448 -     ROE: 0.00 %
+INFO     - 2021-08-17 23:48:02,448 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:48:02,448 -     Total margin: 4.38
+INFO     - 2021-08-17 23:48:02,448 -     Margin type: isolated
+INFO     - 2021-08-17 23:48:02,448 -     Liquidation price: 0.10
+INFO     - 2021-08-17 23:48:02,448 -     Quantity: 244
+INFO     - 2021-08-17 23:48:02,448 -     Time of request: 2021-08-17 23:43:36.426000
+INFO     - 2021-08-17 23:48:02,712 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:48:02,713 -     Leverage: 20/75
+INFO     - 2021-08-17 23:48:02,713 -     Entry price: 1.13
+INFO     - 2021-08-17 23:48:02,713 -     Market price: 1.13
+INFO     - 2021-08-17 23:48:02,713 -     PNL: 0.06
+INFO     - 2021-08-17 23:48:02,713 -     ROE: 3.84 %
+INFO     - 2021-08-17 23:48:02,714 -     Initial margin: 1.46
+INFO     - 2021-08-17 23:48:02,714 -     Total margin: 4.38
+INFO     - 2021-08-17 23:48:02,714 -     Margin type: isolated
+INFO     - 2021-08-17 23:48:02,714 -     Liquidation price: 0.96
+INFO     - 2021-08-17 23:48:02,714 -     Quantity: 25.9
+INFO     - 2021-08-17 23:48:02,714 -     Time of request: 2021-08-17 23:43:44.281000
+INFO     - 2021-08-17 23:48:02,964 - Number of open orders: 4
+INFO     - 2021-08-17 23:48:03,216 - --> Symbol: ETHUSDT
+INFO     - 2021-08-17 23:48:03,216 -     Market price: 3038.39
+INFO     - 2021-08-17 23:48:03,217 -     Sell price: 3219.14
+INFO     - 2021-08-17 23:48:03,217 -     Quantity: 0.01
+INFO     - 2021-08-17 23:48:03,218 -     Time of placement: 2021-08-17 23:43:48.983000
+INFO     - 2021-08-17 23:48:03,218 -     Client Order ID: 5IV1Rjs4dQ6H5YPcoXUod7
+INFO     - 2021-08-17 23:48:03,463 - --> Symbol: ADAUSDT
+INFO     - 2021-08-17 23:48:03,463 -     Market price: 1.98
+INFO     - 2021-08-17 23:48:03,463 -     Sell price: 2.09
+INFO     - 2021-08-17 23:48:03,463 -     Quantity: 0.01
+INFO     - 2021-08-17 23:48:03,463 -     Time of placement: 2021-08-17 23:43:41.207000
+INFO     - 2021-08-17 23:48:03,463 -     Client Order ID: uwgKrXtGB8oQ2aqT8WmMAY
+INFO     - 2021-08-17 23:48:03,727 - --> Symbol: XRPUSDT
+INFO     - 2021-08-17 23:48:03,727 -     Market price: 1.13
+INFO     - 2021-08-17 23:48:03,727 -     Sell price: 1.19
+INFO     - 2021-08-17 23:48:03,727 -     Quantity: 0.01
+INFO     - 2021-08-17 23:48:03,727 -     Time of placement: 2021-08-17 23:43:44.541000
+INFO     - 2021-08-17 23:48:03,727 -     Client Order ID: xhcd3SsWWLqrBnxWV6TvXM
+INFO     - 2021-08-17 23:48:03,974 - --> Symbol: VETUSDT
+INFO     - 2021-08-17 23:48:03,974 -     Market price: 0.12
+INFO     - 2021-08-17 23:48:03,975 -     Sell price: 0.13
+INFO     - 2021-08-17 23:48:03,976 -     Quantity: 0.01
+INFO     - 2021-08-17 23:48:03,976 -     Time of placement: 2021-08-17 23:43:37.360000
+INFO     - 2021-08-17 23:48:03,977 -     Client Order ID: S5afWTi1t93oGMeDxXGUVR
+INFO     - 2021-08-17 23:48:04,913 - No current open buy order.
+DEBUG    - 2021-08-17 23:48:05,172 - {'orderId': 12630172017, 'symbol': 'VETUSDT', 'status': 'NEW', 'clientOrderId': 'S5afWTi1t93oGMeDxXGUVR', 'price': '0.126900', 'avgPrice': '0.000000', 'origQty': '244', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236617360, 'updateTime': 1629236617360}
+INFO     - 2021-08-17 23:48:05,172 - Sell order with ID 12630172017 still open [index=11].
+DEBUG    - 2021-08-17 23:48:05,173 - {'orderId': 15697689230, 'symbol': 'ADAUSDT', 'status': 'NEW', 'clientOrderId': 'uwgKrXtGB8oQ2aqT8WmMAY', 'price': '2.09320', 'avgPrice': '0.00000', 'origQty': '15', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236621207, 'updateTime': 1629236621207}
+INFO     - 2021-08-17 23:48:05,173 - Sell order with ID 15697689230 still open [index=22].
+DEBUG    - 2021-08-17 23:48:05,173 - {'orderId': 16334203770, 'symbol': 'XRPUSDT', 'status': 'NEW', 'clientOrderId': 'xhcd3SsWWLqrBnxWV6TvXM', 'price': '1.1921', 'avgPrice': '0.00000', 'origQty': '25.9', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236624541, 'updateTime': 1629236624541}
+INFO     - 2021-08-17 23:48:05,174 - Sell order with ID 16334203770 still open [index=33].
+DEBUG    - 2021-08-17 23:48:05,174 - {'orderId': 8389765504979524296, 'symbol': 'ETHUSDT', 'status': 'NEW', 'clientOrderId': '5IV1Rjs4dQ6H5YPcoXUod7', 'price': '3219.14', 'avgPrice': '0.00000', 'origQty': '0.010', 'executedQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629236628983, 'updateTime': 1629236628983}
+INFO     - 2021-08-17 23:48:05,174 - Sell order with ID 8389765504979524296 still open [index=44].
+INFO     - 2021-08-17 23:48:05,175 - Current BUY order ID: -1 [index=11]
+INFO     - 2021-08-17 23:48:05,175 - Current SELL order ID: 12630172017 [index=11]
+INFO     - 2021-08-17 23:48:05,175 - Current BUY order ID: -1 [index=22]
+INFO     - 2021-08-17 23:48:05,176 - Current SELL order ID: 15697689230 [index=22]
+INFO     - 2021-08-17 23:48:05,176 - Current BUY order ID: -1 [index=33]
+INFO     - 2021-08-17 23:48:05,176 - Current SELL order ID: 16334203770 [index=33]
+INFO     - 2021-08-17 23:48:05,176 - Current BUY order ID: -1 [index=44]
+INFO     - 2021-08-17 23:48:05,176 - Current SELL order ID: 8389765504979524296 [index=44]
