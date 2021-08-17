@@ -538,7 +538,7 @@ if __name__ == '__main__':
     # leverages = [100, 125, 50]
     idxs = [55, 77]
     symbols = ['VETUSDT', 'ADAUSDT']
-    wallets = [50, 50]
+    wallets = [70, 70]
     leverages = [20, 20]
 
     # Create object

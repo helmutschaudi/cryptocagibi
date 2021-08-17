@@ -25,7 +25,7 @@ class kellyBet:
         #         (this is an assumption and would need to be calculated by
         #          analyzing historical data)
         # ==> f = .125 (bet size factor)
-        self._bet_size_factor = 1.25
+        self._bet_size_factor = 0.125
         
         # Calculate trade details:
         self._bet_size = self._wallet_balance*self._bet_size_factor
@@ -101,5 +101,5 @@ if __name__ == '__main__':
     myBet = kellyBet(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
     myBet.kellyBet(1.4, 5.)
     myBet.kellyBetInfo()
-    myBet.kellyBet(3.5, 2.)
+    #myBet.kellyBet(3.5, 2.)
     myBet.kellyBetInfo()
