@@ -100,7 +100,8 @@ if __name__ == '__main__':
 
     myBet = kellyBet(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
     #myBet.kellyBet(1.4, 5.)
-    myBet.kellyBet(1.1818, 1.1)
+    myBet.kellyBet(1.1818, 1.1) #@Leverage  20: sell@+1% or loose@-5.5%, Gain 22.72 or lose 125
+    #myBet.kellyBet(1.2, 5)     #@Leverage 100: sell@+1% or loose@-5.0%, Gain 25 or lose 125
     myBet.kellyBetInfo()
     #myBet.kellyBet(3.5, 2.)
     #myBet.kellyBetInfo()
