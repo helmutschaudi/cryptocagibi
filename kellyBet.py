@@ -99,7 +99,8 @@ class kellyBet:
 if __name__ == '__main__':
 
     myBet = kellyBet(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
-    myBet.kellyBet(1.2, 3.)
+    #myBet.kellyBet(1.4, 5.)
+    myBet.kellyBet(1.1818, 1.1)
     myBet.kellyBetInfo()
     #myBet.kellyBet(3.5, 2.)
     #myBet.kellyBetInfo()

@@ -316,7 +316,7 @@ class get_rich_quick_scheme():
 
         myBet = kellyBet(self.wallets[idx], price_market, leverage)
         # myBet.kellyBet(1.2, 1.)
-        myBet.kellyBet(1.2, 3.)
+        myBet.kellyBet(1.1818, 1.1) # ROE20
         # myBet.kellyBet(3.5, 2.)
         logger.info('    Bet size: %s', myBet._bet_size_factor)
         logger.info('    Gross odds: %s', myBet.gross_odds)
