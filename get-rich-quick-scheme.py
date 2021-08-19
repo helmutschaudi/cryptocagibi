@@ -103,7 +103,7 @@ class get_rich_quick_scheme():
 
     def check_wallets(self):
         _, wallet_free = self.get_balance('USDT')
-        if self.get_total_index_wallets() > wallet_free:
+        if self.get_total_index_wallets() > wallet_free*1.3: # 30% overbooking ist acceptable
             logger.error('The total of requested index wallets is higher '
                          'than your free wallet: %.2f > %.2f',
                          self.get_total_index_wallets(), wallet_free)
