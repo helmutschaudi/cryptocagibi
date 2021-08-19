@@ -531,13 +531,8 @@ class get_rich_quick_scheme():
 
 if __name__ == '__main__':
 
-    # Variables
-    # idxs = [55, 77, 99]
-    # symbols = ['ETHUSDT', 'BTCUSDT', 'SOLUSDT']
-    # wallets = [50, 50, 50]
-    # leverages = [100, 125, 50]
     idxs = [11,22,33,44,55]
-    symbols = ['VETUSDT','ADAUSDT','XRPUSDT','ETHUSDT','BTCUSDT']
+    symbols = ['BTCUSDT','VETUSDT','ADAUSDT','ETHUSDT','XRPUSDT']
     wallets = [100,100,100,100,100]
     leverages = [20,20,20,20,20]
 
