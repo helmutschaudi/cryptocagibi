@@ -103,7 +103,7 @@ class get_rich_quick_scheme():
 
     def check_wallets(self):
         _, wallet_free = self.get_balance('USDT')
-        if self.get_total_index_wallets() > wallet_free*1.3: # 30% overbooking ist acceptable
+        if self.get_total_index_wallets() > wallet_free:
             logger.error('The total of requested index wallets is higher '
                          'than your free wallet: %.2f > %.2f',
                          self.get_total_index_wallets(), wallet_free)
@@ -535,7 +535,7 @@ if __name__ == '__main__':
 
     idxs = [11,22,33,44,55]
     symbols = ['BTCUSDT','VETUSDT','ADAUSDT','ETHUSDT','XRPUSDT']
-    wallets = [120,120,120,120,120]
+    wallets = [90,90,90,90,90]
     leverages = [20,20,20,20,20]
 
     # Create object
