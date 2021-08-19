@@ -10,7 +10,7 @@ from datetime import datetime
 from time import sleep
 from binance.client import Client
 from kellyBet import kellyBet
-
+from binance_keys import *
 
 def setup_logger(name, log_file, level=logging.INFO):
 
@@ -37,9 +37,12 @@ class get_rich_quick_scheme():
 
     def __init__(self):
 
-        self.api_key = os.environ.get('binance_api')
-        self.api_secret = os.environ.get('binance_secret')
+        #self.api_key = os.environ.get('binance_api')
+        #self.api_secret = os.environ.get('binance_secret')
 
+        self.api_key = binance_api
+        self.api_secret = binance_secret
+        
         self.client = Client(self.api_key, self.api_secret)
         self.dry_run = True
 
