@@ -312,7 +312,6 @@ class get_rich_quick_scheme():
         logger.info('Kelly options:')
         price_market = float(self.client.futures_position_information
                              (symbol=symbol)[0]['markPrice'])
-        #price_market = float(self.client.get_ticker(symbol=symbol)['askPrice'])
         wallet_total, wallet_free = self.get_balance('USDT')
         logger.info('    Wallet total: %.2f', wallet_total)
         logger.info('    Wallet free: %.2f', wallet_free)
@@ -405,8 +404,36 @@ class get_rich_quick_scheme():
                     myBet.asset_total,
                     100*myBet.asset_total/myBet.asset_old)
 
-    def check_buy_order_status(self):
+    def check_buy_order_status(self, order, idx):
+        if order['status'] == 'NEW':
+            logger.info('Buy order with ID %s still open '
+                        '[index=%d].',
+                        order['orderId'], idx)
+        elif order['status'] == 'FILLED':
+            # Bought, we have to pay money
+            # Update buy order
+            logger.info('Buy order withd ID %s filled at %.2f '
+                        '[index=%d].',
+                        order['orderId'],
+                        float(order['avgPrice']),
+                        idx)
+            self.reset_open_buy_order(idx)
+            # Update wallet
+            logger.info('    Index wallet before: %.2f',
+                        self.wallets[idx])
+            # Subtract cost of futures
+            self.wallets[idx] -= (float(order['avgPrice']) *
+                                    float(order['executedQty']) /
+                                    self.leverages[idx]
+                                    )
+            # Subtract added margin
+            self.wallets[idx] -= self.margins_added[idx]
+            logger.info('    Index wallet after (ignoring fees): '
+                        '%.2f', self.wallets[idx])
+            # Store entry price for later usage
+            self.entry_prices[idx] = float(order['avgPrice'])
 
+    def check_status_of_all_buy_orders(self):
         all_orders = self.client.futures_get_all_orders()
         # Loop over current orders (stored in this instance)
         for idx, order_id in self.order_ids.items():
@@ -426,113 +453,89 @@ class get_rich_quick_scheme():
 
                     # We found the current order for a given index
                     # Now check status
-                    if order['status'] == 'NEW':
-                        logger.info('Buy order with ID %s still open '
-                                    '[index=%d].',
-                                    order_id['BUY'], idx)
-                    elif order['status'] == 'FILLED':
-                        # Bought, we have to pay money
-                        # Update buy order
-                        logger.info('Buy order withd ID %s filled at %.2f '
-                                    '[index=%d].',
-                                    order_id['BUY'],
-                                    float(order['avgPrice']),
-                                    idx)
-                        self.reset_open_buy_order(idx)
-                        # Update wallet
-                        logger.info('    Index wallet before: %.2f',
-                                    self.wallets[idx])
-                        # Subtract cost of futures
-                        self.wallets[idx] -= (float(order['avgPrice']) *
-                                              float(order['executedQty']) /
-                                              self.leverages[idx]
-                                              )
-                        # Subtract added margin
-                        self.wallets[idx] -= self.margins_added[idx]
-                        logger.info('    Index wallet after (ignoring fees): '
-                                    '%.2f', self.wallets[idx])
-                        # Store entry price for later usage
-                        self.entry_prices[idx] = float(order['avgPrice'])
+                    self.check_buy_order_status(order,idx)
 
-    def check_sell_order_status(self):
+    
+    def check_sell_order_status(self, order, idx):
+        if order['status'] == 'NEW':
+            logger.info('Sell order with ID %s still open '
+                        '[index=%d].',
+                        order['orderId'], idx)
+        elif order['status'] == 'FILLED':
+            # Sold, we get money
+            # Update sell order
+            logger.info('Sell order withd ID %s filled '
+                        '[index=%d].',
+                        order['orderId'], idx)
+            self.reset_open_sell_order(idx)
 
+            # Update wallet
+            logger.info('    Index wallet before: %.2f',
+                        self.wallets[idx])
+            # See dev.binance.vision/t/pnl-manual-calculation/1723
+            self.wallets[idx] += (float(order['executedQty']) *
+                                    self.entry_prices[idx] *
+                                    (1/self.leverages[idx]-1.) +
+                                    float(order['avgPrice']) *
+                                    float(order['executedQty'])
+                                    )
+            self.wallets[idx] += self.margins_added[idx]
+            logger.info('    Index wallet after (ignoring fees): '
+                        '%.2f', self.wallets[idx])
+        elif order['status'] == 'CANCELED':
+            # Canceled, no money
+            # Update sell order
+            logger.info('Sell order withd ID %s canceled '
+                        '[index=%d].',
+                        order['orderId'], idx)
+            self.reset_open_sell_order(idx)
+        elif order['status'] == 'EXPIRED':
+            # Liquidated, we lose money
+            # Update sell order
+            logger.info('Sell order with ID %s expired '
+                        '[index=%d].',
+                        order['orderId'], idx)
+            self.reset_open_sell_order(idx)
+            # Update wallet
+            logger.info('Index wallet before: %.2f',
+                        self.wallets[idx])
+            # See dev.binance.vision/t/pnl-manual-calculation/1723
+            self.wallets[idx] -= (float(order['executedQty']) *
+                                    self.entry_prices[idx] *
+                                    (1/self.leverages[idx]-1.) +
+                                    float(order['avgPrice']) *
+                                    float(order['executedQty'])
+                                    )
+            logger.info('Index wallet after (ignoring fees): '
+                        '%.2f', self.wallets[idx])
+        else:
+            # Update sell order
+            logger.warning('Sell order with ID %s has unknown '
+                            'state %s [index=%d].',
+                            order['orderId'], order['status'], idx)
+            logger.warning('Should I reset the open order?')
+        
+    def check_status_of_all_sell_orders(self):
         all_orders = self.client.futures_get_all_orders()
+        
         # Loop over current orders (stored in this instance)
         for idx, order_id in self.order_ids.items():
 
             # If there is no current sell order, skip
-            if self.order_ids[idx]['SELL'] < 0:
+            if self.order_ids[idx]['SELL'] < 0: # ...weshalb kleiner 0 nicht = 0?
                 logger.info('No current open sell order.')
                 return
 
             # Loop over all orders (from API)
             for order in all_orders:
+            
                 # Match the two orders
                 if order['orderId'] == order_id['SELL']:
-
                     # Log order
                     logger.debug(order)
-
                     # We found the current order for a given index
                     # Now check status
-                    if order['status'] == 'NEW':
-                        logger.info('Sell order with ID %s still open '
-                                    '[index=%d].',
-                                    order_id['SELL'], idx)
-                    elif order['status'] == 'FILLED':
-                        # Sold, we get money
-                        # Update sell order
-                        logger.info('Sell order withd ID %s filled '
-                                    '[index=%d].',
-                                    order_id['SELL'], idx)
-                        self.reset_open_sell_order(idx)
-
-                        # Update wallet
-                        logger.info('    Index wallet before: %.2f',
-                                    self.wallets[idx])
-                        # See dev.binance.vision/t/pnl-manual-calculation/1723
-                        self.wallets[idx] += (float(order['executedQty']) *
-                                              self.entry_prices[idx] *
-                                              (1/self.leverages[idx]-1.) +
-                                              float(order['avgPrice']) *
-                                              float(order['executedQty'])
-                                              )
-                        self.wallets[idx] += self.margins_added[idx]
-                        logger.info('    Index wallet after (ignoring fees): '
-                                    '%.2f', self.wallets[idx])
-                    elif order['status'] == 'CANCELED':
-                        # Canceled, no money
-                        # Update sell order
-                        logger.info('Sell order withd ID %s canceled '
-                                    '[index=%d].',
-                                    order_id['SELL'], idx)
-                        self.reset_open_sell_order(idx)
-                    elif order['status'] == 'EXPIRED':
-                        # Liquidated, we lose money
-                        # Update sell order
-                        logger.info('Sell order with ID %s expired '
-                                    '[index=%d].',
-                                    order_id['SELL'], idx)
-                        self.reset_open_sell_order(idx)
-                        # Update wallet
-                        logger.info('Index wallet before: %.2f',
-                                    self.wallets[idx])
-                        # See dev.binance.vision/t/pnl-manual-calculation/1723
-                        self.wallets[idx] -= (float(order['executedQty']) *
-                                              self.entry_prices[idx] *
-                                              (1/self.leverages[idx]-1.) +
-                                              float(order['avgPrice']) *
-                                              float(order['executedQty'])
-                                              )
-                        logger.info('Index wallet after (ignoring fees): '
-                                    '%.2f', self.wallets[idx])
-                    else:
-                        # Update sell order
-                        logger.warning('Sell order with ID %s has unknown '
-                                       'state %s [index=%d].',
-                                       order_id['SELL'], order['status'], idx)
-                        logger.warning('Should I reset the open order?')
-
+                    self.check_sell_order_status(order,idx)
 
 if __name__ == '__main__':
 
@@ -559,8 +562,8 @@ if __name__ == '__main__':
 
         # Check status of all current orders, reset them if necessary, and
         # update wallet
-        loseitall.check_buy_order_status()
-        loseitall.check_sell_order_status()
+        loseitall.check_status_of_all_buy_orders()
+        loseitall.check_status_of_all_sell_orders()
 
         # Place several bets
         for i in range(len(idxs)):
