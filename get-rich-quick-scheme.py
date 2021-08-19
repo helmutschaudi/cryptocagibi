@@ -1,3 +1,6 @@
+# Did not restart orders for 5th position (BTCUSDT)
+
+
 #!/usr/bin/env python3
 
 import os
@@ -315,9 +318,8 @@ class get_rich_quick_scheme():
         logger.info('    Leverage: %d', leverage)
 
         myBet = kellyBet(self.wallets[idx], price_market, leverage)
-        # myBet.kellyBet(1.2, 1.)
-        myBet.kellyBet(1.1818, 1.1) # ROE20
-        # myBet.kellyBet(3.5, 2.)
+        # myBet.kellyBet(3.5, 2.0)
+        myBet.kellyBet(1.2, 1.0)
         logger.info('    Bet size: %s', myBet._bet_size_factor)
         logger.info('    Gross odds: %s', myBet.gross_odds)
 
@@ -533,7 +535,7 @@ if __name__ == '__main__':
 
     idxs = [11,22,33,44,55]
     symbols = ['BTCUSDT','VETUSDT','ADAUSDT','ETHUSDT','XRPUSDT']
-    wallets = [100,100,100,100,100]
+    wallets = [120,120,120,120,120]
     leverages = [20,20,20,20,20]
 
     # Create object

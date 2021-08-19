@@ -38,6 +38,7 @@ class kellyBet:
         self._futures_sell = self._futures_buy
         self._asset_new = self._margin_total*self._gross_odds
         self._price_liq = self._price_old-self._margin_total/self._futures_buy
+        self._roe=100*self._gain/self._initial_margin # ? added margin not relevant?
 
     def kellyBetInfo(self):
 
@@ -45,7 +46,7 @@ class kellyBet:
         print(f'Gross odds: {self._gross_odds}')
         print(f'Buy {round(self._futures_buy, 3)} futures at {round(self._price_old, 5)}, pay initial margin {round(self._initial_margin, 2)}.')
         print(f'Add margin {round(self._margin_add, 2)}, pay total {round(self._margin_total, 2)}.')
-        print(f'Sell {round(self._futures_sell, 3)} futures at {round(self._price_new, 5)} (+{round(100*self._price_new/self._price_old-100, 2)} %), get {round(self._asset_new, 2)}, gain {round(self._gain, 2)} (+{round(100*self._gain/self._margin_total, 2)} % / ROE: +{round(100*self._gain/self._initial_margin, 2)} %).')
+        print(f'Sell {round(self._futures_sell, 3)} futures at {round(self._price_new, 5)} (+{round(100*self._price_new/self._price_old-100, 2)} %), get {round(self._asset_new, 2)}, gain {round(self._gain, 2)} (+{round(100*self._gain/self._margin_total, 2)} % / ROE: +{round(self._roe, 2)} %).')
         print(f'Or {round(self._futures_sell, 3)} futures are liquidated at ~{round(self._price_liq, 5)} ({round(100*self._price_liq/self._price_old-100, 2)} %), lose {round(self._margin_total, 2)} (-100.0 % / ROE: -{round(100*self._margin_total/self._initial_margin, 2)} %).')
 
     @property
@@ -99,9 +100,12 @@ class kellyBet:
 if __name__ == '__main__':
 
     myBet = kellyBet(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
-    #myBet.kellyBet(1.4, 5.)
-    myBet.kellyBet(1.1818, 1.1) #@Leverage  20: sell@+1% or lose@-5.5%, Gain 22.72 or lose 125
-    #myBet.kellyBet(1.2, 5)     #@Leverage 100: sell@+1% or lose@-5.0%, Gain 25    or lose 125
+    
+    
+    # Wallet 100 units, PPU 1, Leverage  20 -> sell@+1% or lose@-5.0% -> Gain 2.50 (ROE+20%)  or lose 12.50
+    myBet.kellyBet(1.2, 1)
+    
+    # Wallet 100 units, PPU 1, Leverage 100 -> sell@+1% or lose@-5.0% -> Gain 2.50 (ROE+100%) or lose 12.50
+    #myBet.kellyBet(1.2, 5)     
+    
     myBet.kellyBetInfo()
-    #myBet.kellyBet(3.5, 2.)
-    #myBet.kellyBetInfo()
