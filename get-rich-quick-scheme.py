@@ -12,6 +12,7 @@ from binance.client import Client
 from kellyBet import kellyBet
 from binance_keys import *
 
+
 def setup_logger(name, log_file, level=logging.INFO):
 
     formatter = logging.Formatter('%(levelname)-8s - %(asctime)s - '
@@ -42,7 +43,7 @@ class get_rich_quick_scheme():
 
         self.api_key = binance_api
         self.api_secret = binance_secret
-        
+
         self.client = Client(self.api_key, self.api_secret)
         self.dry_run = True
 
@@ -98,7 +99,7 @@ class get_rich_quick_scheme():
             self.wallets[idxs[idx]] = wallets[idx]
         self.check_wallets()
 
-    def get_total_index_wallets(self):
+    def get_total_balance_wallets(self):
         total = 0
         for _, value in self.wallets.items():
             total += value
@@ -106,13 +107,13 @@ class get_rich_quick_scheme():
 
     def check_wallets(self):
         _, wallet_free = self.get_balance('USDT')
-        if self.get_total_index_wallets() > wallet_free:
-            logger.error('The total of requested index wallets is higher '
-                         'than your free wallet: %.2f > %.2f',
-                         self.get_total_index_wallets(), wallet_free)
+        if self.get_total_balance_wallets() > wallet_free:
+            logger.error('The total of requested value for wallets is higher '
+                         'than your free account balance: %.2f > %.2f',
+                         self.get_total_balance_wallets(), wallet_free)
             raise ValueError('Not enough money.')
-        logger.info('Total index wallets balance: %.2f',
-                    self.get_total_index_wallets())
+        logger.info('Total wallets balance: %.2f',
+                    self.get_total_balance_wallets())
         logger.info('Total free wallet balance: %.2f',
                     wallet_free)
 
@@ -315,7 +316,7 @@ class get_rich_quick_scheme():
         wallet_total, wallet_free = self.get_balance('USDT')
         logger.info('    Wallet total: %.2f', wallet_total)
         logger.info('    Wallet free: %.2f', wallet_free)
-        logger.info('    Wallet index: %.2f', self.wallets[idx])
+        logger.info('    Wallet balance: %.2f', self.wallets[idx])
         logger.info('    Market price: %.2f', price_market)
         logger.info('    Leverage: %d', leverage)
 
@@ -423,9 +424,9 @@ class get_rich_quick_scheme():
                         self.wallets[idx])
             # Subtract cost of futures
             self.wallets[idx] -= (float(order['avgPrice']) *
-                                    float(order['executedQty']) /
-                                    self.leverages[idx]
-                                    )
+                                  float(order['executedQty']) /
+                                  self.leverages[idx]
+                                  )
             # Subtract added margin
             self.wallets[idx] -= self.margins_added[idx]
             logger.info('    Index wallet after (ignoring fees): '
@@ -453,9 +454,8 @@ class get_rich_quick_scheme():
 
                     # We found the current order for a given index
                     # Now check status
-                    self.check_buy_order_status(order,idx)
+                    self.check_buy_order_status(order, idx)
 
-    
     def check_sell_order_status(self, order, idx):
         if order['status'] == 'NEW':
             logger.info('Sell order with ID %s still open '
@@ -470,17 +470,17 @@ class get_rich_quick_scheme():
             self.reset_open_sell_order(idx)
 
             # Update wallet
-            logger.info('    Index wallet before: %.2f',
+            logger.info('    Balance wallet before: %.2f',
                         self.wallets[idx])
             # See dev.binance.vision/t/pnl-manual-calculation/1723
             self.wallets[idx] += (float(order['executedQty']) *
-                                    self.entry_prices[idx] *
-                                    (1/self.leverages[idx]-1.) +
-                                    float(order['avgPrice']) *
-                                    float(order['executedQty'])
-                                    )
+                                  self.entry_prices[idx] *
+                                  (1/self.leverages[idx]-1.) +
+                                  float(order['avgPrice']) *
+                                  float(order['executedQty'])
+                                  )
             self.wallets[idx] += self.margins_added[idx]
-            logger.info('    Index wallet after (ignoring fees): '
+            logger.info('    Balance wallet after (ignoring fees): '
                         '%.2f', self.wallets[idx])
         elif order['status'] == 'CANCELED':
             # Canceled, no money
@@ -501,60 +501,77 @@ class get_rich_quick_scheme():
                         self.wallets[idx])
             # See dev.binance.vision/t/pnl-manual-calculation/1723
             self.wallets[idx] -= (float(order['executedQty']) *
-                                    self.entry_prices[idx] *
-                                    (1/self.leverages[idx]-1.) +
-                                    float(order['avgPrice']) *
-                                    float(order['executedQty'])
-                                    )
+                                  self.entry_prices[idx] *
+                                  (1/self.leverages[idx]-1.) +
+                                  float(order['avgPrice']) *
+                                  float(order['executedQty'])
+                                  )
             logger.info('Index wallet after (ignoring fees): '
                         '%.2f', self.wallets[idx])
         else:
             # Update sell order
             logger.warning('Sell order with ID %s has unknown '
-                            'state %s [index=%d].',
-                            order['orderId'], order['status'], idx)
+                           'state %s [index=%d].',
+                           order['orderId'], order['status'], idx)
             logger.warning('Should I reset the open order?')
-        
+
     def check_status_of_all_sell_orders(self):
         all_orders = self.client.futures_get_all_orders()
-        
+
         # Loop over current orders (stored in this instance)
         for idx, order_id in self.order_ids.items():
 
             # If there is no current sell order, skip
-            if self.order_ids[idx]['SELL'] < 0: # ...weshalb kleiner 0 nicht = 0?
+            if self.order_ids[idx]['SELL'] < 0:  # ...weshalb kleiner 0 nicht = 0?
                 logger.info('No current open sell order.')
                 return
 
             # Loop over all orders (from API)
             for order in all_orders:
-            
+
                 # Match the two orders
                 if order['orderId'] == order_id['SELL']:
                     # Log order
                     logger.debug(order)
                     # We found the current order for a given index
                     # Now check status
-                    self.check_sell_order_status(order,idx)
+                    self.check_sell_order_status(order, idx)
+
+    def print_debug_info(self):
+        # print(self.client.get_account())
+        # print(self.client.get_asset_balance(asset='ETH'))
+        # print(self.client.get_margin_account())
+        # print(self.client.get_symbol_ticker(symbol="ETHUSDT"))
+        # print(self.client.get_symbol_info(symbol="ETHUSDT"))
+        # print(self.client.get_open_orders())
+        # print(self.client.futures_account())
+        # print(self.client.futures_account_balance())
+        # print(self.client.futures_account_trades())
+        # print(self.client.futures_get_open_orders())
+        # print(self.client.futures_get_all_orders())
+        # print(self.client.futures_get_open_orders()[0]['price'])
+        # print(self.client.futures_get_all_orders())
+        return
+
 
 if __name__ == '__main__':
 
-    idxs = [11,22,33,44,55]
-    symbols = ['BTCUSDT','VETUSDT','ADAUSDT','ETHUSDT','XRPUSDT']
-    wallets = [90,90,90,90,90]
-    leverages = [20,20,20,20,20]
+    idxs = [11, 22, 33, 44, 55]
+    symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
+    wallets = [90, 90, 90, 90, 90]
+    leverages = [20, 20, 20, 20, 20]
 
     # Create object
     loseitall = get_rich_quick_scheme()
 
     # Turn off dry run
-    loseitall.turn_off_dry_run()
+    #loseitall.turn_off_dry_run()
 
     # Initialize wallets
     loseitall.initialize_wallets(idxs, wallets)
 
     # Go into an endless loop
-    while True: 
+    while True:
 
         # Get number of open positions and open orders
         nOpenPositions = loseitall.show_open_positions()
@@ -587,17 +604,3 @@ if __name__ == '__main__':
         #    loseitall.place_kelly_bet('ETHUSDT', 100)
 
         sleep(60)
-
-    # print(client.get_account())
-    # print(client.get_asset_balance(asset='ETH'))
-    # print(client.get_margin_account())
-    # print(client.get_symbol_ticker(symbol="ETHUSDT"))
-    # print(client.get_symbol_info(symbol="ETHUSDT"))
-    # print(client.get_open_orders())
-    # print(client.futures_account())
-    # print(client.futures_account_balance())
-    # print(client.futures_account_trades())
-    # print(client.futures_get_open_orders())
-    # print(client.futures_get_all_orders())
-    # print(client.futures_get_open_orders()[0]['price'])
-    # print(client.futures_get_all_orders())
