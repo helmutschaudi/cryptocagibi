@@ -34,8 +34,8 @@ class get_rich_quick_scheme():
 
     def __init__(self):
 
-        #self.api_key = os.environ.get('binance_api')
-        #self.api_secret = os.environ.get('binance_secret')
+        # self.api_key = os.environ.get('binance_api')
+        # self.api_secret = os.environ.get('binance_secret')
 
         self.api_key = binance_api
         self.api_secret = binance_secret
@@ -295,16 +295,7 @@ class get_rich_quick_scheme():
 
         return len(open_orders)
 
-    def place_kelly_bet(self, symbol, leverage, idx):
-
-        # Store leverage
-        self.leverages[idx] = leverage
-
-        # Set margin type and leverage
-        # self.client.futures_change_margin_type(symbol=symbol,
-        #                                        marginType='ISOLATED')
-        self.client.futures_change_leverage(symbol=symbol, leverage=leverage)
-
+    def log_new_kelly_bet(self, symbol, idx,):
         logger.info('Placing Kelly bet for %s [index=%d].', symbol, idx)
         logger.info('Kelly options:')
         price_market = float(self.client.futures_position_information
@@ -314,14 +305,9 @@ class get_rich_quick_scheme():
         logger.info('    Account balance free: %.2f', wallet_free)
         logger.info('    Wallet balance: %.2f', self.wallets[idx])
         logger.info('    Market price: %.2f', price_market)
-        logger.info('    Leverage: %d', leverage)
+        logger.info('    Leverage: %d', self.leverages[idx])
 
-        myBet = kellyBet(self.wallets[idx], price_market, leverage)
-        # ----------------------------------------------------------------------
-        # Define gross odds and margin factor
-        # myBet.kellyBet(3.5, 2.0)
-        myBet.kellyBet(1.2, 1.0)
-        # ----------------------------------------------------------------------
+    def log_kelly_bet_plan(self, myBet, symbol):
         logger.info('    Bet size: %s', myBet.bet_size_factor)
         logger.info('    Gross odds: %s', myBet.gross_odds)
 
@@ -343,6 +329,14 @@ class get_rich_quick_scheme():
         logger.debug('    BUY : %s --> %s', myBet.price_old, price_old)
         logger.debug('    SELL: %s --> %s', myBet.price_new, price_new)
 
+    def buy_futures(self, myBet, idx, symbol):
+        futures_buy, futures_sell = self.set_quantities(symbol,
+                                                        myBet.futures_buy,
+                                                        myBet.futures_sell)
+
+        price_old, price_new = self.set_prices(symbol,
+                                               myBet.price_old,
+                                               myBet.price_new)
         # Buy futures
         logger.info('    Buy %s futures at %s, pay initial margin %s.',
                     futures_buy, price_old, myBet.asset_old)
@@ -358,6 +352,7 @@ class get_rich_quick_scheme():
         else:
             logger.warning('Dry run, do not actually buy anything.')
 
+    def add_margin(self, myBet, idx, symbol):
         # Add margin
         self.margins_added[idx] = myBet.margin_add
         if myBet.margin_add > 0.:
@@ -374,7 +369,14 @@ class get_rich_quick_scheme():
         else:
             logger.info('    No margin added.')
 
-        # Place sell order
+    def place_sell_order(self, myBet, idx, symbol):
+        futures_buy, futures_sell = self.set_quantities(symbol,
+                                                        myBet.futures_buy,
+                                                        myBet.futures_sell)
+        price_old, price_new = self.set_prices(symbol,
+                                               myBet.price_old,
+                                               myBet.price_new)
+
         logger.info('    Sell %s futures at %s (+%.1f %%), get %s, '
                     'gain %s (+%.1f %% / ROE: +%.1f %%).',
                     futures_sell, price_new,
@@ -396,14 +398,47 @@ class get_rich_quick_scheme():
             logger.info('        SELL order ID: %s',
                         self.order_ids[idx]['SELL'])
 
-        # Info about liquidation
+    def log_liquidation_info(self, myBet):
         logger.info('    Or %s futures are liquidated at ~%s (%.1f %%), '
                     'lose %s (-100.0 %% / ROE: -%.2f %%).',
-                    futures_sell,
+                    myBet.futures_sell,
                     myBet.price_liq,
                     myBet.price_drop_percentage_lose,
                     myBet.asset_total,
                     myBet.roe_lose)
+
+    def place_kelly_bet(self, symbol, leverage, idx):
+
+        # Store leverage
+        self.leverages[idx] = leverage
+
+        # Set margin type and leverage
+        # self.client.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
+
+        self.client.futures_change_leverage(symbol=symbol, leverage=leverage)
+
+        self.log_new_kelly_bet(symbol, idx,)
+
+        price_market = float(self.client.futures_position_information
+                             (symbol=symbol)[0]['markPrice'])
+
+        myBet = kellyBet(self.wallets[idx], price_market, leverage)
+
+        # ----------------------------------------------------------------------
+        # Define gross odds and margin factor
+        # myBet.kellyBet(3.5, 2.0)
+        myBet.kellyBet(1.2, 1.0)
+        # ----------------------------------------------------------------------
+
+        self.log_kelly_bet_plan(myBet, symbol)
+
+        self.buy_futures(myBet, idx, symbol)
+
+        self.add_margin(myBet, idx, symbol)
+
+        self.place_sell_order(myBet, idx, symbol)
+
+        self.log_liquidation_info(myBet)
 
     def check_buy_order_status(self, order, idx):
         if order['status'] == 'NEW':
@@ -556,7 +591,8 @@ class get_rich_quick_scheme():
         wallet_balances = []
         _, wallet_free = self.get_account_balance('USDT')
         for i in range(len(wallet_size_percentages)):
-            wallet_balances.append(trunc(wallet_free*wallet_size_percentages[i]/100))
+            wallet_balances.append(
+                trunc(wallet_free*wallet_size_percentages[i]/100))
         return wallet_balances
 
 
@@ -567,7 +603,7 @@ if __name__ == '__main__':
     idxs = [11, 22, 33, 44, 55]
     symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
     wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
-    leverages = [20, 20, 20, 20, 20] # leverage max. 20 for a new account
+    leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
     # --------------------------------------------------------------------------
 
     # Create object
@@ -575,11 +611,12 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    loseitall.turn_off_dry_run()
+    # loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Assign percentage of account balance to wallets
-    wallet_balances = loseitall.calculate_wallet_balances(wallet_size_percentages)
+    wallet_balances = loseitall.calculate_wallet_balances(
+        wallet_size_percentages)
 
     # Initialize wallets
     loseitall.initialize_wallets(idxs, wallet_balances)
