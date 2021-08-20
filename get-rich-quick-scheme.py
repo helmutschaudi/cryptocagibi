@@ -8,7 +8,6 @@ from binance.client import Client
 from kellyBet import kellyBet
 from binance_keys import *
 
-
 def setup_logger(name, log_file, level=logging.INFO):
 
     formatter = logging.Formatter('%(levelname)-8s - %(asctime)s - '
@@ -22,7 +21,6 @@ def setup_logger(name, log_file, level=logging.INFO):
     logger.addHandler(handler)
 
     return logger
-
 
 # Configure logger (for info and debugging)
 logger = setup_logger('default_logger',
@@ -651,6 +649,24 @@ if __name__ == '__main__':
 
                 # If we don't have current orders, place a new one
                 loseitall.place_kelly_bet(symbol, leverage, idx)
+
+        #  
+        # After startup of the bot, everything works fine
+        # after a few hours, somtimes only 3 of 5 orders and positions are open
+        #
+        #  FUTURE   | SELL  || WHAT      |  WHAT IS         | DOES IT WORK
+        #  POSITION | ORDER || HAPPEND?  |  TO DO?          | YET?
+        # ------------------------------------------------------------------
+        #        0  |  0    || we won    | place new order  | sometimes?
+        # --------------------------------------------------|---------------      
+        #        1  |  0    || should (does?) not happen    |
+        # ----------------------------------------------------------------
+        #        0  |  1    || we lost   | cancel sell order| not when canceled manually (app)
+        #           |       ||           | place new order  | ...why? (check log)
+        # ----------------------------------------------------------------
+        #        1     1    || all fine  | nothing          | yes
+        #
+        # when all orders and positions are canceled, everything works fine again
 
         # If we don't have open positions nor orders,
         # we want to place a new bet
