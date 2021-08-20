@@ -323,7 +323,7 @@ class get_rich_quick_scheme():
         myBet = kellyBet(self.wallets[idx], price_market, leverage)
         # myBet.kellyBet(3.5, 2.0)
         myBet.kellyBet(1.2, 1.0)
-        logger.info('    Bet size: %s', myBet._bet_size_factor)
+        logger.info('    Bet size: %s', myBet.bet_size_factor)
         logger.info('    Gross odds: %s', myBet.gross_odds)
 
         logger.info('Kelly plan:')
@@ -379,9 +379,9 @@ class get_rich_quick_scheme():
         logger.info('    Sell %s futures at %s (+%.1f %%), get %s, '
                     'gain %s (+%.1f %% / ROE: +%.1f %%).',
                     futures_sell, price_new,
-                    100*price_new/price_old-100,
-                    myBet.asset_new, myBet.gain,
-                    100*myBet.gain/myBet.asset_total,
+                    myBet.price_gain_percentage_win,
+                    myBet.asset_new, myBet.gain_value,
+                    myBet.gain_percentage,
                     myBet.roe_win)
         if not self.dry_run:
             response = (self.client.
@@ -400,8 +400,9 @@ class get_rich_quick_scheme():
         # Info about liquidation
         logger.info('    Or %s futures are liquidated at ~%s (%.1f %%), '
                     'lose %s (-100.0 %% / ROE: -%.2f %%).',
-                    futures_sell, myBet.price_liq,
-                    100*myBet.price_liq/price_old-100,
+                    futures_sell,
+                    myBet.price_liq,
+                    myBet.price_drop_percentage_lose,
                     myBet.asset_total,
                     myBet.roe_lose)
 
