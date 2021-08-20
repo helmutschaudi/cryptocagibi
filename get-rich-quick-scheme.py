@@ -92,11 +92,11 @@ class get_rich_quick_scheme():
         except KeyError:
             self.initialize_order_ids(idx, sell_id=sell_id)
 
-    def initialize_wallets(self, idxs, wallets):
-        assert len(idxs) == len(wallets), 'When initializing wallets, '
+    def initialize_wallets(self, idxs, wallet_balances):
+        assert len(idxs) == len(wallet_balances), 'When initializing wallets, '
         'you should define as many wallets as indexes.'
         for idx, _ in enumerate(idxs):
-            self.wallets[idxs[idx]] = wallets[idx]
+            self.wallets[idxs[idx]] = wallet_balances[idx]
         self.check_wallets()
 
     def get_total_balance_wallets(self):
@@ -558,7 +558,7 @@ if __name__ == '__main__':
 
     idxs = [11, 22, 33, 44, 55]
     symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
-    wallets = [90, 90, 90, 90, 90]
+    wallet_balances = [90, 90, 90, 90, 90] # ... why not make wallet size relative to available balance?
     leverages = [20, 20, 20, 20, 20]
 
     # Create object
@@ -568,7 +568,7 @@ if __name__ == '__main__':
     # loseitall.turn_off_dry_run()
 
     # Initialize wallets
-    loseitall.initialize_wallets(idxs, wallets)
+    loseitall.initialize_wallets(idxs, wallet_balances)
 
     # Go into an endless loop
     while True:
@@ -585,10 +585,12 @@ if __name__ == '__main__':
         # Place several bets
         for i in range(len(idxs)):
 
+            sleep(0.5) # avoids APIError "Too many requests" when running in dry mode
+
             # Get variables
             idx = idxs[i]
             symbol = symbols[i]
-            wallet = wallets[i]
+            # wallet = wallets[i]
             leverage = leverages[i]
 
             # Check if we have current orders

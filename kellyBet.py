@@ -2,11 +2,10 @@
 
 import sys
 
-
 class kellyBet:
 
-    def __init__(self, bankroll, price_old, multiplier):
-        self._wallet_balance = bankroll
+    def __init__(self, wallet_balance, price_old, multiplier):
+        self._wallet_balance = wallet_balance
         self._price_old = price_old
         self._leverage = multiplier
 
@@ -65,7 +64,7 @@ class kellyBet:
 
     @property
     def price_drop_percentage_lose(self):
-        return float(f'{float(f"{self.price_drop_percentage_lose:.3g}"):g}')
+        return float(f'{float(f"{self._price_drop_percentage_lose:.3g}"):g}')
     
     @property
     def gain_percentage(self):
