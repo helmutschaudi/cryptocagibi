@@ -2,6 +2,7 @@
 
 import sys
 
+
 class kellyBet:
 
     def __init__(self, wallet_balance, price_old, multiplier):
@@ -57,7 +58,6 @@ class kellyBet:
         # Lose
         print(f'Or {round(self._futures_sell, 3)} futures are liquidated at ~{round(self._price_liq, 5)} ({round(self._price_drop_percentage_lose, 2)} %), lose {round(self._asset_total, 2)} (-100.0 % / ROE: -{round(self._roe_lose, 2)} %).')
 
-    
     @property
     def price_gain_percentage_win(self):
         return float(f'{float(f"{self._price_gain_percentage_win:.3g}"):g}')
@@ -65,7 +65,7 @@ class kellyBet:
     @property
     def price_drop_percentage_lose(self):
         return float(f'{float(f"{self._price_drop_percentage_lose:.3g}"):g}')
-    
+
     @property
     def gain_percentage(self):
         return float(f'{float(f"{self._gain_percentage:.3g}"):g}')

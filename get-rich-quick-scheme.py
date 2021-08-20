@@ -1,11 +1,7 @@
-# Did not restart orders for 5th position (BTCUSDT)
-
-
 #!/usr/bin/env python3
 
-import os
 import logging
-from math import log
+from math import log, trunc
 from datetime import datetime
 from time import sleep
 from binance.client import Client
@@ -106,7 +102,7 @@ class get_rich_quick_scheme():
         return total
 
     def check_wallets(self):
-        _, wallet_free = self.get_balance('USDT')
+        _, wallet_free = self.get_account_balance('USDT')
         if self.get_total_balance_wallets() > wallet_free:
             logger.error('The total of requested value for wallets is higher '
                          'than your free account balance: %.2f > %.2f',
@@ -213,7 +209,7 @@ class get_rich_quick_scheme():
         return (round(price_old, tick_size),
                 round(price_new, tick_size))
 
-    def get_balance(self, asset):
+    def get_account_balance(self, asset):
         for account in self.client.futures_account_balance():
             if account['asset'] == asset:
                 return (float(account['balance']),
@@ -313,16 +309,19 @@ class get_rich_quick_scheme():
         logger.info('Kelly options:')
         price_market = float(self.client.futures_position_information
                              (symbol=symbol)[0]['markPrice'])
-        wallet_total, wallet_free = self.get_balance('USDT')
-        logger.info('    Wallet total: %.2f', wallet_total)
-        logger.info('    Wallet free: %.2f', wallet_free)
+        wallet_total, wallet_free = self.get_account_balance('USDT')
+        logger.info('    Account balance total: %.2f', wallet_total)
+        logger.info('    Account balance free: %.2f', wallet_free)
         logger.info('    Wallet balance: %.2f', self.wallets[idx])
         logger.info('    Market price: %.2f', price_market)
         logger.info('    Leverage: %d', leverage)
 
         myBet = kellyBet(self.wallets[idx], price_market, leverage)
+        # ----------------------------------------------------------------------
+        # Define gross odds and margin factor
         # myBet.kellyBet(3.5, 2.0)
         myBet.kellyBet(1.2, 1.0)
+        # ----------------------------------------------------------------------
         logger.info('    Bet size: %s', myBet.bet_size_factor)
         logger.info('    Gross odds: %s', myBet.gross_odds)
 
@@ -553,19 +552,34 @@ class get_rich_quick_scheme():
         # print(self.client.futures_get_all_orders())
         return
 
+    def calculate_wallet_balances(self, wallet_size_percentages):
+        wallet_balances = []
+        _, wallet_free = self.get_account_balance('USDT')
+        for i in range(len(wallet_size_percentages)):
+            wallet_balances.append(trunc(wallet_free*wallet_size_percentages[i]/100))
+        return wallet_balances
+
 
 if __name__ == '__main__':
 
+    # --------------------------------------------------------------------------
+    # Define investment
     idxs = [11, 22, 33, 44, 55]
     symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
-    wallet_balances = [90, 90, 90, 90, 90] # ... why not make wallet size relative to available balance?
-    leverages = [20, 20, 20, 20, 20]
+    wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
+    leverages = [20, 20, 20, 20, 20] # leverage max. 20 for a new account
+    # --------------------------------------------------------------------------
 
     # Create object
     loseitall = get_rich_quick_scheme()
 
+    # --------------------------------------------------------------------------
     # Turn off dry run
-    # loseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
+    # --------------------------------------------------------------------------
+
+    # Assign percentage of account balance to wallets
+    wallet_balances = loseitall.calculate_wallet_balances(wallet_size_percentages)
 
     # Initialize wallets
     loseitall.initialize_wallets(idxs, wallet_balances)
@@ -585,7 +599,9 @@ if __name__ == '__main__':
         # Place several bets
         for i in range(len(idxs)):
 
-            sleep(0.5) # avoids APIError "Too many requests" when running in dry mode
+            # try to avoid APIError "Too many requests" when running in dry mode
+            sleep(2)
+            # todo: catch and log error!
 
             # Get variables
             idx = idxs[i]
