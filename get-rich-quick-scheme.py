@@ -382,7 +382,7 @@ class get_rich_quick_scheme():
                     100*price_new/price_old-100,
                     myBet.asset_new, myBet.gain,
                     100*myBet.gain/myBet.asset_total,
-                    100*myBet.gain/myBet.asset_old)
+                    myBet.roe_win)
         if not self.dry_run:
             response = (self.client.
                         futures_create_order(symbol=symbol,
@@ -403,7 +403,7 @@ class get_rich_quick_scheme():
                     futures_sell, myBet.price_liq,
                     100*myBet.price_liq/price_old-100,
                     myBet.asset_total,
-                    100*myBet.asset_total/myBet.asset_old)
+                    myBet.roe_lose)
 
     def check_buy_order_status(self, order, idx):
         if order['status'] == 'NEW':
@@ -456,6 +456,15 @@ class get_rich_quick_scheme():
                     # Now check status
                     self.check_buy_order_status(order, idx)
 
+    def calculate_pnl(self, order, idx):
+        pnl = (float(order['executedQty']) *
+               self.entry_prices[idx] *
+               (1/self.leverages[idx]-1.) +
+               float(order['avgPrice']) *
+               float(order['executedQty'])
+               )
+        return pnl
+
     def check_sell_order_status(self, order, idx):
         if order['status'] == 'NEW':
             logger.info('Sell order with ID %s still open '
@@ -473,12 +482,7 @@ class get_rich_quick_scheme():
             logger.info('    Balance wallet before: %.2f',
                         self.wallets[idx])
             # See dev.binance.vision/t/pnl-manual-calculation/1723
-            self.wallets[idx] += (float(order['executedQty']) *
-                                  self.entry_prices[idx] *
-                                  (1/self.leverages[idx]-1.) +
-                                  float(order['avgPrice']) *
-                                  float(order['executedQty'])
-                                  )
+            self.wallets[idx] += self.calculate_pnl(order, idx)
             self.wallets[idx] += self.margins_added[idx]
             logger.info('    Balance wallet after (ignoring fees): '
                         '%.2f', self.wallets[idx])
@@ -497,16 +501,11 @@ class get_rich_quick_scheme():
                         order['orderId'], idx)
             self.reset_open_sell_order(idx)
             # Update wallet
-            logger.info('Index wallet before: %.2f',
+            logger.info('Wallet balance: %.2f',
                         self.wallets[idx])
             # See dev.binance.vision/t/pnl-manual-calculation/1723
-            self.wallets[idx] -= (float(order['executedQty']) *
-                                  self.entry_prices[idx] *
-                                  (1/self.leverages[idx]-1.) +
-                                  float(order['avgPrice']) *
-                                  float(order['executedQty'])
-                                  )
-            logger.info('Index wallet after (ignoring fees): '
+            self.wallets[idx] -= (self.calculate_pnl(order, idx))
+            logger.info('Wallet after (ignoring fees): '
                         '%.2f', self.wallets[idx])
         else:
             # Update sell order
@@ -565,7 +564,7 @@ if __name__ == '__main__':
     loseitall = get_rich_quick_scheme()
 
     # Turn off dry run
-    #loseitall.turn_off_dry_run()
+    # loseitall.turn_off_dry_run()
 
     # Initialize wallets
     loseitall.initialize_wallets(idxs, wallets)

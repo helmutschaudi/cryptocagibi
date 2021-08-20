@@ -29,26 +29,36 @@ class kellyBet:
         
         # Calculate trade details:
         self._bet_size = self._wallet_balance*self._bet_size_factor
-        self._initial_margin = self._bet_size/self._margin_factor
-        self._margin_add = self._bet_size-self._initial_margin
-        self._margin_total = self._initial_margin+self._margin_add
-        self._futures_buy = self._initial_margin/(self._price_old/self._leverage)
-        self._gain = self._margin_total*self._gross_odds-self._margin_total
+        self._asset_old = self._bet_size/self._margin_factor
+        self._margin_add = self._bet_size-self._asset_old
+        self._asset_total = self._asset_old+self._margin_add
+        self._futures_buy = self._asset_old/(self._price_old/self._leverage)
+        self._gain = self._asset_total*self._gross_odds-self._asset_total
         self._price_new = self._price_old+self._gain/self._futures_buy
         self._futures_sell = self._futures_buy
-        self._asset_new = self._margin_total*self._gross_odds
-        self._price_liq = self._price_old-self._margin_total/self._futures_buy
-        self._roe=100*self._gain/self._initial_margin # ? added margin not relevant?
+        self._asset_new = self._asset_total*self._gross_odds
+        self._price_liq = self._price_old-self._asset_total/self._futures_buy
+        self._roe_win = 100*self._gain/self._asset_old
+        self._roe_lose = 100*self._asset_total/self._asset_old
 
     def kellyBetInfo(self):
 
         print(f'Bet size: {self._bet_size_factor}')
         print(f'Gross odds: {self._gross_odds}')
-        print(f'Buy {round(self._futures_buy, 3)} futures at {round(self._price_old, 5)}, pay initial margin {round(self._initial_margin, 2)}.')
-        print(f'Add margin {round(self._margin_add, 2)}, pay total {round(self._margin_total, 2)}.')
-        print(f'Sell {round(self._futures_sell, 3)} futures at {round(self._price_new, 5)} (+{round(100*self._price_new/self._price_old-100, 2)} %), get {round(self._asset_new, 2)}, gain {round(self._gain, 2)} (+{round(100*self._gain/self._margin_total, 2)} % / ROE: +{round(self._roe, 2)} %).')
-        print(f'Or {round(self._futures_sell, 3)} futures are liquidated at ~{round(self._price_liq, 5)} ({round(100*self._price_liq/self._price_old-100, 2)} %), lose {round(self._margin_total, 2)} (-100.0 % / ROE: -{round(100*self._margin_total/self._initial_margin, 2)} %).')
+        print(f'Buy {round(self._futures_buy, 3)} futures at {round(self._price_old, 5)}, pay initial margin {round(self._asset_old, 2)}.')
+        print(f'Add margin {round(self._margin_add, 2)}, pay total {round(self._asset_total, 2)}.')
+        print(f'Sell {round(self._futures_sell, 3)} futures at {round(self._price_new, 5)} (+{round(100*self._price_new/self._price_old-100, 2)} %), get {round(self._asset_new, 2)}, gain {round(self._gain, 2)} (+{round(100*self._gain/self._asset_total, 2)} % / ROE: +{round(self._roe_win, 2)} %).')
+        print(f'Or {round(self._futures_sell, 3)} futures are liquidated at ~{round(self._price_liq, 5)} ({round(100*self._price_liq/self._price_old-100, 2)} %), lose {round(self._asset_total, 2)} (-100.0 % / ROE: -{round(100*self._asset_total/self._asset_old, 2)} %).')
 
+   
+    @property
+    def roe_win(self):
+        return float(f'{float(f"{self._roe_win:.3g}"):g}')
+
+    @property
+    def roe_lose(self):
+        return float(f'{float(f"{self._roe_lose:.3g}"):g}')
+   
     @property
     def bet_size_factor(self):
         return float(f'{float(f"{self._bet_size_factor:.3g}"):g}')
@@ -79,7 +89,7 @@ class kellyBet:
 
     @property
     def asset_old(self):
-        return float(f'{float(f"{self._initial_margin:.4g}"):g}')
+        return float(f'{float(f"{self._asset_old:.4g}"):g}')
 
     @property
     def asset_new(self):
@@ -87,7 +97,7 @@ class kellyBet:
 
     @property
     def asset_total(self):
-        return float(f'{float(f"{self._margin_total:.4g}"):g}')
+        return float(f'{float(f"{self._asset_total:.4g}"):g}')
 
     @property
     def margin_add(self):
