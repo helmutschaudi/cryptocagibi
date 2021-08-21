@@ -594,7 +594,32 @@ class get_rich_quick_scheme():
         return wallet_balances
 
 
+
+    def michi_debug_print_status_of_all_futures_positions(self):
+        open_positions = []
+        for position in self.client.futures_position_information():
+            if float(position['positionAmt']) != 0.: # positionAmt = position amount
+                open_positions.append(position)
+
+        for open_position in open_positions:
+            order_symbol=open_position['symbol']
+            order_amount = float(open_position['positionAmt'])
+            print(f'FUTURE POSITION SYMBOL:{order_symbol} AMOUNT:{order_amount} ')
+
+    def michi_debug_print_status_of_all_buy_orders(self):
+        all_orders = self.client.futures_get_open_orders()
+        for order in all_orders:
+           order_id=order['orderId'] #...gibt auch client id
+           order_symbol=order['symbol']
+           order_status=order['status']
+           order_amount=order['origQty']
+           print(f'BUY ORDER ID:{order_id}  SYMBOL:{order_symbol}  STATUS:{order_status} AMOUNT:{order_amount}')
+
+
 if __name__ == '__main__':
+
+    print('haudi')
+
 
     # --------------------------------------------------------------------------
     # Define investment
@@ -606,6 +631,35 @@ if __name__ == '__main__':
 
     # Create object
     loseitall = get_rich_quick_scheme()
+
+    # --------------------------------------------------------------------------
+    # MICHI DEBUG
+    # --------------------------------------------------------------------------
+    # FUTURES POSITIONS:
+    # futures positions can be identified by symbol and positionAmt
+    loseitall.michi_debug_print_status_of_all_futures_positions()
+    # --------------------------------------------------------------------------
+    # {'symbol': 'VETUSDT', 'positionAmt': '1660', 'entryPrice': '0.1327488795181', 'markPrice': '0.12813000', 'unRealizedProfit': '-7.66588000', 'liquidationPrice': '0.12743750', 'leverage': '20', 'maxNotionalValue': '25000', 'marginType': 'isolated', 'isolatedMargin': '3.26500776', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '212.69580000', 'isolatedWallet': '10.93088776', 'updateTime': 1629561601101}
+
+    # --------------------------------------------------------------------------
+    # BUY ORDERS
+    # buy orders can be identified by orderId or clientOrderId
+    loseitall.michi_debug_print_status_of_all_buy_orders()
+    # --------------------------------------------------------------------------
+    # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213}
+    # --------------------------------------------------------------------------
+    while True:
+        sleep(10)
+
+
+    # --------------------------------------------------------------------------
+    # Define investment
+    idxs = [11, 22, 33, 44, 55]
+    symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
+    wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
+    leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
+    # --------------------------------------------------------------------------
+
 
     # --------------------------------------------------------------------------
     # Turn off dry run
