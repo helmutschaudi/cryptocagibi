@@ -46,33 +46,42 @@ class get_rich_quick_scheme():
 
         # Keep track of multiple buy and sell orders by dicts
         # self.order_ids is a dict of dicts, e.g.:
-        # self.order_ids = {11: {'BUY': 0178, 'SELL': 02320}, 22: {'BUY': 00926, 'SELL': 008}}
+        # self.order_ids = {0: {'BUY': 0178, 'SELL': 02320}, 1: {'BUY': 00926, 'SELL': 008}}
         # An order ID of -1  means there is no current order registered in the
         # system
         self.order_ids = {}
 
         # Keep track of multiple wallets by dicts
         # self.wallets is a dict, e.g.:
-        # self.wallets = {11: 100, 22: 300}
+        # self.wallets = {0: 100, 1: 300}
         self.wallets = {}
 
         # Keep track of different entry prices
         # (needed when calculating profits)
         # self.entry_prices is a dict, e.g.:
-        # self.entry_prices = {11: 1.10, 22: 7.70}
+        # self.entry_prices = {0: 1.10, 1: 7.70}
         self.entry_prices = {}
 
         # Keep track of different leverages
         # (needed when calculating profits)
         # self.leverages is a dict, e.g.:
-        # self.leverages = {11: 100, 22: 125}
-        self.leverages = {}
+        # self.leverages = {0: 100, 1: 125}
+        # self.leverages = {}
 
         # Keep track of different added margins
         # (needed when calculating profits)
         # self.margins_added is a dict, e.g.:
-        # self.margins_added = {11: 0, 22: 6.66}
+        # self.margins_added = {0: 0, 1: 6.66}
         self.margins_added = {}
+
+        # Portfolio containing all wallet objects
+        # will replace all dicts
+        # self.margins_added is an array e.g.:
+        # self.margins_added = [wallet1, wallet2, ...}
+        self.wallet_portfolio = []
+
+    def assign_wallets_to_portfolio(self,wallet_portfolio):
+        self.wallet_portfolio=wallet_portfolio
 
     def initialize_order_ids(self, idx, buy_id=-1, sell_id=-1):
         self.order_ids[idx] = {'BUY': buy_id, 'SELL': sell_id}
@@ -306,7 +315,7 @@ class get_rich_quick_scheme():
         logger.info('    Account balance free: %.2f', wallet_free)
         logger.info('    Wallet balance: %.2f', self.wallets[idx])
         logger.info('    Market price: %.2f', price_market)
-        logger.info('    Leverage: %d', self.leverages[idx])
+        logger.info('    Leverage: %d', self.wallet_portfolio[idx].leverage)
 
     def log_kelly_bet_plan(self, myBet, symbol):
         logger.info('    Bet size: %s', myBet.bet_size_factor)
@@ -409,10 +418,10 @@ class get_rich_quick_scheme():
                     myBet.asset_total,
                     myBet.roe_lose)
 
-    def place_kelly_bet(self, symbol, leverage, idx):
+    def place_kelly_bet(self, symbol, idx):
 
         # Store leverage
-        self.leverages[idx] = leverage
+        leverage=self.wallet_portfolio[idx].leverage
 
         # Set margin type and leverage
         # self.client.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
@@ -463,7 +472,7 @@ class get_rich_quick_scheme():
             # Subtract cost of futures
             self.wallets[idx] -= (float(order['avgPrice']) *
                                   float(order['executedQty']) /
-                                  self.leverages[idx]
+                                  self.wallet_portfolio[idx].leverage
                                   )
             # Subtract added margin
             self.wallets[idx] -= self.margins_added[idx]
@@ -502,7 +511,7 @@ class get_rich_quick_scheme():
     def calculate_pnl(self, order, idx):
         pnl = (float(order['executedQty']) *
                self.entry_prices[idx] *
-               (1/self.leverages[idx]-1.) +
+               (1/self.wallet_portfolio[idx].leverage-1.) +
                float(order['avgPrice']) *
                float(order['executedQty'])
                )
@@ -680,7 +689,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Define investment
-    idxs = [11, 22, 33, 44, 55]
+    idxs = [0, 1, 2, 3, 4]
     symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
     wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
     leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
@@ -710,6 +719,8 @@ if __name__ == '__main__':
 
     for wallet in wallet_portfolio:
         wallet.print_wallet_info()
+
+    loseitall.assign_wallets_to_portfolio(wallet_portfolio)
 
     # --------------------------------------------------------------------------
     # MICHI DEBUG
@@ -769,7 +780,7 @@ if __name__ == '__main__':
             if not loseitall.check_open_order(idx):
 
                 # If we don't have current orders, place a new one
-                loseitall.place_kelly_bet(symbol, leverage, idx)
+                loseitall.place_kelly_bet(symbol, idx)
 
         #
         # After startup of the bot, everything works fine
