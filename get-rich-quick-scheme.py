@@ -462,7 +462,7 @@ class get_rich_quick_scheme():
         wallet_idx = current_wallet.wallet_id
         buy_order_id = current_wallet.buy_order_id
         buy_order_status = current_wallet.buy_order_status
-        avg_price = current_wallet.buy_order_executed_quantity
+        avg_price = current_wallet.buy_order_avg_price
         executed_quantity = current_wallet.buy_order_executed_quantity
 
         if buy_order_status == 'NEW':
@@ -480,7 +480,7 @@ class get_rich_quick_scheme():
             # -------does this work? will a new binance order be created?
             self.reset_open_buy_order(current_wallet)
             # Update wallet
-            logger.info('    Balance wallet before: %.2f',
+            logger.info('    Wallet balance wallet before: %.2f',
                         current_wallet.balance)
             # Subtract cost of futures
             current_wallet.balance -= (float(avg_price) *
@@ -489,7 +489,7 @@ class get_rich_quick_scheme():
                                                           )
             # Subtract added margin
             current_wallet.balance -= current_wallet.margin_added
-            logger.info('    Index wallet after (ignoring fees): '
+            logger.info('    Wallet balance wallet after (ignoring fees): '
                         '%.2f', current_wallet.balance)
             # Store entry price for later usage
             current_wallet.entry_price = float(avg_price)
@@ -628,14 +628,6 @@ class get_rich_quick_scheme():
         # print(self.client.futures_get_open_orders()[0]['price'])
         return
 
-    def calculate_wallet_balances(self, wallet_size_percentages):
-        wallet_balances = []
-        _, wallet_free = self.get_account_balance('USDT')
-        for i in range(len(wallet_size_percentages)):
-            wallet_balances.append(
-                trunc(wallet_free*wallet_size_percentages[i]/100))
-        return wallet_balances
-
     def calculate_wallet_balance(self, wallet_size_percentage):
         _, wallet_free = self.get_account_balance('USDT')
         wallet_balance = trunc(wallet_free*wallet_size_percentage/100)
@@ -661,7 +653,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    # loseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Create wallet portfolio containing all wallets
@@ -683,6 +675,7 @@ if __name__ == '__main__':
         i = i+1
 
     loseitall.assign_wallets_to_portfolio(wallet_portfolio)
+
     loseitall.print_info_of_all_wallets()
 
     # --------------------------------------------------------------------------
@@ -697,10 +690,6 @@ if __name__ == '__main__':
     # OUTPUT VON self.client.futures_get_open_orders():
     # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213}
     # --------------------------------------------------------------------------
-
-    # Assign percentage of account balance to wallets
-    wallet_balances = loseitall.calculate_wallet_balances(
-        wallet_size_percentages)
 
     loseitall.check_sufficient_account_balance()
 
@@ -725,6 +714,7 @@ if __name__ == '__main__':
         # Place new bets on closed orders
         loseitall.place_new_kelly_bet_on_closed_orders()
 
+        # BUG (NOT SURE IF FIXED YET)
         # After startup of the bot, everything works fine
         # after a few hours, somtimes only 3 of 5 orders and positions are open
         # The missing positions or orders have still one of two IDs valid (not set to -1)
@@ -733,7 +723,9 @@ if __name__ == '__main__':
         # when all orders and positions are canceled, everything works fine again
 
         # SELL_ORDER=FILLED -> WE WON (market order filled, sell order filled, )
+        
         # FUTURES_POSITION=FILLED --> WE LOST (limit sell order expired or canceled)
+        # NOT TRUE! ---> BUY ORDER IS ALREADY FILLED WHEN IT STARTS!
 
 
         sleep(60)
