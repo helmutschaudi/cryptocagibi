@@ -53,21 +53,21 @@ class get_rich_quick_scheme():
     def assign_wallets_to_portfolio(self, wallet_portfolio):
         self.wallet_portfolio = wallet_portfolio
 
-    def initialize_order_ids(self, idx, buy_id=-1, sell_id=-1):
-        self.wallet_portfolio[idx].buy_order_id = buy_id
-        self.wallet_portfolio[idx].sell_order_id = sell_id
+    def initialize_order_ids(self, wallet_idx, buy_id=-1, sell_id=-1):
+        self.wallet_portfolio[wallet_idx].buy_order_id = buy_id
+        self.wallet_portfolio[wallet_idx].sell_order_id = sell_id
 
-    def set_buy_order_id(self, idx, buy_id=-1):
+    def set_buy_order_id(self, wallet, buy_id=-1):
         try:
-            self.wallet_portfolio[idx].buy_order_id = buy_id
+            wallet.buy_order_id = buy_id
         except KeyError:
-            self.initialize_order_ids(idx, buy_id=buy_id)
+            self.initialize_order_ids(wallet.wallet_id, buy_id=buy_id)
 
-    def set_sell_order_id(self, idx, sell_id=-1):
+    def set_sell_order_id(self, wallet, sell_id=-1):
         try:
-            self.wallet_portfolio[idx].sell_order_id = sell_id
+            wallet.sell_order_id = sell_id
         except KeyError:
-            self.initialize_order_ids(idx, sell_id=sell_id)
+            self.initialize_order_ids(wallet.wallet_id, sell_id=sell_id)
 
     def get_total_balance_wallets(self):
         total = 0
@@ -87,36 +87,50 @@ class get_rich_quick_scheme():
         logger.info('Total free wallet balance: %.2f',
                     wallet_free)
 
-    def check_open_order(self, idx):
-        try:
-            # If order IDs are -1, there are no current orders for a given
-            # index
-            if self.wallet_portfolio[idx].buy_order_id < 0 and \
-               self.wallet_portfolio[idx].sell_order_id < 0:  # ----- no buy order alone would be sufficient reason to make one
-                logger.info('No current orders found. [index=%d]', idx)
-                return False
-        except KeyError:
-            # If order IDs are unset, there are no current orders for a given
-            # index
-            return False
+    def place_new_kelly_bet_on_closed_orders(self):
+        
+        for current_wallet in self.wallet_portfolio:
+            if current_wallet.buy_order_id<0 and current_wallet.sell_order_id<0:
+                self.place_kelly_bet(current_wallet)
+            
+            else:
+                # If we reach here, order IDs are both set and positive,
+                # which means we have valid current orders
+                logger.info('Current BUY order ID: %s [index=%d]',  # log shows -1 for all buy orders?
+                    current_wallet.buy_order_id, current_wallet.wallet_id)
+                logger.info('Current SELL order ID: %s [index=%d]',
+                    current_wallet.sell_order_id, current_wallet.wallet_id)
 
-        # If we reach here, order IDs are both set and positive,
-        # which means we have valid current orders
-        logger.info('Current BUY order ID: %s [index=%d]',  # log shows -1 for all buy orders?
-                    self.wallet_portfolio[idx].buy_order_id, idx)
-        logger.info('Current SELL order ID: %s [index=%d]',
-                    self.wallet_portfolio[idx].sell_order_id, idx)
-        return True
+    # def check_open_order(self, wallet_idx):
+    #     try:
+    #         # If order IDs are -1, there are no current orders for a given
+    #         # index
+    #         if self.wallet_portfolio[wallet_idx].buy_order_id < 0 and \
+    #            self.wallet_portfolio[wallet_idx].sell_order_id < 0:  # ----- no buy order alone would be sufficient reason to make one
+    #             logger.info('No current orders found. [index=%d]', wallet_idx)
+    #             return False
+    #     except KeyError:
+    #         # If order IDs are unset, there are no current orders for a given
+    #         # index
+    #         return False
 
-    def reset_open_buy_order(self, idx):
+    #     # If we reach here, order IDs are both set and positive,
+    #     # which means we have valid current orders
+    #     logger.info('Current BUY order ID: %s [index=%d]',  # log shows -1 for all buy orders?
+    #                 self.wallet_portfolio[wallet_idx].buy_order_id, wallet_idx)
+    #     logger.info('Current SELL order ID: %s [index=%d]',
+    #                 self.wallet_portfolio[wallet_idx].sell_order_id, wallet_idx)
+    #     return True
+
+    def reset_open_buy_order(self, wallet):
         logger.info('    Reset BUY order ID %s [index=%d].',
-                    self.wallet_portfolio[idx].buy_order_id, idx)
-        self.wallet_portfolio[idx].buy_order_id = -1
+                    wallet.buy_order_id, wallet.wallet_idx)
+        self.wallet_portfolio[wallet_idx].buy_order_id = -1
 
-    def reset_open_sell_order(self, idx):
+    def reset_open_sell_order(self, wallet):
         logger.info('    Reset SELL order ID %s [index=%d].',
-                    self.wallet_portfolio[idx].sell_order_id, idx)
-        self.wallet_portfolio[idx].sell_order_id = -1
+                    wallet.sell_order_id, wallet.wallet_id)
+        wallet.sell_order_id = -1
 
     def turn_off_dry_run(self):
         self.dry_run = False
@@ -269,8 +283,9 @@ class get_rich_quick_scheme():
 
         return len(open_orders)
 
-    def log_new_kelly_bet(self, symbol, idx,):
-        logger.info('Placing Kelly bet for %s [index=%d].', symbol, idx)
+    def log_new_kelly_bet(self, wallet):
+        symbol = wallet.symbol
+        logger.info('Placing Kelly bet for %s [index=%d].', symbol, wallet.wallet_id)
         logger.info('Kelly options:')
         price_market = float(self.client.futures_position_information
                              (symbol=symbol)[0]['markPrice'])
@@ -278,9 +293,10 @@ class get_rich_quick_scheme():
         logger.info('    Account balance total: %.2f', wallet_total)
         logger.info('    Account balance free: %.2f', wallet_free)
         logger.info('    Wallet balance: %.2f',
-                    self.wallet_portfolio[idx].balance)
+                    wallet.balance)
         logger.info('    Market price: %.2f', price_market)
-        logger.info('    Leverage: %d', self.wallet_portfolio[idx].leverage)
+        logger.info('    Leverage: %d',
+                    wallet.leverage)
 
     def log_kelly_bet_plan(self, myBet, symbol):
         logger.info('    Bet size: %s', myBet.bet_size_factor)
@@ -304,7 +320,9 @@ class get_rich_quick_scheme():
         logger.debug('    BUY : %s --> %s', myBet.price_old, price_old)
         logger.debug('    SELL: %s --> %s', myBet.price_new, price_new)
 
-    def buy_futures(self, myBet, idx, symbol):
+    def buy_futures(self, myBet, wallet):
+        wallet_idx=wallet.wallet_id
+        symbol = wallet_portfolio[wallet_idx].symbol
         futures_buy, futures_sell = self.set_quantities(symbol,
                                                         myBet.futures_buy,
                                                         myBet.futures_sell)
@@ -322,15 +340,17 @@ class get_rich_quick_scheme():
                                                         type='MARKET',
                                                         quantity=futures_buy
                                                         )
-            self.set_buy_order_id(idx, buy_id=response['orderId'])
+            self.set_buy_order_id(wallet, buy_id=response['orderId'])
             logger.info('        BUY order ID: %s',
-                        self.wallet_portfolio[idx].buy_order_id)
+                        self.wallet_portfolio[wallet_idx].buy_order_id)
         else:
             logger.warning('Dry run, do not actually buy anything.')
 
-    def add_margin(self, myBet, idx, symbol):
+    def add_margin(self, myBet, wallet):
+        wallet_idx=wallet.wallet_id
+        symbol = wallet_portfolio[wallet_idx].symbol
         # Add margin
-        self.wallet_portfolio[idx].margin_added = myBet.margin_add
+        self.wallet_portfolio[wallet_idx].margin_added = myBet.margin_add
         if myBet.margin_add > 0.:
             logger.info('    Add margin %s, pay total %s.',
                         myBet.margin_add, myBet.asset_total)
@@ -345,7 +365,9 @@ class get_rich_quick_scheme():
         else:
             logger.info('    No margin added.')
 
-    def place_sell_order(self, myBet, idx, symbol):
+    def place_sell_order(self, myBet, wallet):
+        wallet_idx=wallet.wallet_id
+        symbol = wallet_portfolio[wallet_idx].symbol
         futures_buy, futures_sell = self.set_quantities(symbol,
                                                         myBet.futures_buy,
                                                         myBet.futures_sell)
@@ -370,9 +392,9 @@ class get_rich_quick_scheme():
                                              price=price_new     # canceled
                                              )
                         )
-            self.set_sell_order_id(idx, sell_id=response['orderId'])
+            self.set_sell_order_id(wallet, sell_id=response['orderId'])
             logger.info('        SELL order ID: %s',
-                        self.wallet_portfolio[idx].sell_order_id)
+                        self.wallet_portfolio[wallet_idx].sell_order_id)
 
     def log_liquidation_info(self, myBet):
         logger.info('    Or %s futures are liquidated at ~%s (%.1f %%), '
@@ -383,24 +405,26 @@ class get_rich_quick_scheme():
                     myBet.asset_total,
                     myBet.roe_lose)
 
-    def place_kelly_bet(self, idx):
+    def place_kelly_bet(self, wallet):
+
+        wallet_idx=wallet.wallet_id
 
         # Store leverage
-        leverage = self.wallet_portfolio[idx].leverage
-        symbol = self.wallet_portfolio[idx].symbol
+        leverage = self.wallet_portfolio[wallet_idx].leverage
+        symbol = self.wallet_portfolio[wallet_idx].symbol
 
         # Set margin type and leverage
         # self.client.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
 
         self.client.futures_change_leverage(symbol=symbol, leverage=leverage)
 
-        self.log_new_kelly_bet(symbol, idx,)
+        self.log_new_kelly_bet(wallet)
 
         price_market = float(self.client.futures_position_information
                              (symbol=symbol)[0]['markPrice'])
 
         myBet = kellyBet(
-            self.wallet_portfolio[idx].balance, price_market, leverage)
+            self.wallet_portfolio[wallet_idx].balance, price_market, leverage)
 
         # ----------------------------------------------------------------------
         # Define gross odds and margin factor
@@ -410,11 +434,11 @@ class get_rich_quick_scheme():
 
         self.log_kelly_bet_plan(myBet, symbol)
 
-        self.buy_futures(myBet, idx, symbol)
+        self.buy_futures(myBet, wallet)
 
-        self.add_margin(myBet, idx, symbol)
+        self.add_margin(myBet, wallet)
 
-        self.place_sell_order(myBet, idx, symbol)
+        self.place_sell_order(myBet, wallet)
 
         self.log_liquidation_info(myBet)
 
@@ -440,7 +464,7 @@ class get_rich_quick_scheme():
                         current_wallet.buy_order_avg_price = order['avgPrice']
 
     def check_buy_order_status(self, current_wallet):
-        idx = current_wallet.wallet_id
+        wallet_idx = current_wallet.wallet_id
         buy_order_id = current_wallet.buy_order_id
         buy_order_status = current_wallet.buy_order_status
         avg_price = current_wallet.buy_order_executed_quantity
@@ -449,7 +473,7 @@ class get_rich_quick_scheme():
         if buy_order_status == 'NEW':
             logger.info('Buy order with ID %s still open '
                         '[index=%d].',
-                        buy_order_id, idx)
+                        buy_order_id, wallet_idx)
         elif buy_order_status == 'FILLED':
             # Bought, we have to pay money
             # Update buy order
@@ -457,27 +481,27 @@ class get_rich_quick_scheme():
                         '[index=%d].',
                         buy_order_id,
                         float(avg_price),
-                        idx)
+                        wallet_idx)
             # -------does this work? will a new binance order be created?
-            self.reset_open_buy_order(idx)
+            self.reset_open_buy_order(current_wallet)
             # Update wallet
             logger.info('    Balance wallet before: %.2f',
-                        self.wallet_portfolio[idx].balance)
+                        self.wallet_portfolio[wallet_idx].balance)
             # Subtract cost of futures
-            self.wallet_portfolio[idx].balance -= (float(avg_price) *
-                                                   float(executed_quantity) /
-                                                   self.wallet_portfolio[idx].leverage
-                                                   )
+            self.wallet_portfolio[wallet_idx].balance -= (float(avg_price) *
+                                                          float(executed_quantity) /
+                                                          self.wallet_portfolio[wallet_idx].leverage
+                                                          )
             # Subtract added margin
-            self.wallet_portfolio[idx].balance -= self.wallet_portfolio[idx].margin_added
+            self.wallet_portfolio[wallet_idx].balance -= self.wallet_portfolio[wallet_idx].margin_added
             logger.info('    Index wallet after (ignoring fees): '
-                        '%.2f', self.wallet_portfolio[idx].balance)
+                        '%.2f', self.wallet_portfolio[wallet_idx].balance)
             # Store entry price for later usage
-            self.wallet_portfolio[idx].entry_price = float(avg_price)
+            self.wallet_portfolio[wallet_idx].entry_price = float(avg_price)
         else:
             logger.warning('Buy order with ID %s has unknown '
                            'state %s [index=%d].',
-                           buy_order_id, buy_order_status, idx)
+                           buy_order_id, buy_order_status, wallet_idx)
 
     def check_status_of_all_buy_orders(self):
         for current_wallet in self.wallet_portfolio:
@@ -491,10 +515,10 @@ class get_rich_quick_scheme():
             else:
                 self.check_buy_order_status(current_wallet)
 
-    def calculate_pnl(self, executed_quantity, avg_price, idx):
+    def calculate_pnl(self, executed_quantity, avg_price, wallet):
         pnl = (float(executed_quantity) *
-               self.wallet_portfolio[idx].entry_price *
-               (1/self.wallet_portfolio[idx].leverage-1.) +
+               wallet.entry_price *
+               (1/wallet.leverage-1.) +
                float(avg_price) *
                float(executed_quantity)
                )
@@ -523,59 +547,60 @@ class get_rich_quick_scheme():
                         current_wallet.sell_order_avg_price = order['avgPrice']
 
     def check_sell_order_status(self, current_wallet):
-        idx = current_wallet.wallet_id
+        wallet_idx = current_wallet.wallet_id
         sell_order_id = current_wallet.sell_order_id
         sell_order_status = current_wallet.sell_order_status
         avg_price = current_wallet.sell_order_avg_price
         executed_quantity = current_wallet.buy_order_executed_quantity
-        
+
         if sell_order_status == 'NEW':
             logger.info('Sell order with ID %s still open '
                         '[index=%d].',
-                        sell_order_id, idx)
+                        sell_order_id, wallet_idx)
         elif sell_order_status == 'FILLED':
             # Sold, we get money
             # Update sell order
             logger.info('Sell order withd ID %s filled '
                         '[index=%d].',
-                        sell_order_id, idx)
-            self.reset_open_sell_order(idx)
+                        sell_order_id, wallet_idx)
+            self.reset_open_sell_order(current_wallet)
 
             # Update wallet
             logger.info('    Balance wallet before: %.2f',
-                        self.wallets[idx])
+                        self.wallets[wallet_idx])
             # See dev.binance.vision/t/pnl-manual-calculation/1723
-            self.wallet_portfolio[idx].balance += self.calculate_pnl(executed_quantity,avg_price, idx)
-            self.wallet_portfolio[idx].balance += self.wallet_portfolio[idx].margin_added
+            self.wallet_portfolio[wallet_idx].balance += self.calculate_pnl(
+                executed_quantity, avg_price, current_wallet)
+            self.wallet_portfolio[wallet_idx].balance += self.wallet_portfolio[wallet_idx].margin_added
             logger.info('    Balance wallet after (ignoring fees): '
-                        '%.2f', self.wallet_portfolio[idx].balance)
+                        '%.2f', self.wallet_portfolio[wallet_idx].balance)
         elif sell_order_status == 'CANCELED':
             # Canceled, no money
             # Update sell order
             logger.info('Sell order withd ID %s canceled '
                         '[index=%d].',
-                        sell_order_id, idx)
-            self.reset_open_sell_order(idx)
+                        sell_order_id, wallet_idx)
+            self.reset_open_sell_order(current_wallet)
         elif sell_order_status == 'EXPIRED':
             # Liquidated, we lose money
             # Update sell order
             logger.info('Sell order with ID %s expired '
                         '[index=%d].',
-                        sell_order_id, idx)
-            self.reset_open_sell_order(idx)
+                        sell_order_id, wallet_idx)
+            self.reset_open_sell_order(current_wallet)
             # Update wallet
             logger.info('Wallet balance: %.2f',
-                        self.wallet_portfolio[idx].balance)
+                        self.wallet_portfolio[wallet_idx].balance)
             # See dev.binance.vision/t/pnl-manual-calculation/1723
-            self.wallet_portfolio[idx].balance -= (
-                self.calculate_pnl(executed_quantity,avg_price, idx))
+            self.wallet_portfolio[wallet_idx].balance -= (
+                self.calculate_pnl(executed_quantity, avg_price, current_wallet))
             logger.info('Wallet after (ignoring fees): '
-                        '%.2f', self.wallet_portfolio[idx].balance)
+                        '%.2f', self.wallet_portfolio[wallet_idx].balance)
         else:
             # Update sell order
             logger.warning('Sell order with ID %s has unknown '
                            'state %s [index=%d].',
-                           sell_order_id, sell_order_status, idx)
+                           sell_order_id, sell_order_status, wallet_idx)
             logger.warning('Should I reset the open order?')
 
     def check_status_of_all_sell_orders(self):
@@ -621,31 +646,6 @@ class get_rich_quick_scheme():
         wallet_balance = trunc(wallet_free*wallet_size_percentage/100)
         return wallet_balance
 
-    def michi_debug_print_status_of_all_futures_positions(self):
-        print(self.client.futures_get_all_orders())
-
-        # open_positions = []
-        # for position in self.client.futures_position_information():
-        #     if float(position['positionAmt']) != 0.:  # positionAmt = position amount
-        #         open_positions.append(position)
-
-        # for open_position in open_positions:
-        #     order_symbol = open_position['symbol']
-        #     order_amount = float(open_position['positionAmt'])
-        #     print(
-        #         f'FUTURE POSITION SYMBOL:{order_symbol} AMOUNT:{order_amount} ')
-
-    def michi_debug_print_status_of_all_sell_orders(self):
-        return
-        # all_orders = self.client.futures_get_open_orders()
-        # for order in all_orders:
-        #     order_id = order['orderId']  # ...gibt auch client id
-        #     order_symbol = order['symbol']
-        #     order_status = order['status']
-        #     order_amount = order['origQty']
-        #     print(
-        #         f'BUY ORDER ID:{order_id}  SYMBOL:{order_symbol}  STATUS:{order_status} AMOUNT:{order_amount}')
-
     def print_info_of_all_wallets(self):
         for current_wallet in self.wallet_portfolio:
             current_wallet.print_wallet_info()
@@ -682,11 +682,12 @@ class get_rich_quick_scheme():
         # Update sell order
         # Update wallet
 
+
         # sell order else:
         #     # Update sell order
         #     logger.warning('Sell order with ID %s has unknown '
         #                    'state %s [index=%d].',
-        #                    order['orderId'], order['status'], idx)
+        #                    order['orderId'], order['status'], wallet_idx)
         #     logger.warning('Should I reset the open order?')
 if __name__ == '__main__':
 
@@ -695,7 +696,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Define investment
-    idxs = [0, 1, 2, 3, 4]
+    wallet_indexes = [0, 1, 2, 3, 4]
     symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
     wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
     leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
@@ -710,10 +711,10 @@ if __name__ == '__main__':
     wallet_portfolio = []
 
     i = 0
-    for idx in idxs:
+    for wallet_idx in wallet_indexes:
 
         # Add wallet to portfolio
-        wallet_portfolio.append(kelly_wallet(idxs[i], symbols[i]))
+        wallet_portfolio.append(kelly_wallet(wallet_indexes[i], symbols[i]))
 
         # Add known parameters to current wallet
         current_wallet = wallet_portfolio[i]
@@ -728,22 +729,13 @@ if __name__ == '__main__':
     loseitall.print_info_of_all_wallets()
 
     # --------------------------------------------------------------------------
-    # MICHI DEBUG
-    # --------------------------------------------------------------------------
-    # FUTURES POSITIONS:
-    # futures positions can be identified by symbol and positionAmt
-    # loseitall.michi_debug_print_status_of_all_futures_positions()
+    # DEBUG INFO
     # --------------------------------------------------------------------------
     # OUTPUT VON self.client.futures_position_information():
     # {'symbol': 'VETUSDT', 'positionAmt': '1660', 'entryPrice': '0.1327488795181', 'markPrice': '0.12813000', 'unRealizedProfit': '-7.66588000', 'liquidationPrice': '0.12743750', 'leverage': '20', 'maxNotionalValue': '25000', 'marginType': 'isolated', 'isolatedMargin': '3.26500776', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '212.69580000', 'isolatedWallet': '10.93088776', 'updateTime': 1629561601101}
     # --------------------------------------------------------------------------
     # OUTPUT VON self.client.futures_get_all_orders(): (sehr viel output, ev ein Problem mittelfristig?)
     # {'orderId': 15891537505, 'symbol': 'ADAUSDT', 'status': 'FILLED', 'clientOrderId': 'LuiVoh74hPaAmqyBWrPcPH', 'price': '0', 'avgPrice': '2.49400', 'origQty': '103', 'executedQty': '103', 'cumQuote': '256.88200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629596414966, 'updateTime': 1629596414966}
-
-    # --------------------------------------------------------------------------
-    # BUY ORDERS
-    # buy orders can be identified by orderId or ClientOrderId
-    # loseitall.michi_debug_print_status_of_all_sell_orders()
     # --------------------------------------------------------------------------
     # OUTPUT VON self.client.futures_get_open_orders():
     # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213}
@@ -763,9 +755,7 @@ if __name__ == '__main__':
         nOpenOrders = loseitall.show_open_orders()
 
         # Update status of all wallets with information from binance
-        print('UPDATE STATUS OF ALL BUY ORDERS ****************')
         loseitall.update_status_of_all_buy_orders()
-        print('UPDATE STATUS OF ALL SELL ORDERS ****************')
         loseitall.update_status_of_all_sell_orders()
 
         loseitall.print_info_of_all_wallets()
@@ -775,24 +765,9 @@ if __name__ == '__main__':
         loseitall.check_status_of_all_buy_orders()
         loseitall.check_status_of_all_sell_orders()
 
-        # Place several bets
-        for i in range(len(idxs)):
+        # Place new bets on closed orders
+        loseitall.place_kelly_bet_on_closed_orders()
 
-            # try to avoid APIError "Too many requests" when running in dry mode
-            sleep(2)
-            # todo: catch and log error!
-
-            # Get variables
-            idx = idxs[i]
-            symbol = symbols[i]
-            # wallet = wallets[i]
-            leverage = leverages[i]
-
-            # Check if we have current orders
-            if not loseitall.check_open_order(idx):
-
-                # If we don't have current orders, place a new one
-                loseitall.place_kelly_bet(idx)
 
         #
         # After startup of the bot, everything works fine
