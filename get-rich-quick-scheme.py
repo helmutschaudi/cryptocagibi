@@ -6,6 +6,7 @@ from datetime import datetime
 from time import sleep
 from binance.client import Client
 from kellyBet import kellyBet
+from kelly_wallet import kelly_wallet
 from binance_keys import *
 
 
@@ -483,7 +484,7 @@ class get_rich_quick_scheme():
             # If there is no current buy order, skip
             if self.order_ids[idx]['BUY'] < 0:
                 logger.info('No current open buy order for index=%d', idx)
-                #return  # do not return, process all other orders
+                #return # no, process all other positions as well, since we got the expensive get_all_orders() info
 
             else:
             # Loop over all orders (from API)
@@ -565,7 +566,7 @@ class get_rich_quick_scheme():
             # If there is no current sell order, skip
             if self.order_ids[idx]['SELL'] < 0:
                 logger.info('No current open sell order. index=%d',idx)
-                #return # should not return, process all other positions!
+                #return # no, process all other positions as well, since we got the expensive get_all_orders() info
 
             # Loop over all orders (from API)
             # for order in all_orders:
@@ -627,7 +628,8 @@ class get_rich_quick_scheme():
         #     print(
         #         f'BUY ORDER ID:{order_id}  SYMBOL:{order_symbol}  STATUS:{order_status} AMOUNT:{order_amount}')
 
-    def monitor_and_restart_investments(self):
+    # def monitor_and_restart_investments(self):
+    # not required, already existing procedure (should) work fine
         return
         # After program newstart, initial investments are made for each wallet
         # Afterwards this function monitors and restarts invesments.
