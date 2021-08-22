@@ -3,22 +3,22 @@
 class kelly_wallet:
 
     def __init__(self, wallet_id, symbol):
-        self._id = wallet_id
+        self._wallet_id = wallet_id
         self._symbol = symbol
         self._balance = -1
         self._leverage = -1  # (needed when calculating profits)
         self._entry_price = -1  # (needed when calculating profits)
-        self._margin_added  # (needed when calculating profits)
+        self._margin_added = -1  # (needed when calculating profits)
+        self._buy_order_id = -1
+        self._sell_order_id = -1
 
-    def kelly_wallet(self):
-        self._id  # probably not required
-        self._amount_invested  # not sure if required
-        # self._has_buy_order # to be implemented later
-        self._buy_order_id
-        self._buy_order_state
-        # self._has_sell_order # to be implemented later
-        self._sell_order_id
-        self._sell_order_state
+    # def kelly_wallet(self):
+        # self._id  # probably not required
+        # self._amount_invested  # not sure if required
+        # # self._has_buy_order # to be implemented later
+        # self._buy_order_state
+        # # self._has_sell_order # to be implemented later
+        # self._sell_order_state
 
     def reset_sell_order_id(self):
         self._sell_order_id = -1
@@ -30,7 +30,7 @@ class kelly_wallet:
 
         print('---------------------------')
         print('WALLET INFO')
-        print(f'wallet id: {self._id}')
+        print(f'wallet id: {self._wallet_id}')
         print(f'symbol: {self._symbol}')
         print(f'balance: {self._balance}')
         print(f'leverage: {self._leverage}')
@@ -40,6 +40,10 @@ class kelly_wallet:
 
 # GETTER -----------------------------------------------------------------------
 
+    @property
+    def wallet_id(self):
+        return self._wallet_id
+    
     @property
     def balance(self):
         return self._balance

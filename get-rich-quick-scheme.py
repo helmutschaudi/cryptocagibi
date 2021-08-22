@@ -49,7 +49,7 @@ class get_rich_quick_scheme():
         # self.order_ids = {0: {'BUY': 0178, 'SELL': 02320}, 1: {'BUY': 00926, 'SELL': 008}}
         # An order ID of -1  means there is no current order registered in the
         # system
-        self.order_ids = {}
+        # self.order_ids = {}
 
         # Keep track of multiple wallets by dicts
         # self.wallets is a dict, e.g.:
@@ -60,7 +60,7 @@ class get_rich_quick_scheme():
         # (needed when calculating profits)
         # self.entry_prices is a dict, e.g.:
         # self.entry_prices = {0: 1.10, 1: 7.70}
-        #self.entry_prices = {}
+        # self.entry_prices = {}
 
         # Keep track of different leverages
         # (needed when calculating profits)
@@ -80,21 +80,22 @@ class get_rich_quick_scheme():
         # self..wallet_portfolio = [wallet1, wallet2, ...}
         self.wallet_portfolio = []
 
-    def assign_wallets_to_portfolio(self,wallet_portfolio):
-        self.wallet_portfolio=wallet_portfolio
+    def assign_wallets_to_portfolio(self, wallet_portfolio):
+        self.wallet_portfolio = wallet_portfolio
 
     def initialize_order_ids(self, idx, buy_id=-1, sell_id=-1):
-        self.order_ids[idx] = {'BUY': buy_id, 'SELL': sell_id}
+        self.wallet_portfolio[idx].buy_order_id = buy_id
+        self.wallet_portfolio[idx].sell_order_id = sell_id
 
     def set_buy_order_id(self, idx, buy_id=-1):
         try:
-            self.order_ids[idx]['BUY'] = buy_id
+            self.wallet_portfolio[idx].buy_order_id = buy_id
         except KeyError:
             self.initialize_order_ids(idx, buy_id=buy_id)
 
     def set_sell_order_id(self, idx, sell_id=-1):
         try:
-            self.order_ids[idx]['SELL'] = sell_id
+            self.wallet_portfolio[idx].sell_order_id = sell_id
         except KeyError:
             self.initialize_order_ids(idx, sell_id=sell_id)
 
@@ -127,8 +128,8 @@ class get_rich_quick_scheme():
         try:
             # If order IDs are -1, there are no current orders for a given
             # index
-            if self.order_ids[idx]['BUY'] < 0 and \
-               self.order_ids[idx]['SELL'] < 0:  # ----- no buy order alone would be sufficient reason to make one
+            if self.wallet_portfolio[idx].buy_order_id < 0 and \
+               self.wallet_portfolio[idx].sell_order_id < 0:  # ----- no buy order alone would be sufficient reason to make one
                 logger.info('No current orders found. [index=%d]', idx)
                 return False
         except KeyError:
@@ -139,20 +140,20 @@ class get_rich_quick_scheme():
         # If we reach here, order IDs are both set and positive,
         # which means we have valid current orders
         logger.info('Current BUY order ID: %s [index=%d]',  # log shows -1 for all buy orders?
-                    self.order_ids[idx]['BUY'], idx)
+                    self.wallet_portfolio[idx].buy_order_id, idx)
         logger.info('Current SELL order ID: %s [index=%d]',
-                    self.order_ids[idx]['SELL'], idx)
+                    self.wallet_portfolio[idx].sell_order_id, idx)
         return True
 
     def reset_open_buy_order(self, idx):
         logger.info('    Reset BUY order ID %s [index=%d].',
-                    self.order_ids[idx]['BUY'], idx)
-        self.order_ids[idx]['BUY'] = -1
+                    self.wallet_portfolio[idx].buy_order_id, idx)
+        self.wallet_portfolio[idx].buy_order_id = -1
 
     def reset_open_sell_order(self, idx):
         logger.info('    Reset SELL order ID %s [index=%d].',
-                    self.order_ids[idx]['SELL'], idx)
-        self.order_ids[idx]['SELL'] = -1
+                    self.wallet_portfolio[idx].sell_order_id, idx)
+        self.wallet_portfolio[idx].sell_order_id = -1
 
     def turn_off_dry_run(self):
         self.dry_run = False
@@ -359,7 +360,7 @@ class get_rich_quick_scheme():
                                                         )
             self.set_buy_order_id(idx, buy_id=response['orderId'])
             logger.info('        BUY order ID: %s',
-                        self.order_ids[idx]['BUY'])
+                        self.wallet_portfolio[idx].buy_order_id)
         else:
             logger.warning('Dry run, do not actually buy anything.')
 
@@ -407,7 +408,7 @@ class get_rich_quick_scheme():
                         )
             self.set_sell_order_id(idx, sell_id=response['orderId'])
             logger.info('        SELL order ID: %s',
-                        self.order_ids[idx]['SELL'])
+                        self.wallet_portfolio[idx].sell_order_id)
 
     def log_liquidation_info(self, myBet):
         logger.info('    Or %s futures are liquidated at ~%s (%.1f %%), '
@@ -488,18 +489,18 @@ class get_rich_quick_scheme():
     def check_status_of_all_buy_orders(self):
         all_orders = self.client.futures_get_all_orders()
         # Loop over current orders (stored in this instance)
-        for idx, order_id in self.order_ids.items():
+        for current_wallet in self.wallet_portfolio:
 
             # If there is no current buy order, skip
-            if self.order_ids[idx]['BUY'] < 0:
-                logger.info('No current open buy order for index=%d', idx)
+            if current_wallet.buy_order_id < 0:
+                logger.info('No current open buy order for index=%d', current_wallet.wallet_id)
                 # return # no, process all other positions as well, since we got the expensive get_all_orders() info
 
             else:
                 # Loop over all orders (from API)
                 for order in all_orders:
                     # Match the two orders
-                    if order['orderId'] == order_id['BUY']:
+                    if order['orderId'] == current_wallet.buy_order_id:
 
                         # Log order
                         logger.debug(order)
@@ -570,11 +571,11 @@ class get_rich_quick_scheme():
         all_orders = self.client.futures_get_all_orders()
 
         # Loop over current orders (stored in this instance)
-        for idx, order_id in self.order_ids.items():
+        for current_wallet in self.wallet_portfolio:
 
             # If there is no current sell order, skip
-            if self.order_ids[idx]['SELL'] < 0:
-                logger.info('No current open sell order. index=%d', idx)
+            if current_wallet.sell_order_id < 0:
+                logger.info('No current open sell order. index=%d', current_wallet.wallet_id)
                 # return # no, process all other positions as well, since we got the expensive get_all_orders() info
 
             # Loop over all orders (from API)
@@ -582,7 +583,7 @@ class get_rich_quick_scheme():
             else:
                 for order in all_orders:
                     # Match the two orders
-                    if order['orderId'] == order_id['SELL']:
+                    if order['orderId'] == current_wallet.sell_order_id:
                         # Log order
                         logger.debug(order)
                         # We found the current order for a given index
