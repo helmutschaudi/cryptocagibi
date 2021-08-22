@@ -5,35 +5,36 @@ class kelly_wallet:
     def __init__(self, wallet_id, symbol):
         self._id = wallet_id
         self._symbol = symbol
-        self._balance = 60000
-        self._leverage=555  # (needed when calculating profits)
+        self._balance = -1
+        self._leverage = -1  # (needed when calculating profits)
+        self._entry_price = -1  # (needed when calculating profits)
 
     def kelly_wallet(self):
         self._id  # probably not required
-        self._entry_price  # (needed when calculating profits)
         self._margin_added  # (needed when calculating profits)
         self._amount_invested  # not sure if required
-        #self._has_buy_order # to be implemented later
+        # self._has_buy_order # to be implemented later
         self._buy_order_id
         self._buy_order_state
-        #self._has_sell_order # to be implemented later
+        # self._has_sell_order # to be implemented later
         self._sell_order_id
         self._sell_order_state
 
     def reset_sell_order_id(self):
-        self._sell_order_id =-1
+        self._sell_order_id = -1
 
     def reset_buy_order_id(self):
-        self._buy_order_id =-1
+        self._buy_order_id = -1
 
     def print_wallet_info(self):
-        
+
         print('---------------------------')
         print('WALLET INFO')
         print(f'wallet id: {self._id}')
         print(f'symbol: {self._symbol}')
         print(f'balance: {self._balance}')
         print(f'leverage: {self._leverage}')
+        print(f'entry_price: {self._entry_price}')
         print('---------------------------')
 
 # GETTER -----------------------------------------------------------------------
@@ -73,8 +74,8 @@ class kelly_wallet:
         self._balance = balance
 
     @leverage.setter
-    def leverage(self, new_leverage):
-        self._leverage = new_leverage
+    def leverage(self, leverage):
+        self._leverage = leverage
 
     @entry_price.setter
     def entry_price(self, entry_price):
@@ -91,4 +92,3 @@ class kelly_wallet:
     @sell_order_id.setter
     def sell_order_id(self, sell_order_id):
         self._sell_order_id = sell_order_id
-

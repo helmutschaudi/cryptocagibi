@@ -60,7 +60,7 @@ class get_rich_quick_scheme():
         # (needed when calculating profits)
         # self.entry_prices is a dict, e.g.:
         # self.entry_prices = {0: 1.10, 1: 7.70}
-        self.entry_prices = {}
+        #self.entry_prices = {}
 
         # Keep track of different leverages
         # (needed when calculating profits)
@@ -479,7 +479,7 @@ class get_rich_quick_scheme():
             logger.info('    Index wallet after (ignoring fees): '
                         '%.2f', self.wallets[idx])
             # Store entry price for later usage
-            self.entry_prices[idx] = float(order['avgPrice'])
+            self.wallet_portfolio[idx].entry_price = float(order['avgPrice'])
         else:
             logger.warning('Buy order with ID %s has unknown '
                            'state %s [index=%d].',
@@ -510,7 +510,7 @@ class get_rich_quick_scheme():
 
     def calculate_pnl(self, order, idx):
         pnl = (float(order['executedQty']) *
-               self.entry_prices[idx] *
+               self.wallet_portfolio[idx].entry_price *
                (1/self.wallet_portfolio[idx].leverage-1.) +
                float(order['avgPrice']) *
                float(order['executedQty'])
