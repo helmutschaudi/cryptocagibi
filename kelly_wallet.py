@@ -8,10 +8,10 @@ class kelly_wallet:
         self._balance = -1
         self._leverage = -1  # (needed when calculating profits)
         self._entry_price = -1  # (needed when calculating profits)
+        self._margin_added  # (needed when calculating profits)
 
     def kelly_wallet(self):
         self._id  # probably not required
-        self._margin_added  # (needed when calculating profits)
         self._amount_invested  # not sure if required
         # self._has_buy_order # to be implemented later
         self._buy_order_id
@@ -34,7 +34,8 @@ class kelly_wallet:
         print(f'symbol: {self._symbol}')
         print(f'balance: {self._balance}')
         print(f'leverage: {self._leverage}')
-        print(f'entry_price: {self._entry_price}')
+        print(f'entry price: {self._entry_price}')
+        print(f'margin added: {self._margin_added}')
         print('---------------------------')
 
 # GETTER -----------------------------------------------------------------------

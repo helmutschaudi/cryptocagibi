@@ -72,12 +72,12 @@ class get_rich_quick_scheme():
         # (needed when calculating profits)
         # self.margins_added is a dict, e.g.:
         # self.margins_added = {0: 0, 1: 6.66}
-        self.margins_added = {}
+        # self.margins_added = {}
 
         # Portfolio containing all wallet objects
         # will replace all dicts
-        # self.margins_added is an array e.g.:
-        # self.margins_added = [wallet1, wallet2, ...}
+        # self.wallet_portfolio is an array of wallet objects e.g.:
+        # self..wallet_portfolio = [wallet1, wallet2, ...}
         self.wallet_portfolio = []
 
     def assign_wallets_to_portfolio(self,wallet_portfolio):
@@ -365,7 +365,7 @@ class get_rich_quick_scheme():
 
     def add_margin(self, myBet, idx, symbol):
         # Add margin
-        self.margins_added[idx] = myBet.margin_add
+        self.wallet_portfolio[idx].margin_added = myBet.margin_add
         if myBet.margin_add > 0.:
             logger.info('    Add margin %s, pay total %s.',
                         myBet.margin_add, myBet.asset_total)
@@ -475,7 +475,7 @@ class get_rich_quick_scheme():
                                   self.wallet_portfolio[idx].leverage
                                   )
             # Subtract added margin
-            self.wallets[idx] -= self.margins_added[idx]
+            self.wallets[idx] -= self.wallet_portfolio[idx].margin_added
             logger.info('    Index wallet after (ignoring fees): '
                         '%.2f', self.wallets[idx])
             # Store entry price for later usage
@@ -535,7 +535,7 @@ class get_rich_quick_scheme():
                         self.wallets[idx])
             # See dev.binance.vision/t/pnl-manual-calculation/1723
             self.wallets[idx] += self.calculate_pnl(order, idx)
-            self.wallets[idx] += self.margins_added[idx]
+            self.wallets[idx] += self.wallet_portfolio[idx].margin_added
             logger.info('    Balance wallet after (ignoring fees): '
                         '%.2f', self.wallets[idx])
         elif order['status'] == 'CANCELED':
