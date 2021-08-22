@@ -129,7 +129,7 @@ class get_rich_quick_scheme():
 
         # If we reach here, order IDs are both set and positive,
         # which means we have valid current orders
-        logger.info('Current BUY order ID: %s [index=%d]', # log shows -1 for all buy orders?
+        logger.info('Current BUY order ID: %s [index=%d]',  # log shows -1 for all buy orders?
                     self.order_ids[idx]['BUY'], idx)
         logger.info('Current SELL order ID: %s [index=%d]',
                     self.order_ids[idx]['SELL'], idx)
@@ -484,10 +484,10 @@ class get_rich_quick_scheme():
             # If there is no current buy order, skip
             if self.order_ids[idx]['BUY'] < 0:
                 logger.info('No current open buy order for index=%d', idx)
-                #return # no, process all other positions as well, since we got the expensive get_all_orders() info
+                # return # no, process all other positions as well, since we got the expensive get_all_orders() info
 
             else:
-            # Loop over all orders (from API)
+                # Loop over all orders (from API)
                 for order in all_orders:
                     # Match the two orders
                     if order['orderId'] == order_id['BUY']:
@@ -565,8 +565,8 @@ class get_rich_quick_scheme():
 
             # If there is no current sell order, skip
             if self.order_ids[idx]['SELL'] < 0:
-                logger.info('No current open sell order. index=%d',idx)
-                #return # no, process all other positions as well, since we got the expensive get_all_orders() info
+                logger.info('No current open sell order. index=%d', idx)
+                # return # no, process all other positions as well, since we got the expensive get_all_orders() info
 
             # Loop over all orders (from API)
             # for order in all_orders:
@@ -602,6 +602,11 @@ class get_rich_quick_scheme():
             wallet_balances.append(
                 trunc(wallet_free*wallet_size_percentages[i]/100))
         return wallet_balances
+
+    def calculate_wallet_balance(self, wallet_size_percentage):
+        _, wallet_free = self.get_account_balance('USDT')
+        wallet_balance=trunc(wallet_free*wallet_size_percentage/100)
+        return wallet_balance
 
     def michi_debug_print_status_of_all_futures_positions(self):
         print(self.client.futures_get_all_orders())
@@ -670,39 +675,9 @@ class get_rich_quick_scheme():
 
 if __name__ == '__main__':
 
-    # --------------------------------------------------------------------------
-    # Define investment
-    idxs = [11, 22, 33, 44, 55]
-    symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
-    wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
-    leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
-    # --------------------------------------------------------------------------
-
     # Create object
     loseitall = get_rich_quick_scheme()
 
-    # --------------------------------------------------------------------------
-    # MICHI DEBUG
-    # --------------------------------------------------------------------------
-    # FUTURES POSITIONS:
-    # futures positions can be identified by symbol and positionAmt
-    #loseitall.michi_debug_print_status_of_all_futures_positions()
-    # --------------------------------------------------------------------------
-    # OUTPUT VON self.client.futures_position_information():
-    # {'symbol': 'VETUSDT', 'positionAmt': '1660', 'entryPrice': '0.1327488795181', 'markPrice': '0.12813000', 'unRealizedProfit': '-7.66588000', 'liquidationPrice': '0.12743750', 'leverage': '20', 'maxNotionalValue': '25000', 'marginType': 'isolated', 'isolatedMargin': '3.26500776', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '212.69580000', 'isolatedWallet': '10.93088776', 'updateTime': 1629561601101}
-    # --------------------------------------------------------------------------
-    # OUTPUT VON self.client.futures_get_all_orders(): (sehr viel output, ev ein Problem mittelfristig?)
-    # {'orderId': 15891537505, 'symbol': 'ADAUSDT', 'status': 'FILLED', 'clientOrderId': 'LuiVoh74hPaAmqyBWrPcPH', 'price': '0', 'avgPrice': '2.49400', 'origQty': '103', 'executedQty': '103', 'cumQuote': '256.88200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629596414966, 'updateTime': 1629596414966}
-
-    # --------------------------------------------------------------------------
-    # BUY ORDERS
-    # buy orders can be identified by orderId or ClientOrderId
-    #loseitall.michi_debug_print_status_of_all_sell_orders()
-    # --------------------------------------------------------------------------
-    # OUTPUT VON self.client.futures_get_open_orders():
-    # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213}
-    # --------------------------------------------------------------------------
-    
     # --------------------------------------------------------------------------
     # Define investment
     idxs = [11, 22, 33, 44, 55]
@@ -713,7 +688,49 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    #loseitall.turn_off_dry_run()
+    # loseitall.turn_off_dry_run()
+    # --------------------------------------------------------------------------
+
+    # Create wallet portfolio containing all wallets
+    wallet_portfolio = []
+
+    i = 0
+    for idx in idxs:
+
+        # Add wallet to portfolio
+        wallet_portfolio.append(kelly_wallet(idxs[i],symbols[i]))
+
+        # Add known parameters to current wallet 
+        current_wallet=wallet_portfolio[i]
+        current_wallet.leverage=leverages[i]
+        current_wallet.reset_buy_order_id()
+        wallet_balance=loseitall.calculate_wallet_balance(20)
+        current_wallet.balance=loseitall.calculate_wallet_balance(wallet_size_percentages[i])
+        i = i+1
+
+    for wallet in wallet_portfolio:
+        wallet.print_wallet_info()
+
+    # --------------------------------------------------------------------------
+    # MICHI DEBUG
+    # --------------------------------------------------------------------------
+    # FUTURES POSITIONS:
+    # futures positions can be identified by symbol and positionAmt
+    # loseitall.michi_debug_print_status_of_all_futures_positions()
+    # --------------------------------------------------------------------------
+    # OUTPUT VON self.client.futures_position_information():
+    # {'symbol': 'VETUSDT', 'positionAmt': '1660', 'entryPrice': '0.1327488795181', 'markPrice': '0.12813000', 'unRealizedProfit': '-7.66588000', 'liquidationPrice': '0.12743750', 'leverage': '20', 'maxNotionalValue': '25000', 'marginType': 'isolated', 'isolatedMargin': '3.26500776', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '212.69580000', 'isolatedWallet': '10.93088776', 'updateTime': 1629561601101}
+    # --------------------------------------------------------------------------
+    # OUTPUT VON self.client.futures_get_all_orders(): (sehr viel output, ev ein Problem mittelfristig?)
+    # {'orderId': 15891537505, 'symbol': 'ADAUSDT', 'status': 'FILLED', 'clientOrderId': 'LuiVoh74hPaAmqyBWrPcPH', 'price': '0', 'avgPrice': '2.49400', 'origQty': '103', 'executedQty': '103', 'cumQuote': '256.88200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629596414966, 'updateTime': 1629596414966}
+
+    # --------------------------------------------------------------------------
+    # BUY ORDERS
+    # buy orders can be identified by orderId or ClientOrderId
+    # loseitall.michi_debug_print_status_of_all_sell_orders()
+    # --------------------------------------------------------------------------
+    # OUTPUT VON self.client.futures_get_open_orders():
+    # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213}
     # --------------------------------------------------------------------------
 
     # Assign percentage of account balance to wallets
@@ -761,9 +778,6 @@ if __name__ == '__main__':
         # despite the fact that their status is filled !!! (-> ID should be set to -1)
         #
         # when all orders and positions are canceled, everything works fine again
-
-
-
 
         # If we don't have open positions nor orders,
         # we want to place a new bet

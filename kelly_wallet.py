@@ -3,14 +3,13 @@
 class kelly_wallet:
 
     def __init__(self, wallet_id, symbol):
-        self._wallet_id = wallet_id
+        self._id = wallet_id
         self._symbol = symbol
+        self._balance = 60000
+        self._leverage=555  # (needed when calculating profits)
 
     def kelly_wallet(self):
         self._id  # probably not required
-        self._symbol  # symbol
-        self._balance
-        self._leverage  # (needed when calculating profits)
         self._entry_price  # (needed when calculating profits)
         self._margin_added  # (needed when calculating profits)
         self._amount_invested  # not sure if required
@@ -28,64 +27,68 @@ class kelly_wallet:
         self._buy_order_id =-1
 
     def print_wallet_info(self):
+        
+        print('---------------------------')
         print('WALLET INFO')
         print(f'wallet id: {self._id}')
         print(f'symbol: {self._symbol}')
         print(f'balance: {self._balance}')
+        print(f'leverage: {self._leverage}')
+        print('---------------------------')
 
 # GETTER -----------------------------------------------------------------------
 
-@property
-def balance(self):
-    return self._balance
+    @property
+    def balance(self):
+        return self._balance
 
-@property
-def symbol(self):
-    return self._symbol
+    @property
+    def symbol(self):
+        return self._symbol
 
-@property
-def leverage(self):
-    return self._leverage
+    @property
+    def leverage(self):
+        return self._leverage
 
-@property
-def entry_price(self):
-    return self._entry_price
+    @property
+    def entry_price(self):
+        return self._entry_price
 
-@property
-def margin_added(self):
-    return self._margin_added
+    @property
+    def margin_added(self):
+        return self._margin_added
 
-@property
-def buy_order_id(self):
-    return self._buy_order_id
+    @property
+    def buy_order_id(self):
+        return self._buy_order_id
 
-@property
-def sell_order_id(self):
-    return self._sell_order_id
+    @property
+    def sell_order_id(self):
+        return self._sell_order_id
 
-# SETTER -----------------------------------------------------------------------
+    # SETTER -----------------------------------------------------------------------
 
-@balance.setter
-def balance(self, balance):
-    self._balance = balance
+    @balance.setter
+    def balance(self, balance):
+        self._balance = balance
 
-@leverage.setter
-def leverage(self, leverage):
-    self._leverage = leverage
+    @leverage.setter
+    def leverage(self, new_leverage):
+        self._leverage = new_leverage
 
-@entry_price.setter
-def entry_price(self, entry_price):
-    self._entry_price = entry_price
+    @entry_price.setter
+    def entry_price(self, entry_price):
+        self._entry_price = entry_price
 
-@margin_added.setter
-def margin_added(self, margin_added):
-    self._margin_added = margin_added
+    @margin_added.setter
+    def margin_added(self, margin_added):
+        self._margin_added = margin_added
 
-@buy_order_id.setter
-def buy_order_id(self, buy_order_id):
-    self._buy_order_id = buy_order_id
+    @buy_order_id.setter
+    def buy_order_id(self, buy_order_id):
+        self._buy_order_id = buy_order_id
 
-@sell_order_id.setter
-def sell_order_id(self, sell_order_id):
-    self._sell_order_id = sell_order_id
+    @sell_order_id.setter
+    def sell_order_id(self, sell_order_id):
+        self._sell_order_id = sell_order_id
 
