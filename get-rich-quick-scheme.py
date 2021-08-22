@@ -44,38 +44,8 @@ class get_rich_quick_scheme():
         self.client = Client(self.api_key, self.api_secret)
         self.dry_run = True
 
-        # Keep track of multiple buy and sell orders by dicts
-        # self.order_ids is a dict of dicts, e.g.:
-        # self.order_ids = {0: {'BUY': 0178, 'SELL': 02320}, 1: {'BUY': 00926, 'SELL': 008}}
-        # An order ID of -1  means there is no current order registered in the
-        # system
-        # self.order_ids = {}
-
-        # Keep track of multiple wallets by dicts
-        # self.wallets is a dict, e.g.:
-        # self.wallets = {0: 100, 1: 300}
-        self.wallets = {}
-
-        # Keep track of different entry prices
-        # (needed when calculating profits)
-        # self.entry_prices is a dict, e.g.:
-        # self.entry_prices = {0: 1.10, 1: 7.70}
-        # self.entry_prices = {}
-
-        # Keep track of different leverages
-        # (needed when calculating profits)
-        # self.leverages is a dict, e.g.:
-        # self.leverages = {0: 100, 1: 125}
-        # self.leverages = {}
-
-        # Keep track of different added margins
-        # (needed when calculating profits)
-        # self.margins_added is a dict, e.g.:
-        # self.margins_added = {0: 0, 1: 6.66}
-        # self.margins_added = {}
-
         # Portfolio containing all wallet objects
-        # will replace all dicts
+        # replaces all dicts from previous code versions
         # self.wallet_portfolio is an array of wallet objects e.g.:
         # self..wallet_portfolio = [wallet1, wallet2, ...}
         self.wallet_portfolio = []
@@ -99,20 +69,13 @@ class get_rich_quick_scheme():
         except KeyError:
             self.initialize_order_ids(idx, sell_id=sell_id)
 
-    def initialize_wallets(self, idxs, wallet_balances):
-        assert len(idxs) == len(wallet_balances), 'When initializing wallets, '
-        'you should define as many wallets as indexes.'
-        for idx, _ in enumerate(idxs):
-            self.wallets[idxs[idx]] = wallet_balances[idx]
-        self.check_wallets()
-
     def get_total_balance_wallets(self):
         total = 0
-        for _, value in self.wallets.items():
-            total += value
+        for current_wallet in self.wallet_portfolio:
+            total += current_wallet.balance
         return total
 
-    def check_wallets(self):
+    def check_sufficient_account_balance(self):
         _, wallet_free = self.get_account_balance('USDT')
         if self.get_total_balance_wallets() > wallet_free:
             logger.error('The total of requested value for wallets is higher '
@@ -314,7 +277,7 @@ class get_rich_quick_scheme():
         wallet_total, wallet_free = self.get_account_balance('USDT')
         logger.info('    Account balance total: %.2f', wallet_total)
         logger.info('    Account balance free: %.2f', wallet_free)
-        logger.info('    Wallet balance: %.2f', self.wallets[idx])
+        logger.info('    Wallet balance: %.2f', self.wallet_portfolio[idx].balance)
         logger.info('    Market price: %.2f', price_market)
         logger.info('    Leverage: %d', self.wallet_portfolio[idx].leverage)
 
@@ -434,7 +397,7 @@ class get_rich_quick_scheme():
         price_market = float(self.client.futures_position_information
                              (symbol=symbol)[0]['markPrice'])
 
-        myBet = kellyBet(self.wallets[idx], price_market, leverage)
+        myBet = kellyBet(self.wallet_portfolio[idx].balance, price_market, leverage)
 
         # ----------------------------------------------------------------------
         # Define gross odds and margin factor
@@ -468,17 +431,17 @@ class get_rich_quick_scheme():
             # -------does this work? will a new binance order be created?
             self.reset_open_buy_order(idx)
             # Update wallet
-            logger.info('    Index wallet before: %.2f',
-                        self.wallets[idx])
+            logger.info('    Balance wallet before: %.2f',
+                        self.wallet_portfolio[idx].balance)
             # Subtract cost of futures
-            self.wallets[idx] -= (float(order['avgPrice']) *
+            self.wallet_portfolio[idx].balance -= (float(order['avgPrice']) *
                                   float(order['executedQty']) /
                                   self.wallet_portfolio[idx].leverage
                                   )
             # Subtract added margin
-            self.wallets[idx] -= self.wallet_portfolio[idx].margin_added
+            self.wallet_portfolio[idx].balance -= self.wallet_portfolio[idx].margin_added
             logger.info('    Index wallet after (ignoring fees): '
-                        '%.2f', self.wallets[idx])
+                        '%.2f', self.wallet_portfolio[idx].balance)
             # Store entry price for later usage
             self.wallet_portfolio[idx].entry_price = float(order['avgPrice'])
         else:
@@ -535,10 +498,10 @@ class get_rich_quick_scheme():
             logger.info('    Balance wallet before: %.2f',
                         self.wallets[idx])
             # See dev.binance.vision/t/pnl-manual-calculation/1723
-            self.wallets[idx] += self.calculate_pnl(order, idx)
-            self.wallets[idx] += self.wallet_portfolio[idx].margin_added
+            self.wallet_portfolio[idx].balance += self.calculate_pnl(order, idx)
+            self.wallet_portfolio[idx].balance += self.wallet_portfolio[idx].margin_added
             logger.info('    Balance wallet after (ignoring fees): '
-                        '%.2f', self.wallets[idx])
+                        '%.2f', self.wallet_portfolio[idx].balance)
         elif order['status'] == 'CANCELED':
             # Canceled, no money
             # Update sell order
@@ -555,11 +518,11 @@ class get_rich_quick_scheme():
             self.reset_open_sell_order(idx)
             # Update wallet
             logger.info('Wallet balance: %.2f',
-                        self.wallets[idx])
+                        self.wallet_portfolio[idx].balance)
             # See dev.binance.vision/t/pnl-manual-calculation/1723
-            self.wallets[idx] -= (self.calculate_pnl(order, idx))
+            self.wallet_portfolio[idx].balance -= (self.calculate_pnl(order, idx))
             logger.info('Wallet after (ignoring fees): '
-                        '%.2f', self.wallets[idx])
+                        '%.2f', self.wallet_portfolio[idx].balance)
         else:
             # Update sell order
             logger.warning('Sell order with ID %s has unknown '
@@ -645,7 +608,7 @@ class get_rich_quick_scheme():
 
     # def monitor_and_restart_investments(self):
     # not required, already existing procedure (should) work fine
-        return
+        #return
         # After program newstart, initial investments are made for each wallet
         # Afterwards this function monitors and restarts invesments.
 
@@ -749,8 +712,7 @@ if __name__ == '__main__':
     wallet_balances = loseitall.calculate_wallet_balances(
         wallet_size_percentages)
 
-    # Initialize wallets
-    loseitall.initialize_wallets(idxs, wallet_balances)
+    loseitall.check_sufficient_account_balance()
 
     # Go into an endless loop
     while True:
