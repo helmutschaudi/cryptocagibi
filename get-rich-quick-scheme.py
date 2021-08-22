@@ -88,24 +88,26 @@ class get_rich_quick_scheme():
                     wallet_free)
 
     def place_new_kelly_bet_on_closed_orders(self):
-        
+
         for current_wallet in self.wallet_portfolio:
-            if current_wallet.buy_order_id<0 and current_wallet.sell_order_id<0:
+            if current_wallet.buy_order_id < 0 and current_wallet.sell_order_id < 0:
                 self.place_kelly_bet(current_wallet)
-            
+
             else:
                 # If we reach here, order IDs are both set and positive,
                 # which means we have valid current orders
                 logger.info('Current BUY order ID: %s [index=%d]',  # log shows -1 for all buy orders?
-                    current_wallet.buy_order_id, current_wallet.wallet_id)
+                            current_wallet.buy_order_id, current_wallet.wallet_id)
                 logger.info('Current SELL order ID: %s [index=%d]',
-                    current_wallet.sell_order_id, current_wallet.wallet_id)
+                            current_wallet.sell_order_id, current_wallet.wallet_id)
 
+    # ---duplicate of kelly_wallet function
     def reset_open_buy_order(self, wallet):
         logger.info('    Reset BUY order ID %s [index=%d].',
                     wallet.buy_order_id, wallet.wallet_id)
         wallet.buy_order_id = -1
 
+    # ---duplicate of kelly_wallet function
     def reset_open_sell_order(self, wallet):
         logger.info('    Reset SELL order ID %s [index=%d].',
                     wallet.sell_order_id, wallet.wallet_id)
@@ -264,7 +266,8 @@ class get_rich_quick_scheme():
 
     def log_new_kelly_bet(self, wallet):
         symbol = wallet.symbol
-        logger.info('Placing Kelly bet for %s [index=%d].', symbol, wallet.wallet_id)
+        logger.info(
+            'Placing Kelly bet for %s [index=%d].', symbol, wallet.wallet_id)
         logger.info('Kelly options:')
         price_market = float(self.client.futures_position_information
                              (symbol=symbol)[0]['markPrice'])
@@ -456,16 +459,15 @@ class get_rich_quick_scheme():
                         buy_order_id,
                         float(avg_price),
                         wallet_idx)
-            # -------does this work? will a new binance order be created?
             self.reset_open_buy_order(current_wallet)
             # Update wallet
             logger.info('    Wallet balance wallet before: %.2f',
                         current_wallet.balance)
             # Subtract cost of futures
             current_wallet.balance -= (float(avg_price) *
-                                                          float(executed_quantity) /
-                                                          current_wallet.leverage
-                                                          )
+                                       float(executed_quantity) /
+                                       current_wallet.leverage
+                                       )
             # Subtract added margin
             current_wallet.balance -= current_wallet.margin_added
             logger.info('    Wallet balance wallet after (ignoring fees): '
@@ -508,7 +510,6 @@ class get_rich_quick_scheme():
             if current_wallet.sell_order_id < 0:
                 logger.info('No current open sell order. index=%d',
                             current_wallet.wallet_id)
-                # return # no, process all other positions as well, since we got the expensive get_all_orders() info
 
             # Loop over all orders (from API)
             # for order in all_orders:
@@ -547,7 +548,7 @@ class get_rich_quick_scheme():
                 executed_quantity, avg_price, current_wallet)
             current_wallet.balance += current_wallet.margin_added
             logger.info('    Balance wallet after (ignoring fees): '
-                        '%.2f',current_wallet.balance)
+                        '%.2f', current_wallet.balance)
         elif sell_order_status == 'CANCELED':
             # Canceled, no money
             # Update sell order
@@ -632,7 +633,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    loseitall.turn_off_dry_run()
+    #loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Create wallet portfolio containing all wallets
@@ -647,8 +648,6 @@ if __name__ == '__main__':
         # Add known parameters to current wallet
         current_wallet = wallet_portfolio[i]
         current_wallet.leverage = leverages[i]
-        current_wallet.reset_buy_order_id()
-        wallet_balance = loseitall.calculate_wallet_balance(20)
         current_wallet.balance = loseitall.calculate_wallet_balance(
             wallet_size_percentages[i])
         i = i+1
@@ -702,9 +701,8 @@ if __name__ == '__main__':
         # when all orders and positions are canceled, everything works fine again
 
         # SELL_ORDER=FILLED -> WE WON (market order filled, sell order filled, )
-        
+
         # FUTURES_POSITION=FILLED --> WE LOST (limit sell order expired or canceled)
         # NOT TRUE! ---> BUY ORDER IS ALREADY FILLED WHEN IT STARTS
-
 
         sleep(60)

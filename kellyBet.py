@@ -2,7 +2,6 @@
 
 import sys
 
-
 class kellyBet:
 
     def __init__(self, wallet_balance, price_old, multiplier):
@@ -137,5 +136,7 @@ if __name__ == '__main__':
 
     # Wallet 100 units, PPU 1, Leverage 100 -> sell@+1% or lose@-5.0% -> Gain 2.50 (ROE+100%) or lose 12.50
     #myBet.kellyBet(1.2, 5)
+
+    # --> leverage does not matter?
 
     myBet.kellyBetInfo()
