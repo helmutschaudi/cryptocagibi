@@ -45,7 +45,7 @@ class get_rich_quick_scheme():
 
         # Keep track of multiple buy and sell orders by dicts
         # self.order_ids is a dict of dicts, e.g.:
-        # self.order_ids = {11: {'BUY': 1, 'SELL': 2}, 22: {'BUY': 9, 'SELL': 8}}
+        # self.order_ids = {11: {'BUY': 0178, 'SELL': 02320}, 22: {'BUY': 00926, 'SELL': 008}}
         # An order ID of -1  means there is no current order registered in the
         # system
         self.order_ids = {}
@@ -128,7 +128,7 @@ class get_rich_quick_scheme():
 
         # If we reach here, order IDs are both set and positive,
         # which means we have valid current orders
-        logger.info('Current BUY order ID: %s [index=%d]',
+        logger.info('Current BUY order ID: %s [index=%d]', # log shows -1 for all buy orders?
                     self.order_ids[idx]['BUY'], idx)
         logger.info('Current SELL order ID: %s [index=%d]',
                     self.order_ids[idx]['SELL'], idx)
@@ -470,7 +470,10 @@ class get_rich_quick_scheme():
                         '%.2f', self.wallets[idx])
             # Store entry price for later usage
             self.entry_prices[idx] = float(order['avgPrice'])
-        # elif -> has unknown state what to do?
+        else:
+            logger.warning('Buy order with ID %s has unknown '
+                           'state %s [index=%d].',
+                           order['orderId'], order['status'], idx)
 
     def check_status_of_all_buy_orders(self):
         all_orders = self.client.futures_get_all_orders()
@@ -708,7 +711,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    loseitall.turn_off_dry_run()
+    #loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Assign percentage of account balance to wallets
