@@ -8,6 +8,7 @@ from binance.client import Client
 from kellyBet import kellyBet
 from binance_keys import *
 
+
 def setup_logger(name, log_file, level=logging.INFO):
 
     formatter = logging.Formatter('%(levelname)-8s - %(asctime)s - '
@@ -21,6 +22,7 @@ def setup_logger(name, log_file, level=logging.INFO):
     logger.addHandler(handler)
 
     return logger
+
 
 # Configure logger (for info and debugging)
 logger = setup_logger('default_logger',
@@ -43,32 +45,32 @@ class get_rich_quick_scheme():
 
         # Keep track of multiple buy and sell orders by dicts
         # self.order_ids is a dict of dicts, e.g.:
-        # self.order_ids = {1: {'BUY': 1, 'SELL': 2}, 2: {'BUY': 9, 'SELL': 8}}
+        # self.order_ids = {11: {'BUY': 1, 'SELL': 2}, 22: {'BUY': 9, 'SELL': 8}}
         # An order ID of -1  means there is no current order registered in the
         # system
         self.order_ids = {}
 
         # Keep track of multiple wallets by dicts
         # self.wallets is a dict, e.g.:
-        # self.wallets = {1: 100, 2: 300}
+        # self.wallets = {11: 100, 22: 300}
         self.wallets = {}
 
         # Keep track of different entry prices
         # (needed when calculating profits)
         # self.entry_prices is a dict, e.g.:
-        # self.entry_prices = {1: 1.10, 2: 7.70}
+        # self.entry_prices = {11: 1.10, 22: 7.70}
         self.entry_prices = {}
 
         # Keep track of different leverages
         # (needed when calculating profits)
         # self.leverages is a dict, e.g.:
-        # self.leverages = {1: 100, 2: 125}
+        # self.leverages = {11: 100, 22: 125}
         self.leverages = {}
 
         # Keep track of different added margins
         # (needed when calculating profits)
         # self.margins_added is a dict, e.g.:
-        # self.margins_added = {1: 0, 2: 6.66}
+        # self.margins_added = {11: 0, 22: 6.66}
         self.margins_added = {}
 
     def initialize_order_ids(self, idx, buy_id=-1, sell_id=-1):
@@ -116,7 +118,7 @@ class get_rich_quick_scheme():
             # If order IDs are -1, there are no current orders for a given
             # index
             if self.order_ids[idx]['BUY'] < 0 and \
-               self.order_ids[idx]['SELL'] < 0:
+               self.order_ids[idx]['SELL'] < 0:  # ----- no buy order alone would be sufficient reason to make one
                 logger.info('No current orders found. [index=%d]', idx)
                 return False
         except KeyError:
@@ -338,6 +340,7 @@ class get_rich_quick_scheme():
         # Buy futures
         logger.info('    Buy %s futures at %s, pay initial margin %s.',
                     futures_buy, price_old, myBet.asset_old)
+
         if not self.dry_run:
             response = self.client.futures_create_order(symbol=symbol,
                                                         side='BUY',
@@ -451,6 +454,7 @@ class get_rich_quick_scheme():
                         order['orderId'],
                         float(order['avgPrice']),
                         idx)
+            # -------does this work? will a new binance order be created?
             self.reset_open_buy_order(idx)
             # Update wallet
             logger.info('    Index wallet before: %.2f',
@@ -466,6 +470,7 @@ class get_rich_quick_scheme():
                         '%.2f', self.wallets[idx])
             # Store entry price for later usage
             self.entry_prices[idx] = float(order['avgPrice'])
+        # elif -> has unknown state what to do?
 
     def check_status_of_all_buy_orders(self):
         all_orders = self.client.futures_get_all_orders()
@@ -474,20 +479,21 @@ class get_rich_quick_scheme():
 
             # If there is no current buy order, skip
             if self.order_ids[idx]['BUY'] < 0:
-                logger.info('No current open buy order.')
-                return
+                logger.info('No current open buy order for index=%d', idx)
+                #return  # do not return, process all other orders
 
+            else:
             # Loop over all orders (from API)
-            for order in all_orders:
-                # Match the two orders
-                if order['orderId'] == order_id['BUY']:
+                for order in all_orders:
+                    # Match the two orders
+                    if order['orderId'] == order_id['BUY']:
 
-                    # Log order
-                    logger.debug(order)
+                        # Log order
+                        logger.debug(order)
 
-                    # We found the current order for a given index
-                    # Now check status
-                    self.check_buy_order_status(order, idx)
+                        # We found the current order for a given index
+                        # Now check status
+                        self.check_buy_order_status(order, idx)
 
     def calculate_pnl(self, order, idx):
         pnl = (float(order['executedQty']) *
@@ -554,20 +560,21 @@ class get_rich_quick_scheme():
         for idx, order_id in self.order_ids.items():
 
             # If there is no current sell order, skip
-            if self.order_ids[idx]['SELL'] < 0:  # ...weshalb kleiner 0 nicht = 0?
-                logger.info('No current open sell order.')
-                return
+            if self.order_ids[idx]['SELL'] < 0:
+                logger.info('No current open sell order. index=%d',idx)
+                #return # should not return, process all other positions!
 
             # Loop over all orders (from API)
-            for order in all_orders:
-
-                # Match the two orders
-                if order['orderId'] == order_id['SELL']:
-                    # Log order
-                    logger.debug(order)
-                    # We found the current order for a given index
-                    # Now check status
-                    self.check_sell_order_status(order, idx)
+            # for order in all_orders:
+            else:
+                for order in all_orders:
+                    # Match the two orders
+                    if order['orderId'] == order_id['SELL']:
+                        # Log order
+                        logger.debug(order)
+                        # We found the current order for a given index
+                        # Now check status
+                        self.check_sell_order_status(order, idx)
 
     def print_debug_info(self):
         # print(self.client.get_account())
@@ -582,7 +589,6 @@ class get_rich_quick_scheme():
         # print(self.client.futures_get_open_orders())
         # print(self.client.futures_get_all_orders())
         # print(self.client.futures_get_open_orders()[0]['price'])
-        # print(self.client.futures_get_all_orders())
         return
 
     def calculate_wallet_balances(self, wallet_size_percentages):
@@ -593,33 +599,71 @@ class get_rich_quick_scheme():
                 trunc(wallet_free*wallet_size_percentages[i]/100))
         return wallet_balances
 
-
-
     def michi_debug_print_status_of_all_futures_positions(self):
-        open_positions = []
-        for position in self.client.futures_position_information():
-            if float(position['positionAmt']) != 0.: # positionAmt = position amount
-                open_positions.append(position)
+        print(self.client.futures_get_all_orders())
 
-        for open_position in open_positions:
-            order_symbol=open_position['symbol']
-            order_amount = float(open_position['positionAmt'])
-            print(f'FUTURE POSITION SYMBOL:{order_symbol} AMOUNT:{order_amount} ')
+        # open_positions = []
+        # for position in self.client.futures_position_information():
+        #     if float(position['positionAmt']) != 0.:  # positionAmt = position amount
+        #         open_positions.append(position)
 
-    def michi_debug_print_status_of_all_buy_orders(self):
-        all_orders = self.client.futures_get_open_orders()
-        for order in all_orders:
-           order_id=order['orderId'] #...gibt auch client id
-           order_symbol=order['symbol']
-           order_status=order['status']
-           order_amount=order['origQty']
-           print(f'BUY ORDER ID:{order_id}  SYMBOL:{order_symbol}  STATUS:{order_status} AMOUNT:{order_amount}')
+        # for open_position in open_positions:
+        #     order_symbol = open_position['symbol']
+        #     order_amount = float(open_position['positionAmt'])
+        #     print(
+        #         f'FUTURE POSITION SYMBOL:{order_symbol} AMOUNT:{order_amount} ')
+
+    def michi_debug_print_status_of_all_sell_orders(self):
+        return
+        # all_orders = self.client.futures_get_open_orders()
+        # for order in all_orders:
+        #     order_id = order['orderId']  # ...gibt auch client id
+        #     order_symbol = order['symbol']
+        #     order_status = order['status']
+        #     order_amount = order['origQty']
+        #     print(
+        #         f'BUY ORDER ID:{order_id}  SYMBOL:{order_symbol}  STATUS:{order_status} AMOUNT:{order_amount}')
+
+    def monitor_and_restart_investments(self):
+        return
+        # After program newstart, initial investments are made for each wallet
+        # Afterwards this function monitors and restarts invesments.
+
+        # check status of all futures positions
+        #     possible status: NEW(active) FILLED(we lost) ...? CANCELED(? manually?)
+        # check status of all sell orders
+        #     possible status: NEW(active) FILLED(we won)  CANCELED()  EXPIRED()
+
+        # if FUTURES_POSITION=NEW  & SELL_ORDER=NEW
+        # wallet ok, still open
+
+        # if SELL_ORDER=FILLED (market order filled, sell order filled, )
+        # sold, we won
+        # update stuff accordingly
+        # place new kelly bet
+
+        # if FUTURES_POSITION=FILLED (limit sell order expired or canceled ...when does what happen?)
+        # we lost, futures have been liquidated
+        # update stuff accordingly ()
+        # place new kelly bet ()
+
+        # if SELL_ORDER=CANCELED
+        # update sell order
+
+        # if SELL_ORDER=EXPIRED ...(when) does this happen?
+        # liquidated (we lose money)
+        # Update sell order
+        # Update wallet
+
+        # sell order else:
+        #     # Update sell order
+        #     logger.warning('Sell order with ID %s has unknown '
+        #                    'state %s [index=%d].',
+        #                    order['orderId'], order['status'], idx)
+        #     logger.warning('Should I reset the open order?')
 
 
 if __name__ == '__main__':
-
-    print('haudi')
-
 
     # --------------------------------------------------------------------------
     # Define investment
@@ -637,21 +681,23 @@ if __name__ == '__main__':
     # --------------------------------------------------------------------------
     # FUTURES POSITIONS:
     # futures positions can be identified by symbol and positionAmt
-    loseitall.michi_debug_print_status_of_all_futures_positions()
+    #loseitall.michi_debug_print_status_of_all_futures_positions()
     # --------------------------------------------------------------------------
+    # OUTPUT VON self.client.futures_position_information():
     # {'symbol': 'VETUSDT', 'positionAmt': '1660', 'entryPrice': '0.1327488795181', 'markPrice': '0.12813000', 'unRealizedProfit': '-7.66588000', 'liquidationPrice': '0.12743750', 'leverage': '20', 'maxNotionalValue': '25000', 'marginType': 'isolated', 'isolatedMargin': '3.26500776', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '212.69580000', 'isolatedWallet': '10.93088776', 'updateTime': 1629561601101}
+    # --------------------------------------------------------------------------
+    # OUTPUT VON self.client.futures_get_all_orders(): (sehr viel output, ev ein Problem mittelfristig?)
+    # {'orderId': 15891537505, 'symbol': 'ADAUSDT', 'status': 'FILLED', 'clientOrderId': 'LuiVoh74hPaAmqyBWrPcPH', 'price': '0', 'avgPrice': '2.49400', 'origQty': '103', 'executedQty': '103', 'cumQuote': '256.88200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'time': 1629596414966, 'updateTime': 1629596414966}
 
     # --------------------------------------------------------------------------
     # BUY ORDERS
-    # buy orders can be identified by orderId or clientOrderId
-    loseitall.michi_debug_print_status_of_all_buy_orders()
+    # buy orders can be identified by orderId or ClientOrderId
+    #loseitall.michi_debug_print_status_of_all_sell_orders()
     # --------------------------------------------------------------------------
+    # OUTPUT VON self.client.futures_get_open_orders():
     # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213}
     # --------------------------------------------------------------------------
-    while True:
-        sleep(10)
-
-
+    
     # --------------------------------------------------------------------------
     # Define investment
     idxs = [11, 22, 33, 44, 55]
@@ -660,10 +706,9 @@ if __name__ == '__main__':
     leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
     # --------------------------------------------------------------------------
 
-
     # --------------------------------------------------------------------------
     # Turn off dry run
-    # loseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Assign percentage of account balance to wallets
@@ -704,23 +749,16 @@ if __name__ == '__main__':
                 # If we don't have current orders, place a new one
                 loseitall.place_kelly_bet(symbol, leverage, idx)
 
-        #  
+        #
         # After startup of the bot, everything works fine
         # after a few hours, somtimes only 3 of 5 orders and positions are open
-        #
-        #  FUTURE   | SELL  || WHAT      |  WHAT IS         | DOES IT WORK
-        #  POSITION | ORDER || HAPPEND?  |  TO DO?          | YET?
-        # ------------------------------------------------------------------
-        #        0  |  0    || we won    | place new order  | sometimes?
-        # --------------------------------------------------|---------------      
-        #        1  |  0    || should (does?) not happen    |
-        # ----------------------------------------------------------------
-        #        0  |  1    || we lost   | cancel sell order| not when canceled manually (app)
-        #           |       ||           | place new order  | ...why? (check log)
-        # ----------------------------------------------------------------
-        #        1     1    || all fine  | nothing          | yes
+        # The missing positions or orders have still one of two IDs valid (not set to -1)
+        # despite the fact that their status is filled !!! (-> ID should be set to -1)
         #
         # when all orders and positions are canceled, everything works fine again
+
+
+
 
         # If we don't have open positions nor orders,
         # we want to place a new bet
