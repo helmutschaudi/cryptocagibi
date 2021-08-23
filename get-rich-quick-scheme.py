@@ -51,10 +51,11 @@ class get_rich_quick_scheme():
         # self..wallet_portfolio = [wallet1, wallet2, ...}
         self.wallet_portfolio = []
 
-        # Store binance order info
-        # This is an expensive call and will therefore
-        # only be executed once per program cycle
-        # self.status_of_all_binance_orders = {} #------> not working yet
+        # Store binance "futures_get_all_orders()" response
+        # this is an expensive call and will therefore only
+        # be executed once per program cycle
+        self.status_of_all_binance_orders = {}
+
 
     def add_wallet_to_portfolio(self, wallet):
         self.wallet_portfolio.append(wallet)
@@ -424,21 +425,20 @@ class get_rich_quick_scheme():
 
         self.log_liquidation_info(myBet)
 
-    # def get_status_of_all_binance_orders(self):
-    #     binance_response=self.client.futures_get_all_orders()
-    #     self.status_of_all_binance_orders = json.loads(binance_response)
-    #     print(self.status_of_all_binance_orders)
-
+    def get_status_of_all_binance_orders(self):
+        binance_response=self.client.futures_get_all_orders()
+        self.status_of_all_binance_orders = binance_response
+        
     def update_status_of_all_buy_orders(self):
-        #all_orders = self.status_of_all_binance_orders
-        all_orders = self.client.futures_get_all_orders()
-
+       
         # Loop over current orders (stored in this instance)
         for current_wallet in self.wallet_portfolio:
 
             # If there is no current buy order, skip
             if current_wallet.buy_order_id != -1:
+                
                 # Loop over all orders (from API)
+                all_orders = self.status_of_all_binance_orders
                 for order in all_orders:
                     # Match the two orders
                     if order['orderId'] == current_wallet.buy_order_id:
@@ -507,15 +507,15 @@ class get_rich_quick_scheme():
         return pnl
 
     def update_status_of_all_sell_orders(self):
-        #all_orders = self.status_of_all_binance_orders
-        all_orders = self.client.futures_get_all_orders()
-
+      
         # Loop over current orders (stored in this instance)
         for current_wallet in self.wallet_portfolio:
 
             # If there is no current sell order, skip
             if current_wallet.sell_order_id != -1:
+                
                 # Loop over all orders (from API)
+                all_orders = self.status_of_all_binance_orders
                 for order in all_orders:
                     # Match the two orders
                     if order['orderId'] == current_wallet.sell_order_id:
@@ -653,8 +653,9 @@ if __name__ == '__main__':
         # Add wallet to portfolio
         loseitall.add_wallet_to_portfolio(current_wallet)
 
-    loseitall.print_info_of_all_wallets()
-
+    # Check if account balance is sufficient to host wallets
+    loseitall.check_sufficient_account_balance()
+    
     # --------------------------------------------------------------------------
     # DEBUG INFO
     # --------------------------------------------------------------------------
@@ -668,7 +669,6 @@ if __name__ == '__main__':
     # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213} ...
     # --------------------------------------------------------------------------
 
-    loseitall.check_sufficient_account_balance()
 
     # Go into an endless loop
     while True:
@@ -677,13 +677,14 @@ if __name__ == '__main__':
         loseitall.show_open_positions()
         loseitall.show_open_orders()
 
-        # Get status of all binance orders #---> not working yet
-        #loseitall.get_status_of_all_binance_orders()
+        # Get status of all binance orders
+        loseitall.get_status_of_all_binance_orders()
 
         # Update status of all wallets with information from binance
         loseitall.update_status_of_all_buy_orders()
         loseitall.update_status_of_all_sell_orders()
 
+        # Print info of wallet objects in portfolio
         loseitall.print_info_of_all_wallets()
 
         # Check status of all current orders, reset them if necessary, and
@@ -697,3 +698,4 @@ if __name__ == '__main__':
         loseitall.place_new_kelly_bet_on_closed_orders()
 
         sleep(60)
+    
