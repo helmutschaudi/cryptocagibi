@@ -6,9 +6,9 @@ class kelly_wallet:
         self._wallet_id = wallet_id
         self._symbol = symbol
         self._balance = -1
-        self._leverage = -1     # (needed when calculating profits)
-        self._entry_price = -1  # (needed when calculating profits)
-        self._margin_added = -1 # (needed when calculating profits)
+        self._leverage = -1
+        self._entry_price = -1
+        self._margin_added = -1
         self._buy_order_id = -1
         self._buy_order_status = 'none'
         self._buy_order_executed_quantity = -1
@@ -17,8 +17,6 @@ class kelly_wallet:
         self._sell_order_status = 'none'
         self._sell_order_executed_quantity = -1
         self._sell_order_avg_price = -1
-        # self._has_buy_order
-        # self._has_sell_order
 
     def reset_sell_order_id(self):
         self._sell_order_id = -1
@@ -100,7 +98,6 @@ class kelly_wallet:
     def sell_order_avg_price(self):
         return self._sell_order_avg_price
 
-
     # SETTER -----------------------------------------------------------------------
 
     @balance.setter
@@ -150,4 +147,3 @@ class kelly_wallet:
     @sell_order_avg_price.setter
     def sell_order_avg_price(self, sell_order_avg_price):
         self._sell_order_avg_price = sell_order_avg_price
-
