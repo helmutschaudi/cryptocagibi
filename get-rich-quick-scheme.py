@@ -50,6 +50,11 @@ class get_rich_quick_scheme():
         # self..wallet_portfolio = [wallet1, wallet2, ...}
         self.wallet_portfolio = []
 
+        # Store binance order info
+        # This is an expensive call and will therefore
+        # only be executed once per program cycle
+        self.status_of_all_binance_orders = ''
+
     def assign_wallets_to_portfolio(self, wallet_portfolio):
         self.wallet_portfolio = wallet_portfolio
 
@@ -101,17 +106,15 @@ class get_rich_quick_scheme():
                 logger.info('Current SELL order ID: %s [index=%d]',
                             current_wallet.sell_order_id, current_wallet.wallet_id)
 
-    # ---duplicate of kelly_wallet function
     def reset_open_buy_order(self, wallet):
         logger.info('    Reset BUY order ID %s [index=%d].',
                     wallet.buy_order_id, wallet.wallet_id)
-        wallet.buy_order_id = -1
+        wallet.reset_sell_order()
 
-    # ---duplicate of kelly_wallet function
     def reset_open_sell_order(self, wallet):
         logger.info('    Reset SELL order ID %s [index=%d].',
                     wallet.sell_order_id, wallet.wallet_id)
-        wallet.sell_order_id = -1
+        wallet.reset_sell_order()
 
     def turn_off_dry_run(self):
         self.dry_run = False
@@ -324,7 +327,7 @@ class get_rich_quick_scheme():
             self.set_buy_order_id(wallet, buy_id=response['orderId'])
             logger.info('        BUY order ID: %s',
                         wallet.buy_order_id)
-                
+
         else:
             logger.warning('Dry run, do not actually buy anything.')
 
@@ -420,19 +423,17 @@ class get_rich_quick_scheme():
 
         self.log_liquidation_info(myBet)
 
+    def get_status_of_all_binance_orders(self):
+        self.binance_info_of_all_order = self.client.futures_get_all_orders()
+
     def update_status_of_all_buy_orders(self):
-        all_orders = self.client.futures_get_all_orders()
+        all_orders = self.status_of_all_binance_orders
 
         # Loop over current orders (stored in this instance)
         for current_wallet in self.wallet_portfolio:
 
             # If there is no current buy order, skip
-            if current_wallet.buy_order_id < 0:
-                logger.info('No current open buy order for index=%d',
-                            current_wallet.wallet_id)
-                # return # no, process all other positions as well, since we got the expensive get_all_orders() info
-
-            else:
+            if current_wallet.buy_order_id != -1:
                 # Loop over all orders (from API)
                 for order in all_orders:
                     # Match the two orders
@@ -502,19 +503,14 @@ class get_rich_quick_scheme():
         return pnl
 
     def update_status_of_all_sell_orders(self):
-        all_orders = self.client.futures_get_all_orders()
+        all_orders = self.status_of_all_binance_orders
 
         # Loop over current orders (stored in this instance)
         for current_wallet in self.wallet_portfolio:
 
             # If there is no current sell order, skip
-            if current_wallet.sell_order_id < 0:
-                logger.info('No current open sell order. index=%d',
-                            current_wallet.wallet_id)
-
-            # Loop over all orders (from API)
-            # for order in all_orders:
-            else:
+            if current_wallet.sell_order_id != -1:
+                # Loop over all orders (from API)
                 for order in all_orders:
                     # Match the two orders
                     if order['orderId'] == current_wallet.sell_order_id:
@@ -534,7 +530,8 @@ class get_rich_quick_scheme():
                         '[index=%d].',
                         sell_order_id, wallet_idx)
         elif sell_order_status == 'FILLED':
-            # Sold, we get money
+            # We won!
+            # We get money
             # Update sell order
             logger.info('Sell order withd ID %s filled '
                         '[index=%d].',
@@ -558,7 +555,8 @@ class get_rich_quick_scheme():
                         sell_order_id, wallet_idx)
             self.reset_open_sell_order(current_wallet)
         elif sell_order_status == 'EXPIRED':
-            # Liquidated, we lose money
+            # We lost!
+            # We lose money
             # Update sell order
             logger.info('Sell order with ID %s expired '
                         '[index=%d].',
@@ -679,6 +677,9 @@ if __name__ == '__main__':
         loseitall.show_open_positions()
         loseitall.show_open_orders()
 
+        # Get status of all binance orders
+        loseitall.get_status_of_all_binance_orders()
+
         # Update status of all wallets with information from binance
         loseitall.update_status_of_all_buy_orders()
         loseitall.update_status_of_all_sell_orders()
@@ -689,21 +690,10 @@ if __name__ == '__main__':
         # update wallet
         loseitall.check_status_of_all_buy_orders()
         loseitall.check_status_of_all_sell_orders()
+        # SELL_ORDER=FILLED  -> WE WON
+        # SELL_ORDER=EXPIRED -> WE LOST
 
         # Place new bets on closed orders
         loseitall.place_new_kelly_bet_on_closed_orders()
-
-        # BUG (NOT SURE IF FIXED YET)
-        # After startup of the bot, everything works fine
-        # after a few hours, somtimes only 3 of 5 orders and positions are open
-        # The missing positions or orders have still one of two IDs valid (not set to -1)
-        # despite the fact that their status is filled! (-> ID should be set to -1)
-        #
-        # when all orders and positions are canceled, everything works fine again
-
-        # SELL_ORDER=FILLED -> WE WON (market order filled, sell order filled, )
-
-        # FUTURES_POSITION=FILLED --> WE LOST (limit sell order expired or canceled)
-        # NOT TRUE! ---> BUY ORDER IS ALREADY FILLED WHEN IT STARTS
 
         sleep(60)
