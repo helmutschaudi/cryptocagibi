@@ -324,6 +324,7 @@ class get_rich_quick_scheme():
             self.set_buy_order_id(wallet, buy_id=response['orderId'])
             logger.info('        BUY order ID: %s',
                         wallet.buy_order_id)
+                
         else:
             logger.warning('Dry run, do not actually buy anything.')
 
@@ -542,7 +543,7 @@ class get_rich_quick_scheme():
 
             # Update wallet
             logger.info('    Balance wallet before: %.2f',
-                        self.wallets[wallet_idx])
+                        current_wallet.wallet_id)
             # See dev.binance.vision/t/pnl-manual-calculation/1723
             current_wallet.balance += self.calculate_pnl(
                 executed_quantity, avg_price, current_wallet)
@@ -565,7 +566,7 @@ class get_rich_quick_scheme():
             self.reset_open_sell_order(current_wallet)
             # Update wallet
             logger.info('Wallet balance: %.2f',
-                        self.wallet_portfolio[wallet_idx].balance)
+                        current_wallet.balance)
             # See dev.binance.vision/t/pnl-manual-calculation/1723
             current_wallet.balance -= (
                 self.calculate_pnl(executed_quantity, avg_price, current_wallet))
@@ -633,7 +634,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    #loseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Create wallet portfolio containing all wallets
