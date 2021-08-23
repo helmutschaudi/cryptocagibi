@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import json
 from math import log, trunc
 from datetime import datetime
 from time import sleep
@@ -53,10 +54,10 @@ class get_rich_quick_scheme():
         # Store binance order info
         # This is an expensive call and will therefore
         # only be executed once per program cycle
-        self.status_of_all_binance_orders = ''
+        # self.status_of_all_binance_orders = {} #------> not working yet
 
-    def assign_wallets_to_portfolio(self, wallet_portfolio):
-        self.wallet_portfolio = wallet_portfolio
+    def add_wallet_to_portfolio(self, wallet):
+        self.wallet_portfolio.append(wallet)
 
     def initialize_order_ids(self, wallet, buy_id=-1, sell_id=-1):
         wallet.buy_order_id = buy_id
@@ -109,12 +110,12 @@ class get_rich_quick_scheme():
     def reset_open_buy_order(self, wallet):
         logger.info('    Reset BUY order ID %s [index=%d].',
                     wallet.buy_order_id, wallet.wallet_id)
-        wallet.reset_sell_order()
+        wallet.reset_buy_order_id()
 
     def reset_open_sell_order(self, wallet):
         logger.info('    Reset SELL order ID %s [index=%d].',
                     wallet.sell_order_id, wallet.wallet_id)
-        wallet.reset_sell_order()
+        wallet.reset_sell_order_id()
 
     def turn_off_dry_run(self):
         self.dry_run = False
@@ -423,11 +424,14 @@ class get_rich_quick_scheme():
 
         self.log_liquidation_info(myBet)
 
-    def get_status_of_all_binance_orders(self):
-        self.binance_info_of_all_order = self.client.futures_get_all_orders()
+    # def get_status_of_all_binance_orders(self):
+    #     binance_response=self.client.futures_get_all_orders()
+    #     self.status_of_all_binance_orders = json.loads(binance_response)
+    #     print(self.status_of_all_binance_orders)
 
     def update_status_of_all_buy_orders(self):
-        all_orders = self.status_of_all_binance_orders
+        #all_orders = self.status_of_all_binance_orders
+        all_orders = self.client.futures_get_all_orders()
 
         # Loop over current orders (stored in this instance)
         for current_wallet in self.wallet_portfolio:
@@ -503,7 +507,8 @@ class get_rich_quick_scheme():
         return pnl
 
     def update_status_of_all_sell_orders(self):
-        all_orders = self.status_of_all_binance_orders
+        #all_orders = self.status_of_all_binance_orders
+        all_orders = self.client.futures_get_all_orders()
 
         # Loop over current orders (stored in this instance)
         for current_wallet in self.wallet_portfolio:
@@ -624,7 +629,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Define investment
-    wallet_indexes = [0, 1, 2, 3, 4]
+    wallet_ids = [111, 222, 333, 444, 555]
     symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
     wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
     leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
@@ -635,23 +640,18 @@ if __name__ == '__main__':
     loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
-    # Create wallet portfolio containing all wallets
-    wallet_portfolio = []
-
-    i = 0
-    for wallet_idx in wallet_indexes:
-
+    # Create wallets, and add them to wallet portfolio
+    for idx, wallet_id in enumerate(wallet_ids):
+        
+        # Create wallet with id and symbol
+        current_wallet = kelly_wallet(wallet_id, symbols[idx])
+        
+        # Add known parameters
+        current_wallet.leverage = leverages[idx]
+        current_wallet.balance = loseitall.calculate_wallet_balance(wallet_size_percentages[idx])
+        
         # Add wallet to portfolio
-        wallet_portfolio.append(kelly_wallet(wallet_indexes[i], symbols[i]))
-
-        # Add known parameters to current wallet
-        current_wallet = wallet_portfolio[i]
-        current_wallet.leverage = leverages[i]
-        current_wallet.balance = loseitall.calculate_wallet_balance(
-            wallet_size_percentages[i])
-        i = i+1
-
-    loseitall.assign_wallets_to_portfolio(wallet_portfolio)
+        loseitall.add_wallet_to_portfolio(current_wallet)
 
     loseitall.print_info_of_all_wallets()
 
@@ -677,8 +677,8 @@ if __name__ == '__main__':
         loseitall.show_open_positions()
         loseitall.show_open_orders()
 
-        # Get status of all binance orders
-        loseitall.get_status_of_all_binance_orders()
+        # Get status of all binance orders #---> not working yet
+        #loseitall.get_status_of_all_binance_orders()
 
         # Update status of all wallets with information from binance
         loseitall.update_status_of_all_buy_orders()
