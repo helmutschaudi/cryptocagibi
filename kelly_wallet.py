@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from datetime import datetime
 
 class kelly_wallet:
 
@@ -6,6 +7,7 @@ class kelly_wallet:
         self._wallet_id = wallet_id
         self._symbol = symbol
         self._balance = -1
+        self._initial_balance = -1
         self._leverage = -1
         self._entry_price = -1
         self._margin_added = -1
@@ -26,11 +28,12 @@ class kelly_wallet:
 
     def print_wallet_info(self):
 
-        print('---------------------------')
-        print('WALLET INFO')
-        print(f'wallet id: {self._wallet_id}')
-        print(f'symbol: {self._symbol}')
-        print(f'balance: {self._balance}')
+        print('-------------------------------')
+        print(f'WALLET INFO FOR ID {self._wallet_id}  {self._symbol}')
+        print(f'printtime:  {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}')
+        print(f'current balance: {self._balance}')
+        print(f'initial balance: {self._initial_balance}')
+        print(f'executed qty: {self._buy_order_executed_quantity}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
         print(f'margin added: {self._margin_added}')
@@ -38,7 +41,7 @@ class kelly_wallet:
         print(f'buy order status: {self._buy_order_status}')
         print(f'sell order id: {self._sell_order_id}')
         print(f'sell order status: {self._sell_order_status}')
-        print('---------------------------')
+        print('-------------------------------')
 
 # GETTER -----------------------------------------------------------------------
 
@@ -49,6 +52,10 @@ class kelly_wallet:
     @property
     def balance(self):
         return self._balance
+
+    @property
+    def initial_balance(self):
+        return self._initial_balance
 
     @property
     def symbol(self):
@@ -103,6 +110,10 @@ class kelly_wallet:
     @balance.setter
     def balance(self, balance):
         self._balance = balance
+
+    @initial_balance.setter
+    def initial_balance(self, initial_balance):
+        self._initial_balance = initial_balance
 
     @leverage.setter
     def leverage(self, leverage):

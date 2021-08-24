@@ -98,6 +98,7 @@ class get_rich_quick_scheme():
 
         for current_wallet in self.wallet_portfolio:
             if current_wallet.buy_order_id < 0 and current_wallet.sell_order_id < 0:
+                print(f'--> PLACE NEW KELLY BET ON {current_wallet.symbol} <--')
                 self.place_kelly_bet(current_wallet)
 
             else:
@@ -484,6 +485,7 @@ class get_rich_quick_scheme():
             logger.warning('Buy order with ID %s has unknown '
                            'state %s [index=%d].',
                            buy_order_id, buy_order_status, wallet_idx)
+            print(f'BUY ORDER {current_wallet.symbol} HAS UNKNOW STATUS {buy_order_status}')
 
     def check_status_of_all_buy_orders(self):
         for current_wallet in self.wallet_portfolio:
@@ -498,12 +500,14 @@ class get_rich_quick_scheme():
                 self.check_buy_order_status(current_wallet)
 
     def calculate_pnl(self, executed_quantity, avg_price, wallet):
+        # See dev.binance.vision/t/pnl-manual-calculation/1723
         pnl = (float(executed_quantity) *
                wallet.entry_price *
                (1/wallet.leverage-1.) +
                float(avg_price) *
                float(executed_quantity)
                )
+        print(f'CALCULATED PNL: {pnl}')
         return pnl
 
     def update_status_of_all_sell_orders(self):
@@ -538,6 +542,7 @@ class get_rich_quick_scheme():
             # We won!
             # We get money
             # Update sell order
+            print(f'*** {current_wallet.symbol} WON !!! ***')
             logger.info('Sell order withd ID %s filled '
                         '[index=%d].',
                         sell_order_id, wallet_idx)
@@ -546,7 +551,7 @@ class get_rich_quick_scheme():
             # Update wallet
             logger.info('    Balance wallet before: %.2f',
                         current_wallet.wallet_id)
-            # See dev.binance.vision/t/pnl-manual-calculation/1723
+            
             current_wallet.balance += self.calculate_pnl(
                 executed_quantity, avg_price, current_wallet)
             current_wallet.balance += current_wallet.margin_added
@@ -555,6 +560,7 @@ class get_rich_quick_scheme():
         elif sell_order_status == 'CANCELED':
             # Canceled, no money
             # Update sell order
+            print(f'*** {current_wallet.symbol} CANCELED ***')
             logger.info('Sell order withd ID %s canceled '
                         '[index=%d].',
                         sell_order_id, wallet_idx)
@@ -563,6 +569,7 @@ class get_rich_quick_scheme():
             # We lost!
             # We lose money
             # Update sell order
+            print(f'*** {current_wallet.symbol} LOST !!! ***')
             logger.info('Sell order with ID %s expired '
                         '[index=%d].',
                         sell_order_id, wallet_idx)
@@ -577,6 +584,7 @@ class get_rich_quick_scheme():
                         '%.2f', current_wallet.balance)
         else:
             # Update sell order
+            print(f'BUY ORDER {current_wallet.symbol} HAS UNKNOW STATUS {sell_order_status}')
             logger.warning('Sell order with ID %s has unknown '
                            'state %s [index=%d].',
                            sell_order_id, sell_order_status, wallet_idx)
@@ -648,7 +656,8 @@ if __name__ == '__main__':
         # Add known parameters
         current_wallet.leverage = leverages[idx]
         current_wallet.balance = loseitall.calculate_wallet_balance(wallet_size_percentages[idx])
-        
+        current_wallet.initial_balance=current_wallet.balance
+
         # Add wallet to portfolio
         loseitall.add_wallet_to_portfolio(current_wallet)
 
