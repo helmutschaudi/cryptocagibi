@@ -28,12 +28,12 @@ class kelly_wallet:
 
     def print_wallet_info(self):
 
-        print('-------------------------------')
-        print(f'WALLET INFO FOR ID {self._wallet_id}  {self._symbol}')
-        print(f'printtime:  {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}')
-        print(f'current balance: {self._balance}')
-        print(f'initial balance: {self._initial_balance}')
-        print(f'executed qty: {self._buy_order_executed_quantity}')
+        print('---------------------------------')
+        print(f'WALLET INFO FOR ID {self._wallet_id}    {self._symbol}')
+        print(f'printtime:    {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}')
+        print(f'current balance: {self._balance:.2f} USDT')
+        print(f'initial balance: {self._initial_balance:.2f} USDT')
+        print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
         print(f'margin added: {self._margin_added}')
@@ -41,7 +41,7 @@ class kelly_wallet:
         print(f'buy order status: {self._buy_order_status}')
         print(f'sell order id: {self._sell_order_id}')
         print(f'sell order status: {self._sell_order_status}')
-        print('-------------------------------')
+        print('---------------------------------')
 
 # GETTER -----------------------------------------------------------------------
 

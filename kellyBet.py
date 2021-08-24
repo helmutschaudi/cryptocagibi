@@ -131,12 +131,17 @@ if __name__ == '__main__':
     myBet = kellyBet(float(sys.argv[1]), float(
         sys.argv[2]), float(sys.argv[3]))
 
+    # --------------------------------------------------------------------------
     # Wallet 100 units, PPU 1, Leverage  20 -> sell@+1% or lose@-5.0% -> Gain 2.50 (ROE+20%)  or lose 12.50
-    myBet.kellyBet(1.2, 1)
+    # myBet.kellyBet(1.2, 1)
 
     # Wallet 100 units, PPU 1, Leverage 100 -> sell@+1% or lose@-5.0% -> Gain 2.50 (ROE+100%) or lose 12.50
     #myBet.kellyBet(1.2, 5)
 
     # --> leverage does not matter?
+    # --------------------------------------------------------------------------
+    # Wallet 100 units, PPU 1, Leverage  20 -> sell@+0.15% or lose@-5.0% -> Gain 0.38 (ROE+20%)  or lose 12.50
+    myBet.kellyBet(1.03, 1)
+    # --------------------------------------------------------------------------
 
     myBet.kellyBetInfo()

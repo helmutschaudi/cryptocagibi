@@ -410,8 +410,8 @@ class get_rich_quick_scheme():
         # ----------------------------------------------------------------------
         # Define gross odds and margin factor
         
-        gross_odds=1.2 #     1.4 | 3.5
-        margin_factor=1.0 #  5.0 | 2.0
+        gross_odds=1.03 #      1.2 | 1.4 | 3.5
+        margin_factor=1.0 #    1.0 | 5.0 | 2.0
 
         myBet.kellyBet(gross_odds, margin_factor)
         # ----------------------------------------------------------------------
@@ -644,7 +644,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    loseitall.turn_off_dry_run()
+    #loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Create wallets, and add them to wallet portfolio
@@ -705,5 +705,5 @@ if __name__ == '__main__':
         # Place new bets on closed orders
         loseitall.place_new_kelly_bet_on_closed_orders()
 
-        sleep(60)
+        sleep(30)
     
