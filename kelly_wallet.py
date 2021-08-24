@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from datetime import datetime
+
 
 class kelly_wallet:
 
@@ -6,17 +8,17 @@ class kelly_wallet:
         self._wallet_id = wallet_id
         self._symbol = symbol
         self._balance = -1
+        self._initial_balance = -1
         self._leverage = -1
         self._entry_price = -1
+        self._avg_price = -1
         self._margin_added = -1
         self._buy_order_id = -1
         self._buy_order_status = 'none'
         self._buy_order_executed_quantity = -1
-        self._buy_order_avg_price = -1
         self._sell_order_id = -1
         self._sell_order_status = 'none'
         self._sell_order_executed_quantity = -1
-        self._sell_order_avg_price = -1
 
     def reset_sell_order_id(self):
         self._sell_order_id = -1
@@ -26,19 +28,21 @@ class kelly_wallet:
 
     def print_wallet_info(self):
 
-        print('---------------------------')
-        print('WALLET INFO')
-        print(f'wallet id: {self._wallet_id}')
-        print(f'symbol: {self._symbol}')
-        print(f'balance: {self._balance}')
+        print('---------------------------------')
+        print(f'WALLET INFO FOR ID {self._wallet_id}    {self._symbol}')
+        print(f'printtime:    {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}')
+        print(f'current balance: {self._balance:.2f} USDT')
+        print(f'initial balance: {self._initial_balance:.2f} USDT')
+        print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
+        print(f'avg price: {self._avg_price}')
         print(f'margin added: {self._margin_added}')
         print(f'buy order id: {self._buy_order_id}')
         print(f'buy order status: {self._buy_order_status}')
         print(f'sell order id: {self._sell_order_id}')
         print(f'sell order status: {self._sell_order_status}')
-        print('---------------------------')
+        print('---------------------------------')
 
 # GETTER -----------------------------------------------------------------------
 
@@ -49,6 +53,10 @@ class kelly_wallet:
     @property
     def balance(self):
         return self._balance
+
+    @property
+    def initial_balance(self):
+        return self._initial_balance
 
     @property
     def symbol(self):
@@ -87,22 +95,23 @@ class kelly_wallet:
         return self._buy_order_executed_quantity
 
     @property
-    def buy_order_avg_price(self):
-        return self._buy_order_avg_price
+    def avg_price(self):
+        return self._avg_price
 
     @property
     def sell_order_executed_quantity(self):
         return self._sell_order_executed_quantity
 
-    @property
-    def sell_order_avg_price(self):
-        return self._sell_order_avg_price
-
+   
     # SETTER -----------------------------------------------------------------------
 
     @balance.setter
     def balance(self, balance):
         self._balance = balance
+
+    @initial_balance.setter
+    def initial_balance(self, initial_balance):
+        self._initial_balance = initial_balance
 
     @leverage.setter
     def leverage(self, leverage):
@@ -124,9 +133,9 @@ class kelly_wallet:
     def buy_order_executed_quantity(self, buy_order_executed_quantity):
         self._buy_order_executed_quantity = buy_order_executed_quantity
 
-    @buy_order_avg_price.setter
-    def buy_order_avg_price(self, buy_order_avg_price):
-        self._buy_order_avg_price = buy_order_avg_price
+    @avg_price.setter
+    def avg_price(self, avg_price):
+        self._avg_price = avg_price
 
     @sell_order_id.setter
     def sell_order_id(self, sell_order_id):
@@ -144,6 +153,4 @@ class kelly_wallet:
     def sell_order_executed_quantity(self, sell_order_executed_quantity):
         self._sell_order_executed_quantity = sell_order_executed_quantity
 
-    @sell_order_avg_price.setter
-    def sell_order_avg_price(self, sell_order_avg_price):
-        self._sell_order_avg_price = sell_order_avg_price
+   

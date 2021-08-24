@@ -2,6 +2,7 @@
 
 import sys
 
+
 class kellyBet:
 
     def __init__(self, wallet_balance, price_old, multiplier):
@@ -43,6 +44,16 @@ class kellyBet:
         self._gain_percentage = 100*self.gain_value/self.asset_total
         self._price_gain_percentage_win = 100*self._price_new/self._price_old-100
         self._price_drop_percentage_lose = 100*self._price_liq/self._price_old-100
+
+        # PNL FORMULA FROM get-rich-quick.py
+        # pnl = (float(executed_quantity) * wallet.entry_price * (1/wallet.leverage-1.) + float(avg_price) * float(executed_quantity)
+
+        self._pnl_win = self._futures_buy * self._price_old * (1/self._leverage-1) + self._price_new * self._futures_buy
+        self._pnl_lose = self._futures_buy * self._price_old * (1/self._leverage-1) + self._price_liq * self._futures_buy
+
+    def print_pnl(self):
+        print(f'PNL WIN:  {self._pnl_win:.2f} ')
+        print(f'PNL LOSE: {self._pnl_lose:.2f}')
 
     def kellyBetInfo(self):
 
@@ -131,12 +142,17 @@ if __name__ == '__main__':
     myBet = kellyBet(float(sys.argv[1]), float(
         sys.argv[2]), float(sys.argv[3]))
 
+    # --------------------------------------------------------------------------
     # Wallet 100 units, PPU 1, Leverage  20 -> sell@+1% or lose@-5.0% -> Gain 2.50 (ROE+20%)  or lose 12.50
-    myBet.kellyBet(1.2, 1)
+    # myBet.kellyBet(1.2, 1)
 
     # Wallet 100 units, PPU 1, Leverage 100 -> sell@+1% or lose@-5.0% -> Gain 2.50 (ROE+100%) or lose 12.50
     #myBet.kellyBet(1.2, 5)
 
     # --> leverage does not matter?
+    # --------------------------------------------------------------------------
+    myBet.kellyBet(1.1, 1.0)
+    # --------------------------------------------------------------------------
 
     myBet.kellyBetInfo()
+    myBet.print_pnl()
