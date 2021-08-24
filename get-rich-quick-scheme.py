@@ -56,7 +56,6 @@ class get_rich_quick_scheme():
         # be executed once per program cycle
         self.status_of_all_binance_orders = {}
 
-
     def add_wallet_to_portfolio(self, wallet):
         self.wallet_portfolio.append(wallet)
 
@@ -104,7 +103,7 @@ class get_rich_quick_scheme():
             else:
                 # If we reach here, order IDs are both set and positive,
                 # which means we have valid current orders
-                logger.info('Current BUY order ID: %s [index=%d]', 
+                logger.info('Current BUY order ID: %s [index=%d]',
                             current_wallet.buy_order_id, current_wallet.wallet_id)
                 logger.info('Current SELL order ID: %s [index=%d]',
                             current_wallet.sell_order_id, current_wallet.wallet_id)
@@ -337,7 +336,7 @@ class get_rich_quick_scheme():
     def add_margin(self, myBet, wallet):
         symbol = wallet.symbol
         wallet.margin_added = myBet.margin_add
-                
+
         if myBet.margin_add > 0.:
             logger.info('    Add margin %s, pay total %s.',
                         myBet.margin_add, myBet.asset_total)
@@ -409,9 +408,9 @@ class get_rich_quick_scheme():
 
         # ----------------------------------------------------------------------
         # Define gross odds and margin factor
-        
-        gross_odds=1.03 #      1.2 | 1.4 | 3.5
-        margin_factor=1.0 #    1.0 | 5.0 | 2.0
+
+        gross_odds = 1.03  # 1.2 | 1.4 | 3.5
+        margin_factor = 1.0  # 1.0 | 5.0 | 2.0
 
         myBet.kellyBet(gross_odds, margin_factor)
         # ----------------------------------------------------------------------
@@ -427,17 +426,17 @@ class get_rich_quick_scheme():
         self.log_liquidation_info(myBet)
 
     def get_status_of_all_binance_orders(self):
-        binance_response=self.client.futures_get_all_orders()
+        binance_response = self.client.futures_get_all_orders()
         self.status_of_all_binance_orders = binance_response
-        
+
     def update_status_of_all_buy_orders(self):
-       
+
         # Loop over current orders
         for current_wallet in self.wallet_portfolio:
 
             # If there is a current buy order
             if current_wallet.buy_order_id != -1:
-                
+
                 # Loop over all orders (from API)
                 all_orders = self.status_of_all_binance_orders
                 for order in all_orders:
@@ -507,17 +506,17 @@ class get_rich_quick_scheme():
                float(avg_price) *
                float(executed_quantity)
                )
-        print(f'CALCULATED PNL: {pnl}')
+        print(f'QTY:{executed_quantity} ENTRY_PRICE:{wallet.entry_price} AVG_PRICE:{avg_price} LEVERAGE:{wallet.leverage} --> PNL: {pnl}:.2f')
         return pnl
 
     def update_status_of_all_sell_orders(self):
-      
+
         # Loop over current orders (stored in this instance)
         for current_wallet in self.wallet_portfolio:
 
             # If there is a current sell order
             if current_wallet.sell_order_id != -1:
-                
+
                 # Loop over all orders (from API)
                 all_orders = self.status_of_all_binance_orders
                 for order in all_orders:
@@ -551,7 +550,7 @@ class get_rich_quick_scheme():
             # Update wallet
             logger.info('    Balance wallet before: %.2f',
                         current_wallet.wallet_id)
-            
+
             current_wallet.balance += self.calculate_pnl(
                 executed_quantity, avg_price, current_wallet)
             current_wallet.balance += current_wallet.margin_added
@@ -578,7 +577,7 @@ class get_rich_quick_scheme():
             logger.info('Wallet balance: %.2f',
                         current_wallet.balance)
             # See dev.binance.vision/t/pnl-manual-calculation/1723
-            current_wallet.balance -= (
+            current_wallet.balance += (  # += not -= because PNL value is already negative
                 self.calculate_pnl(executed_quantity, avg_price, current_wallet))
             logger.info('Wallet after (ignoring fees): '
                         '%.2f', current_wallet.balance)
@@ -644,26 +643,26 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    #loseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Create wallets, and add them to wallet portfolio
     for idx, wallet_id in enumerate(wallet_ids):
-        
+
         # Create wallet with id and symbol
         current_wallet = kelly_wallet(wallet_id, symbols[idx])
-        
+
         # Add known parameters
         current_wallet.leverage = leverages[idx]
         current_wallet.balance = loseitall.calculate_wallet_balance(wallet_size_percentages[idx])
-        current_wallet.initial_balance=current_wallet.balance
+        current_wallet.initial_balance = current_wallet.balance
 
         # Add wallet to portfolio
         loseitall.add_wallet_to_portfolio(current_wallet)
 
     # Check if account balance is sufficient to host wallets
     loseitall.check_sufficient_account_balance()
-    
+
     # --------------------------------------------------------------------------
     # DEBUG INFO
     # --------------------------------------------------------------------------
@@ -677,7 +676,6 @@ if __name__ == '__main__':
     # {'orderId': 16464950183, 'symbol': 'XRPUSDT', 'status': 'FILLED', 'clientOrderId': 'autoclose-1629544376210626761', 'price': '1.2176', 'avgPrice': '1.22490', 'origQty': '218', 'executedQty': '218', 'cumQuote': '267.02820', 'timeInForce': 'IOC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'time': 1629544376213, 'updateTime': 1629544376213} ...
     # --------------------------------------------------------------------------
 
-    
     # Go into an endless loop
     while True:
 
@@ -705,5 +703,4 @@ if __name__ == '__main__':
         # Place new bets on closed orders
         loseitall.place_new_kelly_bet_on_closed_orders()
 
-        sleep(30)
-    
+        sleep(60)

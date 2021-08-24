@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from datetime import datetime
 
+
 class kelly_wallet:
 
     def __init__(self, wallet_id, symbol):
@@ -36,6 +37,7 @@ class kelly_wallet:
         print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
+        print(f'sell order avg price: {self._sell_order_avg_price}')
         print(f'margin added: {self._margin_added}')
         print(f'buy order id: {self._buy_order_id}')
         print(f'buy order status: {self._buy_order_status}')
