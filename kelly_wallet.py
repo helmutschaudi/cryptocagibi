@@ -11,7 +11,15 @@ class kelly_wallet:
         self._initial_balance = -1
         self._leverage = -1
         self._entry_price = -1
-        self._avg_price = -1
+        #current price
+        #liquidation price
+        #  for position in self.client.futures_position_information():
+        #     if position['symbol']=='BTCUSDT':
+        #         #print(position['markPrice'])
+        #         print(position['markPrice']) # works, changes
+        #price_market = float(self.client.futures_position_information
+        #                     (symbol=symbol)[0]['markPrice'])
+        #sell price
         self._margin_added = -1
         self._buy_order_id = -1
         self._buy_order_status = 'none'
@@ -36,7 +44,6 @@ class kelly_wallet:
         print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
-        print(f'avg price: {self._avg_price}')
         print(f'margin added: {self._margin_added}')
         print(f'buy order id: {self._buy_order_id}')
         print(f'buy order status: {self._buy_order_status}')
@@ -95,10 +102,6 @@ class kelly_wallet:
         return self._buy_order_executed_quantity
 
     @property
-    def avg_price(self):
-        return self._avg_price
-
-    @property
     def sell_order_executed_quantity(self):
         return self._sell_order_executed_quantity
 
@@ -132,10 +135,6 @@ class kelly_wallet:
     @buy_order_executed_quantity.setter
     def buy_order_executed_quantity(self, buy_order_executed_quantity):
         self._buy_order_executed_quantity = buy_order_executed_quantity
-
-    @avg_price.setter
-    def avg_price(self, avg_price):
-        self._avg_price = avg_price
 
     @sell_order_id.setter
     def sell_order_id(self, sell_order_id):

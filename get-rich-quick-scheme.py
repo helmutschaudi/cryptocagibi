@@ -55,6 +55,9 @@ class get_rich_quick_scheme():
         # this is an expensive call and will therefore only
         # be executed once per program cycle
         self.status_of_all_binance_orders = {}
+        # same could also be done for
+        # self.client.futures_position_information()
+        # which is also called twice
 
     def add_wallet_to_portfolio(self, wallet):
         self.wallet_portfolio.append(wallet)
@@ -92,6 +95,82 @@ class get_rich_quick_scheme():
                     self.get_total_balance_wallets())
         logger.info('Total free account balance: %.2f',
                     account_free)
+
+    def show_open_positions(self):
+
+        # Get open positions
+        open_positions = []
+        for position in self.client.futures_position_information():
+            if float(position['positionAmt']) != 0.:
+                open_positions.append(position)
+
+        logger.info('Number of open positions: %d', len(open_positions))
+
+        # If there are open positions, output some info, otherwise do nothing
+        for open_position in open_positions:
+
+            # Collect info
+            symbol = open_position['symbol']
+            price_entry = float(open_position['entryPrice'])
+            price_market = float(open_position['markPrice'])
+            price_liq = float(open_position['liquidationPrice'])
+            quantity = float(open_position['positionAmt'])
+            leverage = int(open_position['leverage'])
+            leverage_max = self.get_max_leverage(symbol)
+            margin_initial = quantity*price_entry/leverage
+            margin_total = float(open_position['isolatedWallet'])
+            margin_type = open_position['marginType']
+            pnl = float(open_position['unRealizedProfit'])
+            roe = 100*pnl/margin_initial
+            time = (datetime
+                    .fromtimestamp(open_position['updateTime']/1000.)
+                    .strftime('%Y-%m-%d %H:%M:%S.%f')
+                    )
+
+            logger.info('--> Symbol: %s', symbol)
+            logger.info('    Leverage: %d/%d', leverage, leverage_max)
+            logger.info('    Entry price: %.2f', price_entry)
+            logger.info('    Market price: %.2f', price_market)
+            logger.info('    PNL: %.2f', pnl)
+            logger.info('    ROE: %.2f %%', roe)
+            logger.info('    Initial margin: %.2f', margin_initial)
+            logger.info('    Total margin: %.2f', margin_total)
+            logger.info('    Margin type: %s', margin_type)
+            logger.info('    Liquidation price: %.2f', price_liq)
+            logger.info('    Quantity: %.3g', quantity)
+            logger.info('    Time of request: %s', time)
+
+        return len(open_positions)
+
+    def show_open_orders(self):
+        # Get data
+        open_orders = self.client.futures_get_open_orders()
+
+        logger.info('Number of open orders: %d', len(open_orders))
+
+        # If there are open orders, output some info, otherwise do nothing
+        for open_order in open_orders:
+
+            # Collect info
+            symbol = open_order['symbol']
+            price_market = float(self.client.futures_mark_price(symbol=symbol)
+                                 ['markPrice'])
+            price_sell = float(open_order['price'])
+            quantity = float(open_orders[0]['origQty'])
+            time_placement = (datetime
+                              .fromtimestamp(open_order['time']/1000.)
+                              .strftime('%Y-%m-%d %H:%M:%S.%f')
+                              )
+            client_order_id = open_order['clientOrderId']
+
+            logger.info('--> Symbol: %s', symbol)
+            logger.info('    Market price: %.2f', price_market)
+            logger.info('    Sell price: %.2f', price_sell)
+            logger.info('    Quantity: %.3g', quantity)
+            logger.info('    Time of placement: %s', time_placement)
+            logger.info('    Client Order ID: %s', client_order_id)
+
+        return len(open_orders)
 
     def place_new_kelly_bet_on_closed_orders(self):
 
@@ -192,82 +271,6 @@ class get_rich_quick_scheme():
     def get_max_leverage(self, symbol):
         return int(self.client.futures_leverage_bracket(symbol=symbol)[0]
                    ['brackets'][0]['initialLeverage'])
-
-    def show_open_positions(self):
-
-        # Get open positions
-        open_positions = []
-        for position in self.client.futures_position_information():
-            if float(position['positionAmt']) != 0.:
-                open_positions.append(position)
-
-        logger.info('Number of open positions: %d', len(open_positions))
-
-        # If there are open positions, output some info, otherwise do nothing
-        for open_position in open_positions:
-
-            # Collect info
-            symbol = open_position['symbol']
-            price_entry = float(open_position['entryPrice'])
-            price_market = float(open_position['markPrice'])
-            price_liq = float(open_position['liquidationPrice'])
-            quantity = float(open_position['positionAmt'])
-            leverage = int(open_position['leverage'])
-            leverage_max = self.get_max_leverage(symbol)
-            margin_initial = quantity*price_entry/leverage
-            margin_total = float(open_position['isolatedWallet'])
-            margin_type = open_position['marginType']
-            pnl = float(open_position['unRealizedProfit'])
-            roe = 100*pnl/margin_initial
-            time = (datetime
-                    .fromtimestamp(open_position['updateTime']/1000.)
-                    .strftime('%Y-%m-%d %H:%M:%S.%f')
-                    )
-
-            logger.info('--> Symbol: %s', symbol)
-            logger.info('    Leverage: %d/%d', leverage, leverage_max)
-            logger.info('    Entry price: %.2f', price_entry)
-            logger.info('    Market price: %.2f', price_market)
-            logger.info('    PNL: %.2f', pnl)
-            logger.info('    ROE: %.2f %%', roe)
-            logger.info('    Initial margin: %.2f', margin_initial)
-            logger.info('    Total margin: %.2f', margin_total)
-            logger.info('    Margin type: %s', margin_type)
-            logger.info('    Liquidation price: %.2f', price_liq)
-            logger.info('    Quantity: %.3g', quantity)
-            logger.info('    Time of request: %s', time)
-
-        return len(open_positions)
-
-    def show_open_orders(self):
-        # Get data
-        open_orders = self.client.futures_get_open_orders()
-
-        logger.info('Number of open orders: %d', len(open_orders))
-
-        # If there are open orders, output some info, otherwise do nothing
-        for open_order in open_orders:
-
-            # Collect info
-            symbol = open_order['symbol']
-            price_market = float(self.client.futures_mark_price(symbol=symbol)
-                                 ['markPrice'])
-            price_sell = float(open_order['price'])
-            quantity = float(open_orders[0]['origQty'])
-            time_placement = (datetime
-                              .fromtimestamp(open_order['time']/1000.)
-                              .strftime('%Y-%m-%d %H:%M:%S.%f')
-                              )
-            client_order_id = open_order['clientOrderId']
-
-            logger.info('--> Symbol: %s', symbol)
-            logger.info('    Market price: %.2f', price_market)
-            logger.info('    Sell price: %.2f', price_sell)
-            logger.info('    Quantity: %.3g', quantity)
-            logger.info('    Time of placement: %s', time_placement)
-            logger.info('    Client Order ID: %s', client_order_id)
-
-        return len(open_orders)
 
     def log_new_kelly_bet(self, wallet):
         symbol = wallet.symbol
@@ -444,13 +447,13 @@ class get_rich_quick_scheme():
                     if order['orderId'] == current_wallet.buy_order_id:
                         current_wallet.buy_order_status = order['status']
                         current_wallet.buy_order_executed_quantity = order['executedQty']
-                        current_wallet.avg_price = order['avgPrice'] # only buy order has avg price
+                        current_wallet.entry_price = order['avgPrice']
 
     def check_buy_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
         buy_order_id = current_wallet.buy_order_id
         buy_order_status = current_wallet.buy_order_status
-        avg_price = current_wallet.avg_price
+        entry_price = current_wallet.entry_price
         executed_quantity = current_wallet.buy_order_executed_quantity
 
         if buy_order_status == 'NEW':
@@ -463,14 +466,14 @@ class get_rich_quick_scheme():
             logger.info('Buy order withd ID %s filled at %.2f '
                         '[index=%d].',
                         buy_order_id,
-                        float(avg_price),
+                        float(entry_price),
                         wallet_idx)
             self.reset_open_buy_order(current_wallet)
             # Update wallet
             logger.info('    Wallet balance wallet before: %.2f',
                         current_wallet.balance)
             # Subtract cost of futures
-            current_wallet.balance -= (float(avg_price) *
+            current_wallet.balance -= (float(entry_price) *
                                        float(executed_quantity) /
                                        current_wallet.leverage
                                        )
@@ -478,8 +481,6 @@ class get_rich_quick_scheme():
             current_wallet.balance -= current_wallet.margin_added
             logger.info('    Wallet balance wallet after (ignoring fees): '
                         '%.2f', current_wallet.balance)
-            # Store entry price for later usage
-            current_wallet.entry_price = float(avg_price)
         else:
             logger.warning('Buy order with ID %s has unknown '
                            'state %s [index=%d].',
@@ -498,15 +499,15 @@ class get_rich_quick_scheme():
             else:
                 self.check_buy_order_status(current_wallet)
 
-    def calculate_pnl(self, executed_quantity, avg_price, wallet):
+    def calculate_pnl(self, executed_quantity, sell_price, wallet):
         # See dev.binance.vision/t/pnl-manual-calculation/1723
         pnl = (float(executed_quantity) *
-               wallet.entry_price *
+               float(wallet.entry_price) *
                (1/wallet.leverage-1.) +
-               float(avg_price) *
+               float(sell_price) *
                float(executed_quantity)
                )
-        print(f'QTY:{executed_quantity} ENTRY_PRICE:{wallet.entry_price} AVG_PRICE:{avg_price} LEVERAGE:{wallet.leverage} --> PNL: {pnl}:.2f')
+        print(f'QTY:{executed_quantity} ENTRY PRICE:{wallet.entry_price} SELL PRICE:{sell_price} LEVERAGE:{wallet.leverage} -> PNL: {pnl:.2f}')
         return pnl
 
     def update_status_of_all_sell_orders(self):
@@ -526,11 +527,20 @@ class get_rich_quick_scheme():
                         current_wallet.sell_order_executed_quantity = order['executedQty']
                         # sell order has no 'avgPrice'
 
+    def get_filled_order_avg_price(self, wallet):
+        all_orders=self.status_of_all_binance_orders
+        for order in all_orders:
+            if order['orderId']== wallet.sell_order_id:
+                return order['avgPrice']
+        
+        print('FILLED SELL ORDER NOT FOUND !!!')
+        logger.error('FILLED SELL ORDER NOT FOUND !!!')
+
+    
     def check_sell_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
         sell_order_id = current_wallet.sell_order_id
         sell_order_status = current_wallet.sell_order_status
-        avg_price = current_wallet.avg_price
         executed_quantity = current_wallet.buy_order_executed_quantity
 
         if sell_order_status == 'NEW':
@@ -545,6 +555,7 @@ class get_rich_quick_scheme():
             logger.info('Sell order withd ID %s filled '
                         '[index=%d].',
                         sell_order_id, wallet_idx)
+            sell_price = self.get_filled_order_avg_price(current_wallet)
             self.reset_open_sell_order(current_wallet)
 
             # Update wallet
@@ -552,7 +563,7 @@ class get_rich_quick_scheme():
                         current_wallet.wallet_id)
 
             current_wallet.balance += self.calculate_pnl(
-                executed_quantity, avg_price, current_wallet)
+                executed_quantity, sell_price, current_wallet)
             current_wallet.balance += current_wallet.margin_added
             logger.info('    Balance wallet after (ignoring fees): '
                         '%.2f', current_wallet.balance)
@@ -578,7 +589,7 @@ class get_rich_quick_scheme():
                         current_wallet.balance)
             # See dev.binance.vision/t/pnl-manual-calculation/1723
             current_wallet.balance += (  # += not -= because PNL value is already negative
-                self.calculate_pnl(executed_quantity, avg_price, current_wallet))
+                self.calculate_pnl(executed_quantity, current_wallet.entry_price, current_wallet))
             logger.info('Wallet after (ignoring fees): '
                         '%.2f', current_wallet.balance)
         else:
