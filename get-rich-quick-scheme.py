@@ -409,7 +409,7 @@ class get_rich_quick_scheme():
         # ----------------------------------------------------------------------
         # Define gross odds and margin factor
 
-        gross_odds = 1.1     # 1.2 | 1.4 | 3.5
+        gross_odds = 1.2     # 1.2 | 1.4 | 3.5
         margin_factor = 1.0  # 1.0 | 5.0 | 2.0
 
         myBet.kellyBet(gross_odds, margin_factor)
