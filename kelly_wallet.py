@@ -11,15 +11,14 @@ class kelly_wallet:
         self._initial_balance = -1
         self._leverage = -1
         self._entry_price = -1
+        self._avg_price = -1
         self._margin_added = -1
         self._buy_order_id = -1
         self._buy_order_status = 'none'
         self._buy_order_executed_quantity = -1
-        self._buy_order_avg_price = -1
         self._sell_order_id = -1
         self._sell_order_status = 'none'
         self._sell_order_executed_quantity = -1
-        self._sell_order_avg_price = -1
 
     def reset_sell_order_id(self):
         self._sell_order_id = -1
@@ -37,7 +36,7 @@ class kelly_wallet:
         print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
-        print(f'sell order avg price: {self._sell_order_avg_price}')
+        print(f'avg price: {self._avg_price}')
         print(f'margin added: {self._margin_added}')
         print(f'buy order id: {self._buy_order_id}')
         print(f'buy order status: {self._buy_order_status}')
@@ -96,17 +95,14 @@ class kelly_wallet:
         return self._buy_order_executed_quantity
 
     @property
-    def buy_order_avg_price(self):
-        return self._buy_order_avg_price
+    def avg_price(self):
+        return self._avg_price
 
     @property
     def sell_order_executed_quantity(self):
         return self._sell_order_executed_quantity
 
-    @property
-    def sell_order_avg_price(self):
-        return self._sell_order_avg_price
-
+   
     # SETTER -----------------------------------------------------------------------
 
     @balance.setter
@@ -137,9 +133,9 @@ class kelly_wallet:
     def buy_order_executed_quantity(self, buy_order_executed_quantity):
         self._buy_order_executed_quantity = buy_order_executed_quantity
 
-    @buy_order_avg_price.setter
-    def buy_order_avg_price(self, buy_order_avg_price):
-        self._buy_order_avg_price = buy_order_avg_price
+    @avg_price.setter
+    def avg_price(self, avg_price):
+        self._avg_price = avg_price
 
     @sell_order_id.setter
     def sell_order_id(self, sell_order_id):
@@ -157,6 +153,4 @@ class kelly_wallet:
     def sell_order_executed_quantity(self, sell_order_executed_quantity):
         self._sell_order_executed_quantity = sell_order_executed_quantity
 
-    @sell_order_avg_price.setter
-    def sell_order_avg_price(self, sell_order_avg_price):
-        self._sell_order_avg_price = sell_order_avg_price
+   

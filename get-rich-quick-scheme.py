@@ -409,7 +409,7 @@ class get_rich_quick_scheme():
         # ----------------------------------------------------------------------
         # Define gross odds and margin factor
 
-        gross_odds = 1.03  # 1.2 | 1.4 | 3.5
+        gross_odds = 1.1     # 1.2 | 1.4 | 3.5
         margin_factor = 1.0  # 1.0 | 5.0 | 2.0
 
         myBet.kellyBet(gross_odds, margin_factor)
@@ -444,13 +444,13 @@ class get_rich_quick_scheme():
                     if order['orderId'] == current_wallet.buy_order_id:
                         current_wallet.buy_order_status = order['status']
                         current_wallet.buy_order_executed_quantity = order['executedQty']
-                        current_wallet.buy_order_avg_price = order['avgPrice']
+                        current_wallet.avg_price = order['avgPrice'] # only buy order has avg price
 
     def check_buy_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
         buy_order_id = current_wallet.buy_order_id
         buy_order_status = current_wallet.buy_order_status
-        avg_price = current_wallet.buy_order_avg_price
+        avg_price = current_wallet.avg_price
         executed_quantity = current_wallet.buy_order_executed_quantity
 
         if buy_order_status == 'NEW':
@@ -524,13 +524,13 @@ class get_rich_quick_scheme():
                     if order['orderId'] == current_wallet.sell_order_id:
                         current_wallet.sell_order_status = order['status']
                         current_wallet.sell_order_executed_quantity = order['executedQty']
-                        current_wallet.sell_order_avg_price = order['avgPrice']
+                        # sell order has no 'avgPrice'
 
     def check_sell_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
         sell_order_id = current_wallet.sell_order_id
         sell_order_status = current_wallet.sell_order_status
-        avg_price = current_wallet.sell_order_avg_price
+        avg_price = current_wallet.avg_price
         executed_quantity = current_wallet.buy_order_executed_quantity
 
         if sell_order_status == 'NEW':
