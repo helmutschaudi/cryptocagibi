@@ -55,9 +55,13 @@ class get_rich_quick_scheme():
         # this is an expensive call and will therefore only
         # be executed once per program cycle
         self.status_of_all_binance_orders = {}
-        # same could also be done for
-        # self.client.futures_position_information()
-        # which is also called twice
+
+        # Store binance "client.futures_position_information()" response
+        # this is an expensive call and will therefore only
+        # be executed once per program cycle
+        self.status_of_all_binance_futures = {}
+
+
 
     def add_wallet_to_portfolio(self, wallet):
         self.wallet_portfolio.append(wallet)
@@ -100,7 +104,8 @@ class get_rich_quick_scheme():
 
         # Get open positions
         open_positions = []
-        for position in self.client.futures_position_information():
+        all_futures_positions=self.status_of_all_binance_futures
+        for position in all_futures_positions:
             if float(position['positionAmt']) != 0.:
                 open_positions.append(position)
 
@@ -330,6 +335,7 @@ class get_rich_quick_scheme():
                                                         quantity=futures_buy
                                                         )
             self.set_buy_order_id(wallet, buy_id=response['orderId'])
+            
             logger.info('        BUY order ID: %s',
                         wallet.buy_order_id)
 
@@ -432,6 +438,18 @@ class get_rich_quick_scheme():
         binance_response = self.client.futures_get_all_orders()
         self.status_of_all_binance_orders = binance_response
 
+    def get_status_of_all_binance_futures(self):
+        binance_response = self.client.futures_position_information()
+        self.status_of_all_binance_futures = binance_response
+
+    def get_buy_order_liquidation_price(self,wallet):
+        all_orders =self.status_of_all_binance_futures
+        
+        for order in all_orders:
+            if order['symbol']==wallet.symbol: # API response has no orderId's
+                wallet.liquidation_price = order['liquidationPrice']
+                print(f'{wallet.symbol} WALLET LIQUIDATION PRICE: {wallet.liquidation_price}')
+                            
     def update_status_of_all_buy_orders(self):
 
         # Loop over current orders
@@ -448,6 +466,7 @@ class get_rich_quick_scheme():
                         current_wallet.buy_order_status = order['status']
                         current_wallet.buy_order_executed_quantity = order['executedQty']
                         current_wallet.entry_price = order['avgPrice']
+                        #current_wallet.liquidation_price = order['liquidationPrice']
 
     def check_buy_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
@@ -468,6 +487,7 @@ class get_rich_quick_scheme():
                         buy_order_id,
                         float(entry_price),
                         wallet_idx)
+            self.get_buy_order_liquidation_price(current_wallet)
             self.reset_open_buy_order(current_wallet)
             # Update wallet
             logger.info('    Wallet balance wallet before: %.2f',
@@ -535,7 +555,6 @@ class get_rich_quick_scheme():
         
         print('FILLED SELL ORDER NOT FOUND !!!')
         logger.error('FILLED SELL ORDER NOT FOUND !!!')
-
     
     def check_sell_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
@@ -589,7 +608,7 @@ class get_rich_quick_scheme():
                         current_wallet.balance)
             # See dev.binance.vision/t/pnl-manual-calculation/1723
             current_wallet.balance += (  # += not -= because PNL value is already negative
-                self.calculate_pnl(executed_quantity, current_wallet.entry_price, current_wallet))
+                self.calculate_pnl(executed_quantity, current_wallet.liquidation_price, current_wallet))
             logger.info('Wallet after (ignoring fees): '
                         '%.2f', current_wallet.balance)
         else:
@@ -694,8 +713,9 @@ if __name__ == '__main__':
         loseitall.show_open_positions()
         loseitall.show_open_orders()
 
-        # Get status of all binance orders
+        # Get status update from binance
         loseitall.get_status_of_all_binance_orders()
+        loseitall.get_status_of_all_binance_futures()
 
         # Update status of all wallets with information from binance
         loseitall.update_status_of_all_buy_orders()
