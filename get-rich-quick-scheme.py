@@ -10,7 +10,6 @@ from kellyBet import kellyBet
 from kelly_wallet import kelly_wallet
 from binance_keys import *
 
-
 def setup_logger(name, log_file, level=logging.INFO):
 
     formatter = logging.Formatter('%(levelname)-8s - %(asctime)s - '
