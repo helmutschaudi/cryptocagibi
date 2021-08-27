@@ -2,13 +2,12 @@
 
 import os
 import logging
-from math import log, trunc
+from math import trunc
 from datetime import datetime
 from time import sleep
-from binance.client import Client
+from api.binance.binance_api import binance_api
 from kellyBet import kellyBet
 from kelly_wallet import kelly_wallet
-from binance_keys import *
 
 def setup_logger(name, log_file, level=logging.INFO):
 
@@ -35,14 +34,9 @@ class get_rich_quick_scheme():
 
     def __init__(self):
 
-        # self.api_key = os.environ.get('binance_api')
-        # self.api_secret = os.environ.get('binance_secret')
-
-        self.api_key = binance_api
-        self.api_secret = binance_secret
-
-        self.client = Client(self.api_key, self.api_secret)
         self.dry_run = True
+
+        self._api = binance_api()
 
         # Portfolio containing all wallet objects
         # replaces all dicts from previous code versions
@@ -120,45 +114,13 @@ class get_rich_quick_scheme():
     def turn_off_dry_run(self):
         self.dry_run = False
 
-    def convert_size_to_precision(self, size):
-        return int(round(-log(size, 10), 0))
-
-    def get_filter_element(self, filter_list, filter_type):
-        for filter_element in filter_list:
-            if filter_element['filterType'] == filter_type:
-                return filter_element
-
-    def get_step_size_precision(self, symbol, filter_type='MARKET_LOT_SIZE'):
-        # Filters are defined by different filter types
-        # For the step size, possible filter types are
-        # LOT_SIZE and MARKET_LOT_SIZE
-        futures_exchange_info = self.client.futures_exchange_info()
-        for info in futures_exchange_info['symbols']:
-            if info['symbol'] == symbol:
-                step_size = float(self.get_filter_element
-                                  (info['filters'], filter_type)['stepSize']
-                                  )
-                return self.convert_size_to_precision(step_size)
-
-    def get_tick_size_precision(self, symbol):
-        # Filters are defined by different filter types
-        # For the tick size, the filter type is always the same
-        filter_type = 'PRICE_FILTER'
-        futures_exchange_info = self.client.futures_exchange_info()
-        for info in futures_exchange_info['symbols']:
-            if info['symbol'] == symbol:
-                tick_size = float(self.get_filter_element
-                                  (info['filters'], filter_type)['tickSize']
-                                  )
-                return self.convert_size_to_precision(tick_size)
-
     def set_quantities(self, symbol, futures_buy, futures_sell):
 
         # Get quantities right for Binance API
         # See also https://binance-docs.github.io/apidocs/futures/en/#filters
 
-        step_size = self.get_step_size_precision(symbol)
-        step_size2 = self.get_step_size_precision(symbol, 'LOT_SIZE')
+        step_size = self._api.get_step_size_precision(symbol)
+        step_size2 = self._api.get_step_size_precision(symbol, 'LOT_SIZE')
 
         logger.debug('Step size precision for %s: %s', symbol, step_size)
         logger.debug('Step size2 precision for %s: %s', symbol, step_size2)
@@ -169,7 +131,7 @@ class get_rich_quick_scheme():
         # Get prices right for Binance API
         # See also https://binance-docs.github.io/apidocs/futures/en/#filters
 
-        tick_size = self.get_tick_size_precision(symbol)
+        tick_size = self._api.get_tick_size_precision(symbol)
         logger.debug('Tick size precision for %s: %s', symbol, tick_size)
 
         # If tick size is 0, the filter is disabled
@@ -183,22 +145,15 @@ class get_rich_quick_scheme():
                 round(price_new, tick_size))
 
     def get_account_balance(self, asset):
-        for account in self.client.futures_account_balance():
-            if account['asset'] == asset:
-                return (float(account['balance']),
-                        float(account['withdrawAvailable']))
+        return self._api.get_account_balance(asset)
 
     def get_max_leverage(self, symbol):
-        return int(self.client.futures_leverage_bracket(symbol=symbol)[0]
-                   ['brackets'][0]['initialLeverage'])
+        return self._api.get_max_leverage(symbol)
 
     def show_open_positions(self):
 
         # Get open positions
-        open_positions = []
-        for position in self.client.futures_position_information():
-            if float(position['positionAmt']) != 0.:
-                open_positions.append(position)
+        open_positions = self._api.get_futures_open_positions()
 
         logger.info('Number of open positions: %d', len(open_positions))
 
@@ -240,7 +195,7 @@ class get_rich_quick_scheme():
 
     def show_open_orders(self):
         # Get data
-        open_orders = self.client.futures_get_open_orders()
+        open_orders = self._api.get_futures_open_orders()
 
         logger.info('Number of open orders: %d', len(open_orders))
 
@@ -249,8 +204,7 @@ class get_rich_quick_scheme():
 
             # Collect info
             symbol = open_order['symbol']
-            price_market = float(self.client.futures_mark_price(symbol=symbol)
-                                 ['markPrice'])
+            price_market = self._api.get_futures_market_price(symbol)
             price_sell = float(open_order['price'])
             quantity = float(open_orders[0]['origQty'])
             time_placement = (datetime
@@ -273,8 +227,7 @@ class get_rich_quick_scheme():
         logger.info(
             'Placing Kelly bet for %s [index=%d].', symbol, wallet.wallet_id)
         logger.info('Kelly options:')
-        price_market = float(self.client.futures_position_information
-                             (symbol=symbol)[0]['markPrice'])
+        price_market = self._api.get_futures_market_price(symbol)
         account_total, account_free = self.get_account_balance('USDT')
         logger.info('    Account balance total: %.2f', account_total)
         logger.info('    Account balance free: %.2f', account_free)
@@ -315,16 +268,18 @@ class get_rich_quick_scheme():
         price_old, price_new = self.set_prices(symbol,
                                                myBet.price_old,
                                                myBet.price_new)
+
+        # TODO: Check api.create_margin_order() if you can buy and add margin
+        # in one step
         # Buy futures
         logger.info('    Buy %s futures at %s, pay initial margin %s.',
                     futures_buy, price_old, myBet.asset_old)
 
         if not self.dry_run:
-            response = self.client.futures_create_order(symbol=symbol,
-                                                        side='BUY',
-                                                        type='MARKET',
-                                                        quantity=futures_buy
-                                                        )
+            response = self._api.futures_create_market_order(symbol=symbol,
+                                                             side='BUY',
+                                                             quantity=futures_buy
+                                                             )
             self.set_buy_order_id(wallet, buy_id=response['orderId'])
             logger.info('        BUY order ID: %s',
                         wallet.buy_order_id)
@@ -341,7 +296,7 @@ class get_rich_quick_scheme():
                         myBet.margin_add, myBet.asset_total)
             if not self.dry_run:
                 # Add margin
-                response = (self.client.
+                response = (self._api.
                             futures_change_position_margin(symbol=symbol,
                                                            amount=myBet
                                                            .margin_add,
@@ -368,14 +323,13 @@ class get_rich_quick_scheme():
                     myBet.gain_percentage,
                     myBet.roe_win)
         if not self.dry_run:
-            response = (self.client.
-                        futures_create_order(symbol=symbol,
-                                             side='SELL',
-                                             type='LIMIT',
-                                             quantity=futures_sell,
-                                             timeInForce='GTC',  # Good til
-                                             price=price_new     # canceled
-                                             )
+            response = (self._api.
+                        futures_create_limit_order(symbol=symbol,
+                                                   side='SELL',
+                                                   quantity=futures_sell,
+                                                   timeInForce='GTC',  # Good til
+                                                   price=price_new     # canceled
+                                                   )
                         )
             self.set_sell_order_id(wallet, sell_id=response['orderId'])
             logger.info('        SELL order ID: %s',
@@ -392,15 +346,13 @@ class get_rich_quick_scheme():
 
     def place_kelly_bet(self, wallet):
 
-        # Set margin type and leverage
-        # self.client.futures_change_margin_type(symbol=symbol, marginType='ISOLATED')
-
-        self.client.futures_change_leverage(symbol=wallet.symbol, leverage=wallet.leverage)
+        # Set leverage
+        self._api.futures_change_leverage(symbol=wallet.symbol,
+                                          leverage=wallet.leverage)
 
         self.log_new_kelly_bet(wallet)
 
-        price_market = float(self.client.futures_position_information
-                             (symbol=wallet.symbol)[0]['markPrice'])
+        price_market = self._api.get_futures_market_price(wallet.symbol)
 
         myBet = kellyBet(
             wallet.balance, price_market, wallet.leverage)
@@ -424,9 +376,8 @@ class get_rich_quick_scheme():
 
         self.log_liquidation_info(myBet)
 
-    def get_status_of_all_binance_orders(self):
-        binance_response = self.client.futures_get_all_orders()
-        self.status_of_all_binance_orders = binance_response
+    def get_futures_all_orders(self):
+        self.status_of_all_binance_orders = self._api.get_futures_all_orders()
 
     def update_status_of_all_buy_orders(self):
 
@@ -602,21 +553,6 @@ class get_rich_quick_scheme():
             else:
                 self.check_sell_order_status(current_wallet)
 
-    def print_debug_info(self):
-        # print(self.client.get_account())
-        # print(self.client.get_asset_balance(asset='ETH'))
-        # print(self.client.get_margin_account())
-        # print(self.client.get_symbol_ticker(symbol="ETHUSDT"))
-        # print(self.client.get_symbol_info(symbol="ETHUSDT"))
-        # print(self.client.get_open_orders())
-        # print(self.client.futures_account())
-        # print(self.client.futures_account_balance())
-        # print(self.client.futures_account_trades())
-        # print(self.client.futures_get_open_orders())
-        # print(self.client.futures_get_all_orders())
-        # print(self.client.futures_get_open_orders()[0]['price'])
-        return
-
     def calculate_wallet_balance(self, wallet_size_percentage):
         _, account_free = self.get_account_balance('USDT')
         wallet_balance = trunc(account_free*wallet_size_percentage/100)
@@ -683,7 +619,7 @@ if __name__ == '__main__':
         loseitall.show_open_orders()
 
         # Get status of all binance orders
-        loseitall.get_status_of_all_binance_orders()
+        loseitall.get_futures_all_orders()
 
         # Update status of all wallets with information from binance
         loseitall.update_status_of_all_buy_orders()
