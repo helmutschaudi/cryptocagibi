@@ -10,8 +10,9 @@ class kelly_wallet:
         self._balance = -1
         self._initial_balance = -1
         self._leverage = -1
-        self._entry_price = -1
-        self._avg_price = -1
+        self._entry_price = -1 # price paid when bought futures
+        # win case price not stored yet -> get_filled_order_avg_price(current_wallet)        
+        self._liquidation_price = -1 # lose case price
         self._margin_added = -1
         self._buy_order_id = -1
         self._buy_order_status = 'none'
@@ -36,7 +37,7 @@ class kelly_wallet:
         print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
-        print(f'avg price: {self._avg_price}')
+        print(f'liquidation_price: {self._liquidation_price}')
         print(f'margin added: {self._margin_added}')
         print(f'buy order id: {self._buy_order_id}')
         print(f'buy order status: {self._buy_order_status}')
@@ -95,8 +96,8 @@ class kelly_wallet:
         return self._buy_order_executed_quantity
 
     @property
-    def avg_price(self):
-        return self._avg_price
+    def liquidation_price(self):
+        return self._liquidation_price
 
     @property
     def sell_order_executed_quantity(self):
@@ -133,9 +134,9 @@ class kelly_wallet:
     def buy_order_executed_quantity(self, buy_order_executed_quantity):
         self._buy_order_executed_quantity = buy_order_executed_quantity
 
-    @avg_price.setter
-    def avg_price(self, avg_price):
-        self._avg_price = avg_price
+    @liquidation_price.setter
+    def liquidation_price(self, liquidation_price):
+        self._liquidation_price = liquidation_price
 
     @sell_order_id.setter
     def sell_order_id(self, sell_order_id):
