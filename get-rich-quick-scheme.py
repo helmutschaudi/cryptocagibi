@@ -61,8 +61,6 @@ class get_rich_quick_scheme():
         # be executed once per program cycle
         self.status_of_all_binance_futures = {}
 
-
-
     def add_wallet_to_portfolio(self, wallet):
         self.wallet_portfolio.append(wallet)
 
@@ -104,7 +102,7 @@ class get_rich_quick_scheme():
 
         # Get open positions
         open_positions = []
-        all_futures_positions=self.status_of_all_binance_futures
+        all_futures_positions = self.status_of_all_binance_futures
         for position in all_futures_positions:
             if float(position['positionAmt']) != 0.:
                 open_positions.append(position)
@@ -335,7 +333,7 @@ class get_rich_quick_scheme():
                                                         quantity=futures_buy
                                                         )
             self.set_buy_order_id(wallet, buy_id=response['orderId'])
-            
+
             logger.info('        BUY order ID: %s',
                         wallet.buy_order_id)
 
@@ -424,6 +422,9 @@ class get_rich_quick_scheme():
         myBet.kellyBet(gross_odds, margin_factor)
         # ----------------------------------------------------------------------
 
+        # In case of liquidation, liqPrice will be updated with api value
+        wallet.liquidation_price = myBet.price_liq
+
         self.log_kelly_bet_plan(myBet, wallet.symbol)
 
         self.buy_futures(myBet, wallet)
@@ -442,14 +443,14 @@ class get_rich_quick_scheme():
         binance_response = self.client.futures_position_information()
         self.status_of_all_binance_futures = binance_response
 
-    def get_buy_order_liquidation_price(self,wallet):
-        all_orders =self.status_of_all_binance_futures
-        
+    def get_buy_order_liquidation_price(self, wallet):
+        all_orders = self.status_of_all_binance_futures
+
         for order in all_orders:
-            if order['symbol']==wallet.symbol: # API response has no orderId's
+            if order['symbol'] == wallet.symbol:  # API response has no orderId's
                 wallet.liquidation_price = order['liquidationPrice']
                 print(f'{wallet.symbol} WALLET LIQUIDATION PRICE: {wallet.liquidation_price}')
-                            
+
     def update_status_of_all_buy_orders(self):
 
         # Loop over current orders
@@ -466,7 +467,7 @@ class get_rich_quick_scheme():
                         current_wallet.buy_order_status = order['status']
                         current_wallet.buy_order_executed_quantity = order['executedQty']
                         current_wallet.entry_price = order['avgPrice']
-                        #current_wallet.liquidation_price = order['liquidationPrice']
+                        # current_wallet.liquidation_price = order['liquidationPrice']
 
     def check_buy_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
@@ -480,6 +481,7 @@ class get_rich_quick_scheme():
                         '[index=%d].',
                         buy_order_id, wallet_idx)
         elif buy_order_status == 'FILLED':
+
             # Bought, we have to pay money
             # Update buy order
             logger.info('Buy order withd ID %s filled at %.2f '
@@ -505,7 +507,7 @@ class get_rich_quick_scheme():
             logger.warning('Buy order with ID %s has unknown '
                            'state %s [index=%d].',
                            buy_order_id, buy_order_status, wallet_idx)
-            print(f'BUY ORDER {current_wallet.symbol} HAS UNKNOW STATUS {buy_order_status}')
+            print(f'BUY ORDER {current_wallet.symbol} HAS UNKNOWN STATUS {buy_order_status}')
 
     def check_status_of_all_buy_orders(self):
         for current_wallet in self.wallet_portfolio:
@@ -548,14 +550,14 @@ class get_rich_quick_scheme():
                         # sell order has no 'avgPrice'
 
     def get_filled_order_avg_price(self, wallet):
-        all_orders=self.status_of_all_binance_orders
+        all_orders = self.status_of_all_binance_orders
         for order in all_orders:
-            if order['orderId']== wallet.sell_order_id:
+            if order['orderId'] == wallet.sell_order_id:
                 return order['avgPrice']
-        
+
         print('FILLED SELL ORDER NOT FOUND !!!')
         logger.error('FILLED SELL ORDER NOT FOUND !!!')
-    
+
     def check_sell_order_status(self, current_wallet):
         wallet_idx = current_wallet.wallet_id
         sell_order_id = current_wallet.sell_order_id
@@ -673,7 +675,7 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    loseitall.turn_off_dry_run()
+    # loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Create wallets, and add them to wallet portfolio
@@ -709,29 +711,35 @@ if __name__ == '__main__':
     # Go into an endless loop
     while True:
 
-        # Log open positions and open orders
-        loseitall.show_open_positions()
-        loseitall.show_open_orders()
+        try:
+            # Log open positions and open orders
+            loseitall.show_open_positions()
+            loseitall.show_open_orders()
 
-        # Get status update from binance
-        loseitall.get_status_of_all_binance_orders()
-        loseitall.get_status_of_all_binance_futures()
+            # Get status update from binance
+            loseitall.get_status_of_all_binance_orders()
+            loseitall.get_status_of_all_binance_futures()
 
-        # Update status of all wallets with information from binance
-        loseitall.update_status_of_all_buy_orders()
-        loseitall.update_status_of_all_sell_orders()
+            # Update status of all wallets with information from binance
+            loseitall.update_status_of_all_buy_orders()
+            loseitall.update_status_of_all_sell_orders()
 
-        # Print info of all wallet objects in portfolio
-        loseitall.print_info_of_all_wallets()
+            # Print info of all wallet objects in portfolio
+            loseitall.print_info_of_all_wallets()
 
-        # Check status of all current orders, reset them if necessary, and
-        # update wallet
-        loseitall.check_status_of_all_buy_orders()
-        loseitall.check_status_of_all_sell_orders()
-        # SELL_ORDER = FILLED  -> WE WON
-        # SELL_ORDER = EXPIRED -> WE LOST
+            # Check status of all current orders, reset them if necessary, and
+            # update wallet
+            loseitall.check_status_of_all_buy_orders()
+            loseitall.check_status_of_all_sell_orders()
+            # SELL_ORDER = FILLED  -> WE WON
+            # SELL_ORDER = EXPIRED -> WE LOST
 
-        # Place new bets on closed orders
-        loseitall.place_new_kelly_bet_on_closed_orders()
+            # Place new bets on closed orders
+            loseitall.place_new_kelly_bet_on_closed_orders()
+
+        except Exception as error:
+            error_message = 'CAUGHT AN ERROR IN THE MAIN LOOP !!!'
+            print(error_message, error)
+            logger.error('%s %s', error_message, error)
 
         sleep(60)
