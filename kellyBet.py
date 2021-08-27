@@ -3,6 +3,9 @@
 import sys
 
 
+
+
+
 class kellyBet:
 
     def __init__(self, wallet_balance, price_old, multiplier):
