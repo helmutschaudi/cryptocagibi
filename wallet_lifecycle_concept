@@ -1,0 +1,45 @@
+
+
+
+# IF WALLET STATUS IS ALWAYS DEFINED EXACTLY,
+# API ERRORS DO NOT LEAD TO PROCESS ERRORS
+
+def run_wallet_lifecycle(self, wallet):
+
+    if wallet.status == 'NEW OR RESETED':
+        add_bet_parameters_to_wallet() # and update wallet status
+
+    if wallet.status == 'GOT BET PARAMETERS':
+        order_futures() # and update wallet status if API success
+    
+    if wallet.status == 'FUTURES ORDERED':
+        add_margin() # and update wallet status if API success
+    
+    if wallet.status == 'FUTURES PAID':
+        check_for_win_or_loose() # and update wallet status if won or lost
+    
+    if wallet.status == 'WON':
+        process_win() # and update wallet status
+    
+    elif wallet.status == 'LOST':
+        if get_liquidation_price_from_api(): # if API success
+            process_loss() # and update wallet status
+    
+    if wallet.status == 'WON_OR_LOST_PROCESSED':
+        reset_wallet()
+
+while true:
+
+    if successfully_updated_all_api_info(): # no API errors
+        for wallet in wallet_portfolio:
+            run_wallet_lifecycle(wallet)
+    sleep(60)
+
+     
+        
+
+        
+
+
+
+
