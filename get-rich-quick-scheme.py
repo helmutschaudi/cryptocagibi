@@ -631,28 +631,34 @@ if __name__ == '__main__':
     # Go into an endless loop
     while True:
 
-        # Log open positions and open orders
-        loseitall.show_open_positions()
-        loseitall.show_open_orders()
+        try:
+            # Log open positions and open orders
+            loseitall.show_open_positions()
+            loseitall.show_open_orders()
 
-        # Get status of all binance orders
-        loseitall.get_futures_all_orders()
+            # Get status of all binance orders
+            loseitall.get_futures_all_orders()
 
-        # Update status of all wallets with information from binance
-        loseitall.update_status_of_all_buy_orders()
-        loseitall.update_status_of_all_sell_orders()
+            # Update status of all wallets with information from binance
+            loseitall.update_status_of_all_buy_orders()
+            loseitall.update_status_of_all_sell_orders()
 
-        # Print info of all wallet objects in portfolio
-        loseitall.print_info_of_all_wallets()
+            # Print info of all wallet objects in portfolio
+            loseitall.print_info_of_all_wallets()
 
-        # Check status of all current orders, reset them if necessary, and
-        # update wallet
-        loseitall.check_status_of_all_buy_orders()
-        loseitall.check_status_of_all_sell_orders()
-        # SELL_ORDER = FILLED  -> WE WON
-        # SELL_ORDER = EXPIRED -> WE LOST
+            # Check status of all current orders, reset them if necessary, and
+            # update wallet
+            loseitall.check_status_of_all_buy_orders()
+            loseitall.check_status_of_all_sell_orders()
+            # SELL_ORDER = FILLED  -> WE WON
+            # SELL_ORDER = EXPIRED -> WE LOST
 
-        # Place new bets on closed orders
-        loseitall.place_new_kelly_bet_on_closed_orders()
+            # Place new bets on closed orders
+            loseitall.place_new_kelly_bet_on_closed_orders()
+   
+        except Exception as error:
+            error_message = 'CAUGHT AN ERROR IN THE MAIN LOOP !!!'
+            print(error_message, error)
+            logger.error('%s %s', error_message, error)
 
         sleep(60)
