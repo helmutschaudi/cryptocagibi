@@ -19,7 +19,11 @@ class kelly_wallet:
         self._sell_order_id = -1
         self._sell_order_status = 'none'
         self._sell_order_executed_quantity = -1
+        self._symbol_no_usdt = self.get_symbol_without_usdt()
 
+    def get_symbol_without_usdt(self):
+        return(self._symbol.replace('USDT',''))
+    
     def reset_sell_order_id(self):
         self._sell_order_id = -1
 
@@ -33,7 +37,7 @@ class kelly_wallet:
         print(f'printtime:    {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}')
         print(f'current balance: {self._balance:.2f} USDT')
         print(f'initial balance: {self._initial_balance:.2f} USDT')
-        print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol}')
+        print(f'executed qty: {self._buy_order_executed_quantity} {self._symbol_no_usdt}')
         print(f'leverage: {self._leverage}')
         print(f'entry price: {self._entry_price}')
         print(f'avg price: {self._avg_price}')
