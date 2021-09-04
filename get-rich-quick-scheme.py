@@ -52,6 +52,7 @@ class get_rich_quick_scheme():
     def add_wallet_to_portfolio(self, wallet):
         self.wallet_portfolio.append(wallet)
 
+
     def initialize_order_ids(self, wallet, buy_id=-1, sell_id=-1):
         wallet.buy_order_id = buy_id
         wallet.sell_order_id = sell_id
@@ -587,15 +588,16 @@ if __name__ == '__main__':
 
     # --------------------------------------------------------------------------
     # Define investment
-    wallet_ids = [111, 222, 333, 444, 555]
-    symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
-    wallet_size_percentages = [20, 20, 20, 20, 20]  # sum <= 100
-    leverages = [20, 20, 20, 20, 20]  # leverage max. 20 for a new account
+    wallet_ids = [111,222]
+    # symbols = ['BTCUSDT', 'VETUSDT', 'ADAUSDT', 'ETHUSDT', 'XRPUSDT']
+    symbols = ['ADAUSDT','ETHUSDT']
+    wallet_size_percentages = [66,33]  # sum <= 100
+    leverages = [20,20]  # leverage max. 20 for a new account
     # --------------------------------------------------------------------------
 
     # --------------------------------------------------------------------------
     # Turn off dry run
-    #loseitall.turn_off_dry_run()
+    loseitall.turn_off_dry_run()
     # --------------------------------------------------------------------------
 
     # Create wallets, and add them to wallet portfolio
